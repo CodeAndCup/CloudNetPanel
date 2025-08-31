@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Play, Square, RotateCcw, Plus, Trash2, Edit } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Play, Square, RotateCcw, Plus, Trash2, Edit, Terminal, Eye } from 'lucide-react';
 import axios from 'axios';
 import clsx from 'clsx';
 
@@ -23,6 +23,97 @@ const Servers: React.FC = () => {
   const [servers, setServers] = useState<Server[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<{ [key: number]: string }>({});
+  const [selectedServer, setSelectedServer] = useState<Server | null>(null);
+  const [showLogs, setShowLogs] = useState(false);
+  const [logs, setLogs] = useState<string[]>([]);
+  const [command, setCommand] = useState('');
+  const [ws, setWs] = useState<WebSocket | null>(null);
+  const logsEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    fetchServers();
+    return () => {
+      if (ws) {
+        ws.close();
+      }
+    };
+  }, [ws]);
+
+  useEffect(() => {
+    if (logsEndRef.current) {
+      logsEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [logs]);
+
+  const connectWebSocket = (serverId: number) => {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const wsUrl = `${protocol}//${window.location.host}`;
+    const socket = new WebSocket(wsUrl);
+
+    socket.onopen = () => {
+      console.log('WebSocket connected');
+      socket.send(JSON.stringify({
+        type: 'subscribe_logs',
+        serverId
+      }));
+    };
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      
+      switch (data.type) {
+        case 'server_log':
+          setLogs(prev => [...prev, `[${data.timestamp}] ${data.message}`]);
+          break;
+        case 'command_sent':
+          setLogs(prev => [...prev, `[${new Date().toISOString()}] Command executed: ${data.command}`]);
+          break;
+        case 'connected':
+          setLogs(prev => [...prev, `[${new Date().toISOString()}] Connected to server logs`]);
+          break;
+      }
+    };
+
+    socket.onclose = () => {
+      console.log('WebSocket disconnected');
+    };
+
+    socket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    setWs(socket);
+  };
+
+  const openServerConsole = (server: Server) => {
+    setSelectedServer(server);
+    setShowLogs(true);
+    setLogs([]);
+    connectWebSocket(server.id);
+  };
+
+  const closeServerConsole = () => {
+    if (ws) {
+      ws.close();
+    }
+    setSelectedServer(null);
+    setShowLogs(false);
+    setLogs([]);
+    setCommand('');
+  };
+
+  const sendCommand = () => {
+    if (!command.trim() || !ws || !selectedServer) return;
+
+    ws.send(JSON.stringify({
+      type: 'send_command',
+      serverId: selectedServer.id,
+      command: command.trim()
+    }));
+
+    setLogs(prev => [...prev, `[${new Date().toISOString()}] > ${command.trim()}`]);
+    setCommand('');
+  };
 
   useEffect(() => {
     fetchServers();
@@ -188,6 +279,14 @@ const Servers: React.FC = () => {
                       )}
                     </button>
 
+                    <button 
+                      onClick={() => openServerConsole(server)}
+                      className="inline-flex items-center p-2 border border-transparent rounded-full text-blue-600 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                      title="View logs and console"
+                    >
+                      <Terminal className="h-4 w-4" />
+                    </button>
+
                     <button className="inline-flex items-center p-2 border border-transparent rounded-full text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                       <Edit className="h-4 w-4" />
                     </button>
@@ -202,6 +301,54 @@ const Servers: React.FC = () => {
           ))}
         </ul>
       </div>
+
+      {/* Server Console Modal */}
+      {showLogs && selectedServer && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-4 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium text-gray-900">
+                {selectedServer.name} - Console
+              </h3>
+              <button
+                onClick={closeServerConsole}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <Edit className="h-6 w-6" />
+              </button>
+            </div>
+            
+            {/* Logs Display */}
+            <div className="bg-black text-green-400 p-4 rounded-md font-mono text-sm h-96 overflow-y-auto mb-4">
+              {logs.map((log, index) => (
+                <div key={index} className="whitespace-pre-wrap">
+                  {log}
+                </div>
+              ))}
+              <div ref={logsEndRef} />
+            </div>
+
+            {/* Command Input */}
+            <div className="flex space-x-2">
+              <input
+                type="text"
+                value={command}
+                onChange={(e) => setCommand(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && sendCommand()}
+                placeholder="Enter command..."
+                className="flex-1 p-2 border border-gray-300 rounded-md font-mono"
+              />
+              <button
+                onClick={sendCommand}
+                disabled={!command.trim()}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

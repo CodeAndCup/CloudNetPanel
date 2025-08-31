@@ -1,0 +1,441 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Settings, 
+  Plus, 
+  Edit, 
+  Trash2, 
+  Play,
+  Clock,
+  CheckCircle,
+  XCircle,
+  AlertCircle
+} from 'lucide-react';
+import axios from 'axios';
+import clsx from 'clsx';
+
+interface Task {
+  id: number;
+  name: string;
+  description?: string;
+  type: 'backup' | 'command' | 'custom';
+  schedule?: string;
+  command: string;
+  status: 'active' | 'inactive' | 'running';
+  last_run?: string;
+  next_run?: string;
+  created_by: number;
+  created_by_username: string;
+  created_at: string;
+}
+
+const Tasks: React.FC = () => {
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [newTask, setNewTask] = useState({
+    name: '',
+    description: '',
+    type: 'command' as 'backup' | 'command' | 'custom',
+    schedule: '',
+    command: ''
+  });
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
+  const fetchTasks = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get('/api/tasks');
+      setTasks(response.data);
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const createTask = async () => {
+    if (!newTask.name || !newTask.command) return;
+
+    try {
+      await axios.post('/api/tasks', newTask);
+      setShowCreateDialog(false);
+      setNewTask({
+        name: '',
+        description: '',
+        type: 'command',
+        schedule: '',
+        command: ''
+      });
+      fetchTasks();
+    } catch (error) {
+      console.error('Error creating task:', error);
+    }
+  };
+
+  const updateTask = async () => {
+    if (!editingTask) return;
+
+    try {
+      await axios.put(`/api/tasks/${editingTask.id}`, {
+        name: editingTask.name,
+        description: editingTask.description,
+        type: editingTask.type,
+        schedule: editingTask.schedule,
+        command: editingTask.command,
+        status: editingTask.status
+      });
+      setEditingTask(null);
+      fetchTasks();
+    } catch (error) {
+      console.error('Error updating task:', error);
+    }
+  };
+
+  const executeTask = async (task: Task) => {
+    try {
+      await axios.post(`/api/tasks/${task.id}/execute`);
+      fetchTasks(); // Refresh to show updated status
+    } catch (error) {
+      console.error('Error executing task:', error);
+    }
+  };
+
+  const deleteTask = async (task: Task) => {
+    if (!confirm(`Are you sure you want to delete task "${task.name}"?`)) return;
+
+    try {
+      await axios.delete(`/api/tasks/${task.id}`);
+      fetchTasks();
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'active':
+        return <CheckCircle className="h-5 w-5 text-green-500" />;
+      case 'running':
+        return <Clock className="h-5 w-5 text-yellow-500" />;
+      case 'inactive':
+        return <XCircle className="h-5 w-5 text-gray-500" />;
+      default:
+        return <AlertCircle className="h-5 w-5 text-gray-500" />;
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'active':
+        return 'bg-green-100 text-green-800';
+      case 'running':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'inactive':
+        return 'bg-gray-100 text-gray-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'backup':
+        return 'bg-blue-100 text-blue-800';
+      case 'command':
+        return 'bg-purple-100 text-purple-800';
+      case 'custom':
+        return 'bg-indigo-100 text-indigo-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return 'Never';
+    return new Date(dateString).toLocaleString();
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="sm:flex sm:items-center">
+        <div className="sm:flex-auto">
+          <h1 className="text-2xl font-semibold text-gray-900">Tasks</h1>
+          <p className="mt-2 text-sm text-gray-700">
+            Manage scheduled tasks and automation
+          </p>
+        </div>
+        <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+          <button
+            onClick={() => setShowCreateDialog(true)}
+            className="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Create Task
+          </button>
+        </div>
+      </div>
+
+      {/* Create Task Dialog */}
+      {showCreateDialog && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Create Task</h3>
+            <div className="space-y-4">
+              <input
+                type="text"
+                value={newTask.name}
+                onChange={(e) => setNewTask({...newTask, name: e.target.value})}
+                placeholder="Task name..."
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+              <textarea
+                value={newTask.description}
+                onChange={(e) => setNewTask({...newTask, description: e.target.value})}
+                placeholder="Description (optional)..."
+                className="w-full p-2 border border-gray-300 rounded-md"
+                rows={2}
+              />
+              <select
+                value={newTask.type}
+                onChange={(e) => setNewTask({...newTask, type: e.target.value as any})}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              >
+                <option value="command">Command</option>
+                <option value="backup">Backup</option>
+                <option value="custom">Custom</option>
+              </select>
+              <input
+                type="text"
+                value={newTask.schedule}
+                onChange={(e) => setNewTask({...newTask, schedule: e.target.value})}
+                placeholder="Cron schedule (optional, e.g., 0 2 * * *)"
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+              <textarea
+                value={newTask.command}
+                onChange={(e) => setNewTask({...newTask, command: e.target.value})}
+                placeholder="Command to execute..."
+                className="w-full p-2 border border-gray-300 rounded-md"
+                rows={3}
+                required
+              />
+            </div>
+            <div className="flex justify-end space-x-2 mt-4">
+              <button
+                onClick={() => setShowCreateDialog(false)}
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={createTask}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              >
+                Create Task
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Task Dialog */}
+      {editingTask && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <h3 className="text-lg font-medium text-gray-900 mb-4">Edit Task</h3>
+            <div className="space-y-4">
+              <input
+                type="text"
+                value={editingTask.name}
+                onChange={(e) => setEditingTask({...editingTask, name: e.target.value})}
+                placeholder="Task name..."
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+              <textarea
+                value={editingTask.description || ''}
+                onChange={(e) => setEditingTask({...editingTask, description: e.target.value})}
+                placeholder="Description (optional)..."
+                className="w-full p-2 border border-gray-300 rounded-md"
+                rows={2}
+              />
+              <select
+                value={editingTask.type}
+                onChange={(e) => setEditingTask({...editingTask, type: e.target.value as any})}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              >
+                <option value="command">Command</option>
+                <option value="backup">Backup</option>
+                <option value="custom">Custom</option>
+              </select>
+              <select
+                value={editingTask.status}
+                onChange={(e) => setEditingTask({...editingTask, status: e.target.value as any})}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              >
+                <option value="inactive">Inactive</option>
+                <option value="active">Active</option>
+              </select>
+              <input
+                type="text"
+                value={editingTask.schedule || ''}
+                onChange={(e) => setEditingTask({...editingTask, schedule: e.target.value})}
+                placeholder="Cron schedule (optional, e.g., 0 2 * * *)"
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+              <textarea
+                value={editingTask.command}
+                onChange={(e) => setEditingTask({...editingTask, command: e.target.value})}
+                placeholder="Command to execute..."
+                className="w-full p-2 border border-gray-300 rounded-md"
+                rows={3}
+                required
+              />
+            </div>
+            <div className="flex justify-end space-x-2 mt-4">
+              <button
+                onClick={() => setEditingTask(null)}
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={updateTask}
+                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+              >
+                Update Task
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tasks List */}
+      <div className="bg-white shadow overflow-hidden sm:rounded-md">
+        <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+          <table className="min-w-full divide-y divide-gray-300">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Name
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Type
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Schedule
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Last Run
+                </th>
+                <th className="relative px-6 py-3">
+                  <span className="sr-only">Actions</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {tasks.map((task) => (
+                <tr key={task.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <Settings className="h-5 w-5 text-blue-500 mr-3" />
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {task.name}
+                        </div>
+                        {task.description && (
+                          <div className="text-sm text-gray-500">
+                            {task.description}
+                          </div>
+                        )}
+                        <div className="text-xs text-gray-400">
+                          by {task.created_by_username}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={clsx(
+                      'inline-flex px-2 text-xs font-semibold rounded-full',
+                      getTypeColor(task.type)
+                    )}>
+                      {task.type}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      {getStatusIcon(task.status)}
+                      <span className={clsx(
+                        'ml-2 inline-flex px-2 text-xs font-semibold rounded-full',
+                        getStatusColor(task.status)
+                      )}>
+                        {task.status}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {task.schedule || 'Manual only'}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {formatDate(task.last_run)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <div className="flex justify-end space-x-2">
+                      <button
+                        onClick={() => executeTask(task)}
+                        className="text-green-600 hover:text-green-900"
+                        title="Execute task"
+                      >
+                        <Play className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => setEditingTask(task)}
+                        className="text-blue-600 hover:text-blue-900"
+                        title="Edit task"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => deleteTask(task)}
+                        className="text-red-600 hover:text-red-900"
+                        title="Delete task"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          
+          {tasks.length === 0 && (
+            <div className="text-center py-12">
+              <Settings className="mx-auto h-12 w-12 text-gray-400" />
+              <h3 className="mt-2 text-sm font-medium text-gray-900">No tasks</h3>
+              <p className="mt-1 text-sm text-gray-500">
+                Get started by creating your first task.
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Tasks;
