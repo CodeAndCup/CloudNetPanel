@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import Servers from './pages/Servers';
 import Nodes from './pages/Nodes';
 import Users from './pages/Users';
+import Groups from './pages/Groups';
 import Templates from './pages/Templates';
 import Backups from './pages/Backups';
 import Tasks from './pages/Tasks';
@@ -49,6 +50,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/backups" element={<Backups />} />
         <Route path="/tasks" element={<Tasks />} />
         <Route path="/users" element={<Users />} />
+        <Route path="/groups" element={<Groups />} />
         <Route path="/login" element={<Navigate to="/dashboard" />} />
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>

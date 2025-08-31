@@ -12,7 +12,8 @@ import {
   X,
   FileText,
   Archive,
-  Settings
+  Settings,
+  UserCheck
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -33,6 +34,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Backups', href: '/backups', icon: Archive },
     { name: 'Tasks', href: '/tasks', icon: Settings },
     { name: 'Users', href: '/users', icon: Users },
+    { name: 'Groups', href: '/groups', icon: UserCheck },
   ];
 
   const isActive = (href: string) => {

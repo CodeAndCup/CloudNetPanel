@@ -15,6 +15,7 @@ const groupRoutes = require('./routes/groups');
 const templateRoutes = require('./routes/templates');
 const backupRoutes = require('./routes/backups');
 const taskRoutes = require('./routes/tasks');
+const { initializeDefaultData } = require('./database/init');
 
 const app = express();
 const server = http.createServer(app);
@@ -152,4 +153,9 @@ const broadcastServerLog = (serverId, logLine) => {
 server.listen(PORT, () => {
   console.log(`CloudNet Panel server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  
+  // Initialize default data after server starts
+  setTimeout(() => {
+    initializeDefaultData();
+  }, 1000);
 });

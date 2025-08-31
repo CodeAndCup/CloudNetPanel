@@ -10,6 +10,12 @@ A modern web-based management panel for CloudNet servers, designed with a user-f
 - 🖥️ **Server Management**: Start, stop, restart servers with real-time status updates
 - 🌐 **Node Management**: Monitor node resources (CPU, RAM, disk usage)
 - 👥 **User Management**: Manage users with different permission levels
+- 👥 **Group Management**: Create and manage user groups with granular permissions
+- 📁 **Template Management**: File browser for server templates with permission-based access
+- 📦 **Backup System**: Manual and scheduled backups of templates with compression
+- ⚙️ **Task Automation**: Cron-based task scheduler for automated operations
+- 💻 **Real-time Console**: Live server logs and command execution via WebSocket
+- 🔒 **Granular Permissions**: File/folder and task-level access control by user/group
 - 📱 **Mobile Responsive**: Works seamlessly on desktop and mobile devices
 
 ## Quick Start
@@ -66,7 +72,10 @@ The application will serve the built frontend and API from port 5000.
 - **Node.js** with Express.js
 - **JWT** for authentication
 - **SQLite** for data storage
-- **WebSocket** support for real-time updates
+- **WebSocket** support for real-time updates and server console
+- **Node-cron** for task scheduling
+- **Archiver** for backup compression
+- **Multer** for file uploads
 
 ### Frontend
 - **React** with TypeScript
@@ -105,6 +114,39 @@ The application will serve the built frontend and API from port 5000.
 - `POST /api/users` - Create new user (admin only)
 - `PUT /api/users/:id` - Update user
 - `DELETE /api/users/:id` - Delete user (admin only)
+
+### Groups
+- `GET /api/groups` - List all groups
+- `GET /api/groups/:id` - Get group details with users
+- `POST /api/groups` - Create new group (admin only)
+- `PUT /api/groups/:id` - Update group (admin only)
+- `DELETE /api/groups/:id` - Delete group (admin only)
+- `POST /api/groups/:id/users` - Add user to group (admin only)
+- `DELETE /api/groups/:id/users/:userId` - Remove user from group (admin only)
+
+### Templates
+- `GET /api/templates/files` - List files and directories
+- `GET /api/templates/files/content` - Get file content
+- `PUT /api/templates/files/content` - Create or update file
+- `POST /api/templates/files/directory` - Create directory
+- `DELETE /api/templates/files` - Delete file or directory
+
+### Backups
+- `GET /api/backups` - List all backups
+- `GET /api/backups/:id` - Get backup details
+- `POST /api/backups/manual` - Create manual backup
+- `POST /api/backups/schedule` - Schedule automatic backup
+- `GET /api/backups/:id/download` - Download backup file
+- `DELETE /api/backups/:id` - Delete backup
+
+### Tasks
+- `GET /api/tasks` - List accessible tasks
+- `GET /api/tasks/:id` - Get task details
+- `POST /api/tasks` - Create new task
+- `PUT /api/tasks/:id` - Update task
+- `POST /api/tasks/:id/execute` - Execute task manually
+- `DELETE /api/tasks/:id` - Delete task
+- `POST /api/tasks/:id/permissions` - Grant task permission (admin only)
 
 ## Environment Variables
 
