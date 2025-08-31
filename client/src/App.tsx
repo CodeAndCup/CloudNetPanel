@@ -6,6 +6,9 @@ import Dashboard from './pages/Dashboard';
 import Servers from './pages/Servers';
 import Nodes from './pages/Nodes';
 import Users from './pages/Users';
+import Templates from './pages/Templates';
+import Backups from './pages/Backups';
+import Tasks from './pages/Tasks';
 import Layout from './components/Layout';
 import LoadingSpinner from './components/LoadingSpinner';
 
@@ -42,6 +45,9 @@ const AppRoutes: React.FC = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/servers" element={<Servers />} />
         <Route path="/nodes" element={<Nodes />} />
+        <Route path="/templates" element={<Templates />} />
+        <Route path="/backups" element={<Backups />} />
+        <Route path="/tasks" element={<Tasks />} />
         <Route path="/users" element={<Users />} />
         <Route path="/login" element={<Navigate to="/dashboard" />} />
         <Route path="*" element={<Navigate to="/dashboard" />} />
