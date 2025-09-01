@@ -46,11 +46,12 @@ When `CLOUDNET_API_ENABLED=true`, the panel will:
 ### Servers
 - ✅ List all servers
 - ✅ Get individual server details
-- ✅ Start server
-- ✅ Stop server  
-- ✅ Restart server
+- ✅ Start server (via lifecycle endpoint)
+- ✅ Stop server (via lifecycle endpoint)
+- ✅ Restart server (via lifecycle endpoint)
 - ✅ Automatic data transformation from CloudNet format
 - ✅ Fallback to mock data on API errors
+- ❌ Create/Update/Delete servers (not supported by CloudNet REST API)
 
 ### Nodes
 - ✅ List all nodes
@@ -58,21 +59,22 @@ When `CLOUDNET_API_ENABLED=true`, the panel will:
 - ✅ Resource usage monitoring
 - ✅ Status tracking
 - ✅ Fallback to mock data on API errors
+- ❌ Create/Update/Delete nodes (not supported by CloudNet REST API)
 
 ## CloudNet API Endpoints Used
 
 The panel integrates with the following CloudNet REST API endpoints:
 
 ### Services (Servers)
-- `GET /api/v3/services` - List all services
-- `GET /api/v3/services/{id}` - Get service details
-- `POST /api/v3/services/{id}/start` - Start service
-- `POST /api/v3/services/{id}/stop` - Stop service
-- `POST /api/v3/services/{id}/restart` - Restart service
+- `GET /api/v3/service` - List all services (returns `{ services: [] }`)
+- `GET /api/v3/service/{identifier}` - Get service details  
+- `PATCH /api/v3/service/{identifier}/lifecycle?target=start` - Start service
+- `PATCH /api/v3/service/{identifier}/lifecycle?target=stop` - Stop service
+- `PATCH /api/v3/service/{identifier}/lifecycle?target=restart` - Restart service
 
-### Nodes
-- `GET /api/v3/cluster/nodes` - List all cluster nodes
-- `GET /api/v3/cluster/nodes/{id}` - Get node details
+### Cluster Nodes
+- `GET /api/v3/cluster` - List all cluster nodes (returns `{ nodes: [] }`)
+- `GET /api/v3/cluster/{uniqueId}` - Get node details
 
 ## Data Transformation
 
