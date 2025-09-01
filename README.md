@@ -17,6 +17,8 @@ A modern web-based management panel for CloudNet servers, designed with a user-f
 - 💻 **Real-time Console**: Live server logs and command execution via WebSocket
 - 🔒 **Granular Permissions**: File/folder and task-level access control by user/group
 - 📱 **Mobile Responsive**: Works seamlessly on desktop and mobile devices
+- 🌙 **Dark Theme**: Beautiful dark mode with automatic system preference detection
+- 🔌 **CloudNet REST API Integration**: Connect to real CloudNet instances or use mock data for testing
 
 ## Quick Start
 
@@ -65,6 +67,19 @@ npm start
 ```
 
 The application will serve the built frontend and API from port 5000.
+
+## CloudNet REST API Integration
+
+The panel supports integration with CloudNet REST API for real-time server management. See [CLOUDNET_API.md](CLOUDNET_API.md) for detailed configuration instructions.
+
+### Quick Configuration
+
+1. Copy `server/.env.example` to `server/.env`
+2. Set `CLOUDNET_API_ENABLED=true` to enable API integration
+3. Configure `CLOUDNET_API_URL` to point to your CloudNet instance
+4. Restart the application
+
+**Default Mode**: The panel runs in mock mode by default, making it perfect for testing and development without requiring a CloudNet instance.
 
 ## Technology Stack
 
