@@ -46,7 +46,7 @@ const Login: React.FC = () => {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                  <User className="h-5 w-5 text-gray-400 dark:text-gray-500 dark:text-gray-400" />
                 </div>
                 <input
                   id="username"
@@ -67,7 +67,7 @@ const Login: React.FC = () => {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                  <Lock className="h-5 w-5 text-gray-400 dark:text-gray-500 dark:text-gray-400" />
                 </div>
                 <input
                   id="password"

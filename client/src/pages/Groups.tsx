@@ -136,8 +136,8 @@ const Groups: React.FC = () => {
     <div className="space-y-6">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-2xl font-semibold text-gray-900">Groups</h1>
-          <p className="mt-2 text-sm text-gray-700">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Groups</h1>
+          <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
             Manage user groups and permissions
           </p>
         </div>
@@ -155,28 +155,28 @@ const Groups: React.FC = () => {
       {/* Create Group Dialog */}
       {showCreateDialog && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Create Group</h3>
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Create Group</h3>
             <div className="space-y-4">
               <input
                 type="text"
                 value={newGroup.name}
                 onChange={(e) => setNewGroup({...newGroup, name: e.target.value})}
                 placeholder="Group name..."
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <textarea
                 value={newGroup.description}
                 onChange={(e) => setNewGroup({...newGroup, description: e.target.value})}
                 placeholder="Description (optional)..."
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 rows={3}
               />
             </div>
             <div className="flex justify-end space-x-2 mt-4">
               <button
                 onClick={() => setShowCreateDialog(false)}
-                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700"
               >
                 Cancel
               </button>
@@ -194,28 +194,28 @@ const Groups: React.FC = () => {
       {/* Edit Group Dialog */}
       {editingGroup && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Edit Group</h3>
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Edit Group</h3>
             <div className="space-y-4">
               <input
                 type="text"
                 value={editingGroup.name}
                 onChange={(e) => setEditingGroup({...editingGroup, name: e.target.value})}
                 placeholder="Group name..."
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <textarea
                 value={editingGroup.description || ''}
                 onChange={(e) => setEditingGroup({...editingGroup, description: e.target.value})}
                 placeholder="Description (optional)..."
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 rows={3}
               />
             </div>
             <div className="flex justify-end space-x-2 mt-4">
               <button
                 onClick={() => setEditingGroup(null)}
-                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700"
               >
                 Cancel
               </button>
@@ -231,21 +231,21 @@ const Groups: React.FC = () => {
       )}
 
       {/* Groups List */}
-      <div className="bg-white shadow overflow-hidden sm:rounded-md">
+      <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md">
         <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-          <table className="min-w-full divide-y divide-gray-300">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-300 dark:divide-gray-600">
+            <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Description
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Users
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Created
                 </th>
                 <th className="relative px-6 py-3">
@@ -253,24 +253,24 @@ const Groups: React.FC = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-600">
               {groups.map((group) => (
-                <tr key={group.id} className="hover:bg-gray-50">
+                <tr key={group.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <Users className="h-5 w-5 text-blue-500 mr-3" />
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-sm font-medium text-gray-900 dark:text-white">
                         {group.name}
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {group.description || '-'}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {group.user_count} users
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {formatDate(group.created_at)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -299,8 +299,8 @@ const Groups: React.FC = () => {
           {groups.length === 0 && (
             <div className="text-center py-12">
               <Users className="mx-auto h-12 w-12 text-gray-400" />
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No groups</h3>
-              <p className="mt-1 text-sm text-gray-500">
+              <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No groups</h3>
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 Get started by creating your first group.
               </p>
             </div>

@@ -75,7 +75,7 @@ const Nodes: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Nodes</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Nodes</h1>
         <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
           <Plus className="h-4 w-4 mr-2" />
           Add Node
@@ -84,12 +84,12 @@ const Nodes: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {nodes.map((node) => (
-          <div key={node.id} className="bg-white shadow rounded-lg overflow-hidden">
+          <div key={node.id} className="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
             <div className="px-6 py-4">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center">
                   <div className={`w-3 h-3 rounded-full mr-3 ${getStatusDot(node.status)}`} />
-                  <h3 className="text-lg font-medium text-gray-900">{node.name}</h3>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white">{node.name}</h3>
                 </div>
                 <span className={clsx(
                   'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
@@ -101,21 +101,21 @@ const Nodes: React.FC = () => {
 
               <div className="space-y-3">
                 <div>
-                  <div className="flex justify-between text-sm text-gray-500 mb-1">
+                  <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-1">
                     <span>IP Address</span>
                     <span>{node.ip}</span>
                   </div>
                 </div>
 
                 <div>
-                  <div className="flex justify-between text-sm text-gray-500 mb-1">
+                  <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-1">
                     <span>Location</span>
                     <span>{node.location}</span>
                   </div>
                 </div>
 
                 <div>
-                  <div className="flex justify-between text-sm text-gray-500 mb-1">
+                  <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-1">
                     <span>Servers</span>
                     <span>{node.servers}/{node.maxServers}</span>
                   </div>
@@ -128,7 +128,7 @@ const Nodes: React.FC = () => {
                 </div>
 
                 <div>
-                  <div className="flex justify-between text-sm text-gray-500 mb-1">
+                  <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-1">
                     <span>CPU Usage</span>
                     <span>{node.cpu}%</span>
                   </div>
@@ -141,7 +141,7 @@ const Nodes: React.FC = () => {
                 </div>
 
                 <div>
-                  <div className="flex justify-between text-sm text-gray-500 mb-1">
+                  <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-1">
                     <span>Memory Usage</span>
                     <span>{node.ram}%</span>
                   </div>
@@ -154,7 +154,7 @@ const Nodes: React.FC = () => {
                 </div>
 
                 <div>
-                  <div className="flex justify-between text-sm text-gray-500 mb-1">
+                  <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-1">
                     <span>Disk Usage</span>
                     <span>{node.disk}%</span>
                   </div>
@@ -167,7 +167,7 @@ const Nodes: React.FC = () => {
                 </div>
 
                 <div>
-                  <div className="flex justify-between text-sm text-gray-500">
+                  <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
                     <span>Uptime</span>
                     <span>{node.uptime}</span>
                   </div>

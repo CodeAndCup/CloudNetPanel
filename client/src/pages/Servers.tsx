@@ -207,9 +207,9 @@ const Servers: React.FC = () => {
       </div>
 
       <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md">
-        <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+        <ul className="divide-y divide-gray-200 dark:divide-gray-600 dark:divide-gray-700">
           {servers.map((server) => (
-            <li key={server.id} className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700">
+            <li key={server.id} className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-700">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className={`w-3 h-3 rounded-full ${getStatusDot(server.status)}`} />

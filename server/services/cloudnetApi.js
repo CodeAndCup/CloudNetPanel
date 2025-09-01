@@ -5,6 +5,9 @@ class CloudNetApiService {
   constructor() {
     this.config = config.cloudnet;
     this.client = null;
+    this.authToken = null;
+    this.refreshToken = null;
+    this.tokenExpiry = null;
     
     if (this.config.enabled) {
       this.initializeClient();
@@ -20,22 +23,53 @@ class CloudNetApiService {
       },
     };
 
-    // Add authentication if configured
-    if (this.config.auth.apiKey) {
-      axiosConfig.headers['Authorization'] = `Bearer ${this.config.auth.apiKey}`;
-    } else if (this.config.auth.username && this.config.auth.password) {
-      axiosConfig.auth = {
-        username: this.config.auth.username,
-        password: this.config.auth.password,
-      };
-    }
-
     this.client = axios.create(axiosConfig);
 
-    // Add response interceptor for error handling
+    // Add request interceptor to handle authentication
+    this.client.interceptors.request.use(
+      async (config) => {
+        // Skip auth for the /auth endpoint itself
+        if (config.url === '/auth') {
+          return config;
+        }
+
+        // Ensure we have a valid token
+        await this.ensureValidToken();
+        
+        if (this.authToken) {
+          config.headers.Authorization = `Bearer ${this.authToken}`;
+        }
+        
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
+      }
+    );
+
+    // Add response interceptor for error handling and token refresh
     this.client.interceptors.response.use(
       (response) => response,
-      (error) => {
+      async (error) => {
+        const originalRequest = error.config;
+        
+        // If we get a 401 and haven't tried to refresh yet, try refreshing the token
+        if (error.response?.status === 401 && !originalRequest._retry && this.refreshToken) {
+          originalRequest._retry = true;
+          
+          try {
+            await this.refreshAuthToken();
+            originalRequest.headers.Authorization = `Bearer ${this.authToken}`;
+            return this.client(originalRequest);
+          } catch (refreshError) {
+            console.error('Token refresh failed:', refreshError.message);
+            // Clear tokens and re-authenticate
+            this.authToken = null;
+            this.refreshToken = null;
+            this.tokenExpiry = null;
+          }
+        }
+        
         console.error('CloudNet API Error:', error.message);
         if (error.response) {
           console.error('Response status:', error.response.status);
@@ -44,6 +78,86 @@ class CloudNetApiService {
         throw error;
       }
     );
+  }
+
+  async ensureValidToken() {
+    // If we already have a valid token, no need to authenticate again
+    if (this.authToken && this.tokenExpiry && Date.now() < this.tokenExpiry - 30000) {
+      return;
+    }
+
+    // If we have a refresh token and it's not expired, try refreshing
+    if (this.refreshToken) {
+      try {
+        await this.refreshAuthToken();
+        return;
+      } catch (error) {
+        console.log('Refresh token failed, re-authenticating...');
+      }
+    }
+
+    // Authenticate with basic auth to get JWT token
+    await this.authenticate();
+  }
+
+  async authenticate() {
+    if (!this.config.auth.username || !this.config.auth.password) {
+      throw new Error('CloudNet API credentials not configured');
+    }
+
+    try {
+      const response = await this.client.post('/auth', {}, {
+        auth: {
+          username: this.config.auth.username,
+          password: this.config.auth.password,
+        },
+      });
+
+      const { accessToken, refreshToken } = response.data;
+      
+      if (accessToken && accessToken.token) {
+        this.authToken = accessToken.token;
+        this.tokenExpiry = Date.now() + (accessToken.expiresIn * 1000);
+      }
+      
+      if (refreshToken && refreshToken.token) {
+        this.refreshToken = refreshToken.token;
+      }
+
+      console.log('CloudNet API authentication successful');
+    } catch (error) {
+      console.error('CloudNet API authentication failed:', error.message);
+      throw new Error('Failed to authenticate with CloudNet API');
+    }
+  }
+
+  async refreshAuthToken() {
+    if (!this.refreshToken) {
+      throw new Error('No refresh token available');
+    }
+
+    const tempClient = axios.create({
+      baseURL: this.config.baseUrl,
+      timeout: this.config.timeout,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.refreshToken}`,
+      },
+    });
+
+    const response = await tempClient.post('/auth/refresh');
+    const { accessToken, refreshToken } = response.data;
+    
+    if (accessToken && accessToken.token) {
+      this.authToken = accessToken.token;
+      this.tokenExpiry = Date.now() + (accessToken.expiresIn * 1000);
+    }
+    
+    if (refreshToken && refreshToken.token) {
+      this.refreshToken = refreshToken.token;
+    }
+
+    console.log('CloudNet API token refreshed');
   }
 
   async makeRequest(method, url, data = null, retries = this.config.retries) {
@@ -59,7 +173,7 @@ class CloudNetApiService {
       });
       return response.data;
     } catch (error) {
-      if (retries > 0 && error.code === 'ECONNREFUSED') {
+      if (retries > 0 && (error.code === 'ECONNREFUSED' || error.response?.status >= 500)) {
         console.log(`Retrying CloudNet API request... (${retries} attempts remaining)`);
         await new Promise(resolve => setTimeout(resolve, this.config.retryDelay));
         return this.makeRequest(method, url, data, retries - 1);
