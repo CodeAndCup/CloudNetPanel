@@ -48,8 +48,8 @@ const Dashboard: React.FC = () => {
         onlineServers: serverData.filter((s: any) => s.status === 'online').length,
         totalNodes: nodeData.length,
         onlineNodes: nodeData.filter((n: any) => n.status === 'online').length,
-        totalUsers: userData.length,
-        activeUsers: userData.filter((u: any) => u.status === 'active').length
+        totalUsers: userData.length, //serverData.find((s: any) => s.type === 'Global-Proxy').maxPlayers, //
+        activeUsers: userData.filter((u: any) => u.status === 'active').length //serverData.find((s: any) => s.type === 'Global-Proxy').players //
       });
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
@@ -75,15 +75,15 @@ const Dashboard: React.FC = () => {
     },
     {
       name: 'Users',
-      value: stats.totalUsers,
-      subValue: `${stats.activeUsers} active`,
+      value: stats.activeUsers,
+      subValue: `${stats.totalUsers} slots`,
       icon: Users,
       color: 'bg-purple-500',
       trend: stats.activeUsers > 0 ? 'up' : 'down'
     },
     {
       name: 'Uptime',
-      value: '99.9%',
+      value: 'XX.X%',
       subValue: 'Last 30 days',
       icon: Activity,
       color: 'bg-yellow-500',
@@ -98,7 +98,7 @@ const Dashboard: React.FC = () => {
         {statCards.map((card) => {
           const Icon = card.icon;
           const TrendIcon = card.trend === 'up' ? TrendingUp : TrendingDown;
-          
+
           return (
             <div key={card.name} className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
               <div className="p-5">
@@ -143,11 +143,10 @@ const Dashboard: React.FC = () => {
               {servers.slice(0, 5).map((server) => (
                 <div key={server.id} className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <div className={`w-3 h-3 rounded-full mr-3 ${
-                      server.status === 'online' ? 'bg-green-400' :
+                    <div className={`w-3 h-3 rounded-full mr-3 ${server.status === 'online' ? 'bg-green-400' :
                       server.status === 'offline' ? 'bg-red-400' :
-                      'bg-yellow-400'
-                    }`} />
+                        'bg-yellow-400'
+                      }`} />
                     <span className="text-sm font-medium text-gray-900 dark:text-white">
                       {server.name}
                     </span>
@@ -171,9 +170,8 @@ const Dashboard: React.FC = () => {
               {nodes.map((node) => (
                 <div key={node.id} className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <div className={`w-3 h-3 rounded-full mr-3 ${
-                      node.status === 'online' ? 'bg-green-400' : 'bg-red-400'
-                    }`} />
+                    <div className={`w-3 h-3 rounded-full mr-3 ${node.status === 'online' ? 'bg-green-400' : 'bg-red-400'
+                      }`} />
                     <span className="text-sm font-medium text-gray-900 dark:text-white">
                       {node.name}
                     </span>

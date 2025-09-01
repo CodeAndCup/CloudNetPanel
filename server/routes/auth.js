@@ -13,6 +13,8 @@ const DEFAULT_ADMIN = {
   password: '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
   role: 'admin'
 };
+// If user table empty do:
+// sqlite3 server/database/cloudnet.db  "INSERT INTO users VALUES (1,'admin','admin@cloudnet.local','$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','admin',1,1,null)"
 
 // Login endpoint
 router.post('/login', async (req, res) => {
@@ -40,11 +42,11 @@ router.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign(
-      { 
+      {
         id: user.id || 1,
         username: user.username,
         email: user.email,
-        role: user.role 
+        role: user.role
       },
       JWT_SECRET,
       { expiresIn: '24h' }
