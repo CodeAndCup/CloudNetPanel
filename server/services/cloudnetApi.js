@@ -246,7 +246,7 @@ class CloudNetApiService {
   transformServerData(cloudnetServer) {
     return {
       id: cloudnetServer.configuration.serviceId?.uniqueId || cloudnetServer.configuration.serviceId?.taskName + '-' + cloudnetServer.configuration.serviceId?.taskServiceId || cloudnetServer.name,
-      name: (cloudnetServer.configuration.serviceId?.taskName + cloudnetServer.serviceId?.nameSplitter + cloudnetServer.serviceId?.taskServiceId) || 'Unknown',
+      name: (cloudnetServer.configuration.serviceId?.taskName + cloudnetServer.configuration.serviceId?.nameSplitter + cloudnetServer.configuration.serviceId?.taskServiceId) || 'Unknown',
       type: cloudnetServer.configuration?.groups?.[0] || cloudnetServer.serviceId?.taskName || 'Unknown',
       status: this.mapServerStatus(cloudnetServer.lifeCycle),
       players: cloudnetServer.properties?.onlineCount || 0,
