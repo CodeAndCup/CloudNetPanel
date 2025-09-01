@@ -199,23 +199,23 @@ const Servers: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Servers</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white dark:text-white">Servers</h1>
         <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
           <Plus className="h-4 w-4 mr-2" />
           Create Server
         </button>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md">
-        <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+      <div className="bg-white dark:bg-gray-800 dark:bg-gray-800 shadow overflow-hidden sm:rounded-md">
+        <ul className="divide-y divide-gray-200 dark:divide-gray-600 dark:divide-gray-700">
           {servers.map((server) => (
-            <li key={server.id} className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700">
+            <li key={server.id} className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-700">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className={`w-3 h-3 rounded-full ${getStatusDot(server.status)}`} />
                   <div>
-                    <h3 className="text-lg font-medium text-gray-900 dark:text-white">{server.name}</h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-white dark:text-white">{server.name}</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-400">
                       {server.type} • {server.node} • {server.ip}:{server.port}
                     </p>
                   </div>
@@ -223,7 +223,7 @@ const Servers: React.FC = () => {
 
                 <div className="flex items-center space-x-6">
                   <div className="text-right">
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                    <p className="text-sm font-medium text-gray-900 dark:text-white dark:text-white">
                       {server.players}/{server.maxPlayers} players
                     </p>
                     <span className={clsx(
@@ -234,7 +234,7 @@ const Servers: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="text-right text-sm text-gray-500 dark:text-gray-400">
+                  <div className="text-right text-sm text-gray-500 dark:text-gray-400 dark:text-gray-400">
                     <p>CPU: {server.cpu}%</p>
                     <p>RAM: {server.ram}%</p>
                     <p>{server.uptime}</p>
@@ -305,9 +305,9 @@ const Servers: React.FC = () => {
       {/* Server Console Modal */}
       {showLogs && selectedServer && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-4 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-700">
+          <div className="relative top-4 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white dark:bg-gray-800 dark:bg-gray-800 dark:border-gray-700">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white dark:text-white">
                 {selectedServer.name} - Console
               </h3>
               <button
@@ -336,7 +336,7 @@ const Servers: React.FC = () => {
                 onChange={(e) => setCommand(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && sendCommand()}
                 placeholder="Enter command..."
-                className="flex-1 p-2 border border-gray-300 dark:border-gray-600 rounded-md font-mono bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                className="flex-1 p-2 border border-gray-300 dark:border-gray-600 rounded-md font-mono bg-white dark:bg-gray-800 dark:bg-gray-700 text-gray-900 dark:text-white dark:text-white"
               />
               <button
                 onClick={sendCommand}

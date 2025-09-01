@@ -121,20 +121,20 @@ const Backups: React.FC = () => {
       case 'pending':
         return <Clock className="h-5 w-5 text-yellow-500" />;
       default:
-        return <AlertCircle className="h-5 w-5 text-gray-500" />;
+        return <AlertCircle className="h-5 w-5 text-gray-500 dark:text-gray-400" />;
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-400';
       case 'failed':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-400';
       case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-400';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300';
     }
   };
 
@@ -162,8 +162,8 @@ const Backups: React.FC = () => {
     <div className="space-y-6">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-2xl font-semibold text-gray-900">Backups</h1>
-          <p className="mt-2 text-sm text-gray-700">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white dark:text-white">Backups</h1>
+          <p className="mt-2 text-sm text-gray-700 dark:text-gray-300 dark:text-gray-300">
             Manage template backups and schedules
           </p>
         </div>
@@ -188,28 +188,28 @@ const Backups: React.FC = () => {
       {/* Create Manual Backup Dialog */}
       {showCreateDialog && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Create Manual Backup</h3>
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800 dark:bg-gray-800">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white dark:text-white mb-4">Create Manual Backup</h3>
             <div className="space-y-4">
               <input
                 type="text"
                 value={newBackup.name}
                 onChange={(e) => setNewBackup({...newBackup, name: e.target.value})}
                 placeholder="Backup name..."
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 dark:bg-gray-700 text-gray-900 dark:text-white dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <input
                 type="text"
                 value={newBackup.sourcePath}
                 onChange={(e) => setNewBackup({...newBackup, sourcePath: e.target.value})}
                 placeholder="Source path (e.g., spigot/config)"
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 dark:bg-gray-700 text-gray-900 dark:text-white dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
             </div>
             <div className="flex justify-end space-x-2 mt-4">
               <button
                 onClick={() => setShowCreateDialog(false)}
-                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-700"
               >
                 Cancel
               </button>
@@ -227,31 +227,31 @@ const Backups: React.FC = () => {
       {/* Schedule Backup Dialog */}
       {showScheduleDialog && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Schedule Backup</h3>
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800 dark:bg-gray-800">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white dark:text-white mb-4">Schedule Backup</h3>
             <div className="space-y-4">
               <input
                 type="text"
                 value={newScheduledBackup.name}
                 onChange={(e) => setNewScheduledBackup({...newScheduledBackup, name: e.target.value})}
                 placeholder="Backup name..."
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 dark:bg-gray-700 text-gray-900 dark:text-white dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <input
                 type="text"
                 value={newScheduledBackup.sourcePath}
                 onChange={(e) => setNewScheduledBackup({...newScheduledBackup, sourcePath: e.target.value})}
                 placeholder="Source path (e.g., spigot/config)"
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 dark:bg-gray-700 text-gray-900 dark:text-white dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <input
                 type="text"
                 value={newScheduledBackup.schedule}
                 onChange={(e) => setNewScheduledBackup({...newScheduledBackup, schedule: e.target.value})}
                 placeholder="Cron schedule (e.g., 0 2 * * *)"
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 dark:bg-gray-700 text-gray-900 dark:text-white dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-400">
                 Cron format: minute hour day month day-of-week<br/>
                 Example: "0 2 * * *" = Daily at 2 AM
               </p>
@@ -259,7 +259,7 @@ const Backups: React.FC = () => {
             <div className="flex justify-end space-x-2 mt-4">
               <button
                 onClick={() => setShowScheduleDialog(false)}
-                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-700"
               >
                 Cancel
               </button>
@@ -275,27 +275,27 @@ const Backups: React.FC = () => {
       )}
 
       {/* Backups List */}
-      <div className="bg-white shadow overflow-hidden sm:rounded-md">
+      <div className="bg-white dark:bg-gray-800 dark:bg-gray-800 shadow overflow-hidden sm:rounded-md">
         <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-          <table className="min-w-full divide-y divide-gray-300">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-300 dark:divide-gray-600 dark:divide-gray-600">
+            <thead className="bg-gray-50 dark:bg-gray-700 dark:bg-gray-700">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-300 uppercase tracking-wider">
                   Name
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-300 uppercase tracking-wider">
                   Type
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-300 uppercase tracking-wider">
                   Source Path
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-300 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-300 uppercase tracking-wider">
                   Size
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-300 uppercase tracking-wider">
                   Created
                 </th>
                 <th className="relative px-6 py-3">
@@ -303,17 +303,17 @@ const Backups: React.FC = () => {
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white dark:bg-gray-800 dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-600 dark:divide-gray-600">
               {backups.map((backup) => (
-                <tr key={backup.id} className="hover:bg-gray-50">
+                <tr key={backup.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-700">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <Archive className="h-5 w-5 text-blue-500 mr-3" />
                       <div>
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-gray-900 dark:text-white dark:text-white">
                           {backup.name}
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-400">
                           by {backup.created_by_username}
                         </div>
                       </div>
@@ -323,13 +323,13 @@ const Backups: React.FC = () => {
                     <span className={clsx(
                       'inline-flex px-2 text-xs font-semibold rounded-full',
                       backup.type === 'scheduled' 
-                        ? 'bg-purple-100 text-purple-800'
-                        : 'bg-blue-100 text-blue-800'
+                        ? 'bg-purple-100 dark:bg-purple-900/20 text-purple-800 dark:text-purple-400'
+                        : 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400'
                     )}>
                       {backup.type}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 dark:text-gray-400">
                     {backup.source_path}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -343,10 +343,10 @@ const Backups: React.FC = () => {
                       </span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 dark:text-gray-400">
                     {formatFileSize(backup.size)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 dark:text-gray-400">
                     {formatDate(backup.created_at)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -376,9 +376,9 @@ const Backups: React.FC = () => {
           
           {backups.length === 0 && (
             <div className="text-center py-12">
-              <Archive className="mx-auto h-12 w-12 text-gray-400" />
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No backups</h3>
-              <p className="mt-1 text-sm text-gray-500">
+              <Archive className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 dark:text-gray-400" />
+              <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white dark:text-white">No backups</h3>
+              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 dark:text-gray-400">
                 Get started by creating your first backup.
               </p>
             </div>

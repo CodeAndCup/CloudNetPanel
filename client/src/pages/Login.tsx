@@ -30,7 +30,7 @@ const Login: React.FC = () => {
           <div className="flex justify-center items-center mb-4">
             <Cloud className="h-12 w-12 text-blue-600" />
           </div>
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white dark:text-white">
             CloudNet Panel
           </h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
@@ -46,14 +46,14 @@ const Login: React.FC = () => {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                  <User className="h-5 w-5 text-gray-400 dark:text-gray-500 dark:text-gray-400" />
                 </div>
                 <input
                   id="username"
                   name="username"
                   type="text"
                   required
-                  className="appearance-none rounded-lg relative block w-full px-10 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  className="appearance-none rounded-lg relative block w-full px-10 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white dark:text-white bg-white dark:bg-gray-800 dark:bg-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                   placeholder="Username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
@@ -67,14 +67,14 @@ const Login: React.FC = () => {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                  <Lock className="h-5 w-5 text-gray-400 dark:text-gray-500 dark:text-gray-400" />
                 </div>
                 <input
                   id="password"
                   name="password"
                   type="password"
                   required
-                  className="appearance-none rounded-lg relative block w-full px-10 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                  className="appearance-none rounded-lg relative block w-full px-10 py-3 border border-gray-300 dark:border-gray-600 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white dark:text-white bg-white dark:bg-gray-800 dark:bg-gray-700 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -100,7 +100,7 @@ const Login: React.FC = () => {
           </div>
           
           <div className="text-center">
-            <p className="text-xs text-gray-500 dark:text-gray-400">
+            <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-400">
               Default credentials: admin / password
             </p>
           </div>
