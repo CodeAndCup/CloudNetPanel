@@ -100,7 +100,7 @@ const Dashboard: React.FC = () => {
           const TrendIcon = card.trend === 'up' ? TrendingUp : TrendingDown;
           
           return (
-            <div key={card.name} className="bg-white overflow-hidden shadow rounded-lg">
+            <div key={card.name} className="bg-white dark:bg-gray-800 overflow-hidden shadow rounded-lg">
               <div className="p-5">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
@@ -108,18 +108,18 @@ const Dashboard: React.FC = () => {
                   </div>
                   <div className="ml-5 w-0 flex-1">
                     <dl>
-                      <dt className="text-sm font-medium text-gray-500 truncate">
+                      <dt className="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">
                         {card.name}
                       </dt>
                       <dd className="flex items-baseline">
-                        <div className="text-2xl font-semibold text-gray-900">
+                        <div className="text-2xl font-semibold text-gray-900 dark:text-white">
                           {card.value}
                         </div>
                         <div className="ml-2 flex items-baseline text-sm font-semibold text-green-600">
                           <TrendIcon className="self-center flex-shrink-0 h-4 w-4 text-green-500" />
                         </div>
                       </dd>
-                      <dd className="text-sm text-gray-500">
+                      <dd className="text-sm text-gray-500 dark:text-gray-400">
                         {card.subValue}
                       </dd>
                     </dl>
@@ -134,9 +134,9 @@ const Dashboard: React.FC = () => {
       {/* Recent Activity and Server Status */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Server Status */}
-        <div className="bg-white shadow rounded-lg">
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
           <div className="px-4 py-5 sm:p-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+            <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">
               Server Status
             </h3>
             <div className="space-y-3">
@@ -148,11 +148,11 @@ const Dashboard: React.FC = () => {
                       server.status === 'offline' ? 'bg-red-400' :
                       'bg-yellow-400'
                     }`} />
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">
                       {server.name}
                     </span>
                   </div>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
                     {server.players}/{server.maxPlayers} players
                   </div>
                 </div>
@@ -162,9 +162,9 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Node Status */}
-        <div className="bg-white shadow rounded-lg">
+        <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
           <div className="px-4 py-5 sm:p-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+            <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">
               Node Status
             </h3>
             <div className="space-y-3">
@@ -174,11 +174,11 @@ const Dashboard: React.FC = () => {
                     <div className={`w-3 h-3 rounded-full mr-3 ${
                       node.status === 'online' ? 'bg-green-400' : 'bg-red-400'
                     }`} />
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-sm font-medium text-gray-900 dark:text-white">
                       {node.name}
                     </span>
                   </div>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
                     {node.servers}/{node.maxServers} servers
                   </div>
                 </div>
@@ -189,37 +189,37 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* System Overview */}
-      <div className="bg-white shadow rounded-lg">
+      <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
         <div className="px-4 py-5 sm:p-6">
-          <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+          <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">
             System Overview
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <div className="text-sm font-medium text-gray-500 mb-2">Average CPU Usage</div>
+              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Average CPU Usage</div>
               <div className="flex items-center">
-                <div className="flex-1 bg-gray-200 rounded-full h-2 mr-3">
+                <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-3">
                   <div className="bg-blue-500 h-2 rounded-full" style={{ width: '45%' }}></div>
                 </div>
-                <span className="text-sm text-gray-900">45%</span>
+                <span className="text-sm text-gray-900 dark:text-white">45%</span>
               </div>
             </div>
             <div>
-              <div className="text-sm font-medium text-gray-500 mb-2">Memory Usage</div>
+              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Memory Usage</div>
               <div className="flex items-center">
-                <div className="flex-1 bg-gray-200 rounded-full h-2 mr-3">
+                <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-3">
                   <div className="bg-green-500 h-2 rounded-full" style={{ width: '67%' }}></div>
                 </div>
-                <span className="text-sm text-gray-900">67%</span>
+                <span className="text-sm text-gray-900 dark:text-white">67%</span>
               </div>
             </div>
             <div>
-              <div className="text-sm font-medium text-gray-500 mb-2">Disk Usage</div>
+              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Disk Usage</div>
               <div className="flex items-center">
-                <div className="flex-1 bg-gray-200 rounded-full h-2 mr-3">
+                <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-3">
                   <div className="bg-yellow-500 h-2 rounded-full" style={{ width: '34%' }}></div>
                 </div>
-                <span className="text-sm text-gray-900">34%</span>
+                <span className="text-sm text-gray-900 dark:text-white">34%</span>
               </div>
             </div>
           </div>

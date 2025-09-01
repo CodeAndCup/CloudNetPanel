@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -153,6 +154,16 @@ const broadcastServerLog = (serverId, logLine) => {
 server.listen(PORT, () => {
   console.log(`CloudNet Panel server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  
+  // Log CloudNet API configuration
+  const config = require('./config/cloudnet');
+  console.log(`CloudNet API Enabled: ${config.cloudnet.enabled}`);
+  console.log(`CloudNet API URL: ${config.cloudnet.baseUrl}`);
+  if (config.cloudnet.enabled) {
+    console.log('CloudNet API is ENABLED - will attempt to use real CloudNet data');
+  } else {
+    console.log('CloudNet API is DISABLED - will use mock data');
+  }
   
   // Initialize default data after server starts
   setTimeout(() => {
