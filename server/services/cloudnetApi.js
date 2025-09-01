@@ -8,7 +8,7 @@ class CloudNetApiService {
     this.authToken = null;
     this.refreshToken = null;
     this.tokenExpiry = null;
-    
+
     if (this.config.enabled) {
       this.initializeClient();
     }
@@ -35,11 +35,11 @@ class CloudNetApiService {
 
         // Ensure we have a valid token
         await this.ensureValidToken();
-        
+
         if (this.authToken) {
           config.headers.Authorization = `Bearer ${this.authToken}`;
         }
-        
+
         return config;
       },
       (error) => {
@@ -52,11 +52,11 @@ class CloudNetApiService {
       (response) => response,
       async (error) => {
         const originalRequest = error.config;
-        
+
         // If we get a 401 and haven't tried to refresh yet, try refreshing the token
         if (error.response?.status === 401 && !originalRequest._retry && this.refreshToken) {
           originalRequest._retry = true;
-          
+
           try {
             await this.refreshAuthToken();
             originalRequest.headers.Authorization = `Bearer ${this.authToken}`;
@@ -69,7 +69,7 @@ class CloudNetApiService {
             this.tokenExpiry = null;
           }
         }
-        
+
         console.error('CloudNet API Error:', error.message);
         if (error.response) {
           console.error('Response status:', error.response.status);
@@ -114,12 +114,12 @@ class CloudNetApiService {
       });
 
       const { accessToken, refreshToken } = response.data;
-      
+
       if (accessToken && accessToken.token) {
         this.authToken = accessToken.token;
         this.tokenExpiry = Date.now() + (accessToken.expiresIn * 1000);
       }
-      
+
       if (refreshToken && refreshToken.token) {
         this.refreshToken = refreshToken.token;
       }
@@ -147,12 +147,12 @@ class CloudNetApiService {
 
     const response = await tempClient.post('/auth/refresh');
     const { accessToken, refreshToken } = response.data;
-    
+
     if (accessToken && accessToken.token) {
       this.authToken = accessToken.token;
       this.tokenExpiry = Date.now() + (accessToken.expiresIn * 1000);
     }
-    
+
     if (refreshToken && refreshToken.token) {
       this.refreshToken = refreshToken.token;
     }
@@ -245,14 +245,14 @@ class CloudNetApiService {
   // Transform CloudNet API data to our expected format
   transformServerData(cloudnetServer) {
     return {
-      id: cloudnetServer.serviceId?.uniqueId || cloudnetServer.serviceId?.taskName + '-' + cloudnetServer.serviceId?.taskServiceId || cloudnetServer.name,
-      name: cloudnetServer.serviceId?.name || (cloudnetServer.serviceId?.taskName + cloudnetServer.serviceId?.nameSplitter + cloudnetServer.serviceId?.taskServiceId) || cloudnetServer.name,
+      id: cloudnetServer.configuration.serviceId?.uniqueId || cloudnetServer.configuration.serviceId?.taskName + '-' + cloudnetServer.configuration.serviceId?.taskServiceId || cloudnetServer.name,
+      name: (cloudnetServer.configuration.serviceId?.taskName + cloudnetServer.serviceId?.nameSplitter + cloudnetServer.serviceId?.taskServiceId) || 'Unknown',
       type: cloudnetServer.configuration?.groups?.[0] || cloudnetServer.serviceId?.taskName || 'Unknown',
       status: this.mapServerStatus(cloudnetServer.lifeCycle),
       players: cloudnetServer.properties?.onlineCount || 0,
       maxPlayers: cloudnetServer.properties?.maxPlayers || 0,
       memory: `${cloudnetServer.configuration?.processConfig?.maxHeapMemorySize || cloudnetServer.configuration?.maxHeapMemorySize || 0} MB`,
-      node: cloudnetServer.serviceId?.nodeUniqueId || 'Unknown',
+      node: cloudnetServer.configuration?.serviceId?.nodeUniqueId || 'Unknown',
       ip: cloudnetServer.address?.host || cloudnetServer.connectAddress?.host || 'Unknown',
       port: cloudnetServer.address?.port || cloudnetServer.connectAddress?.port || 0,
       cpu: Math.round((cloudnetServer.processSnapshot?.cpuUsage || 0) * 100) / 100,
@@ -265,7 +265,7 @@ class CloudNetApiService {
     // Handle both direct node data and wrapped node structure from /cluster endpoint
     const nodeInfo = cloudnetNode.nodeInfoSnapshot || cloudnetNode;
     const networkNode = cloudnetNode.node || nodeInfo.node || cloudnetNode;
-    
+
     return {
       id: networkNode?.uniqueId || cloudnetNode.uniqueId || cloudnetNode.name,
       name: networkNode?.uniqueId || cloudnetNode.uniqueId || cloudnetNode.name,

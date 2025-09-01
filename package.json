@@ -11,10 +11,18 @@
     "install-deps": "npm install && cd server && npm install && cd ../client && npm install",
     "start": "cd server && npm start"
   },
-  "keywords": ["cloudnet", "panel", "server-management", "gaming"],
+  "keywords": [
+    "cloudnet",
+    "panel",
+    "server-management",
+    "gaming"
+  ],
   "author": "SAOFR-DEV",
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.1"
   }
 }
