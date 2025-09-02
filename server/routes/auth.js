@@ -27,26 +27,24 @@ router.post('/login', async (req, res) => {
 
     let user = null;
 
-    db.get(`SELECT * FROM users WHERE username = ?`, [username], (err,dbUser) => {
-      if(err) {
-        console.error('Error fetching user: ', err);
-        return res.status(500).json({ error: 'Failed to fetch users' });
-      }
+    user = await new Promise((resolve, reject) => {
+      db.get(`SELECT * FROM users WHERE username = ?`, [username], (err,row) => {
+        if(err) {
+          console.error('Error fetching user: ', err);
+          reject(err)
+        }
 
-      if(!dbUser) {
-        return res.status(401).json({ error: 'Invalid credentials' });
-      }
+        if(!row) reject(new Error('User not found'));
 
-      user=json(dbUser);
+        resolve(row)
+      });
     });
-
-    console.log(user); // actualy it's null need to be fix
 
     // For demo purposes, use default admin
     // In production, this would query the database
-    if (username === DEFAULT_ADMIN.username) {
+    /*if (username === DEFAULT_ADMIN.username) {
       user = DEFAULT_ADMIN;
-    }
+    }*/
 
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });

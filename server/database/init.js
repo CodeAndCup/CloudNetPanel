@@ -100,8 +100,8 @@ const initializeDefaultData = () => {
 
   defaultUsers.forEach(user => {
     db.run(`
-      INSERT OR IGNORE INTO users (username, email, password, role, last_login)
-      ` [user.name, user.mail, user.password, user.role, 0], function(err) {
+      INSERT OR IGNORE INTO users (username, email, password, role, last_login) VALUES (?, ?, ?, ?, ?)
+      `, [user.name, user.mail, user.password, user.role, 0], function(err) {
         if(err) {
           console.error(`Error creating user ${user.name}:`, err);
         } else if (this.changes > 0) {

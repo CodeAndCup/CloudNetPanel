@@ -1,5 +1,6 @@
 const express = require('express');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
+const db = require('../database/sqlite');
 
 const router = express.Router();
 
