@@ -28,13 +28,13 @@ router.post('/login', async (req, res) => {
     let user = null;
 
     user = await new Promise((resolve, reject) => {
-      db.get(`SELECT * FROM users WHERE username = ?`, [username], (err,row) => {
-        if(err) {
+      db.get(`SELECT * FROM users WHERE username = ?`, [username], (err, row) => {
+        if (err) {
           console.error('Error fetching user: ', err);
           reject(err)
         }
 
-        if(!row) reject(new Error('User not found'));
+        if (!row) reject(new Error('User not found'));
 
         resolve(row)
       });

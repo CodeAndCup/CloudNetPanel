@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Users, 
-  Plus, 
-  Edit, 
-  Trash2, 
+import {
+  Users,
+  Plus,
+  Edit,
+  Trash2,
   UserPlus,
   UserMinus
 } from 'lucide-react';
@@ -161,13 +161,13 @@ const Groups: React.FC = () => {
               <input
                 type="text"
                 value={newGroup.name}
-                onChange={(e) => setNewGroup({...newGroup, name: e.target.value})}
+                onChange={(e) => setNewGroup({ ...newGroup, name: e.target.value })}
                 placeholder="Group name..."
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <textarea
                 value={newGroup.description}
-                onChange={(e) => setNewGroup({...newGroup, description: e.target.value})}
+                onChange={(e) => setNewGroup({ ...newGroup, description: e.target.value })}
                 placeholder="Description (optional)..."
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 rows={3}
@@ -200,13 +200,13 @@ const Groups: React.FC = () => {
               <input
                 type="text"
                 value={editingGroup.name}
-                onChange={(e) => setEditingGroup({...editingGroup, name: e.target.value})}
+                onChange={(e) => setEditingGroup({ ...editingGroup, name: e.target.value })}
                 placeholder="Group name..."
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <textarea
                 value={editingGroup.description || ''}
-                onChange={(e) => setEditingGroup({...editingGroup, description: e.target.value})}
+                onChange={(e) => setEditingGroup({ ...editingGroup, description: e.target.value })}
                 placeholder="Description (optional)..."
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 rows={3}
@@ -275,27 +275,31 @@ const Groups: React.FC = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex justify-end space-x-2">
-                      <button
-                        onClick={() => setEditingGroup(group)}
-                        className="text-blue-600 hover:text-blue-900"
-                        title="Edit group"
-                      >
-                        <Edit className="h-4 w-4" />
-                      </button>
-                      <button
-                        onClick={() => deleteGroup(group)}
-                        className="text-red-600 hover:text-red-900"
-                        title="Delete group"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
+                      {group.name !== 'Administrators' && (
+                        <button
+                          onClick={() => setEditingGroup(group)}
+                          className="text-blue-600 hover:text-blue-900"
+                          title="Edit group"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </button>
+                      )}
+                      {group.name !== 'Administrators' && (
+                        <button
+                          onClick={() => deleteGroup(group)}
+                          className="text-red-600 hover:text-red-900"
+                          title="Delete group"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
                     </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          
+
           {groups.length === 0 && (
             <div className="text-center py-12">
               <Users className="mx-auto h-12 w-12 text-gray-400" />

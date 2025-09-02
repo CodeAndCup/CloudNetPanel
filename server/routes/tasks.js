@@ -34,7 +34,7 @@ const initializeScheduledTasks = () => {
 // Execute a task
 const executeTask = async (task) => {
   console.log(`Executing task: ${task.name}`);
-  
+
   // Update last run time
   db.run(`UPDATE tasks SET last_run = ? WHERE id = ?`, [new Date().toISOString(), task.id]);
 
@@ -44,7 +44,7 @@ const executeTask = async (task) => {
       const { exec } = require('child_process');
       const { promisify } = require('util');
       const execAsync = promisify(exec);
-      
+
       await execAsync(task.command);
       console.log(`Backup task completed: ${task.name}`);
     } else if (task.type === 'command') {
@@ -52,7 +52,7 @@ const executeTask = async (task) => {
       const { exec } = require('child_process');
       const { promisify } = require('util');
       const execAsync = promisify(exec);
-      
+
       await execAsync(task.command);
       console.log(`Command task completed: ${task.name}`);
     }
@@ -67,7 +67,7 @@ router.get('/', authenticateToken, (req, res) => {
   let query;
   let params;
 
-  if (req.user.role === 'admin') {
+  if (req.user.role === 'Administrators') {
     query = `
       SELECT t.*, u.username as created_by_username
       FROM tasks t
@@ -102,7 +102,7 @@ router.get('/', authenticateToken, (req, res) => {
 // Get task by ID
 router.get('/:id', authenticateToken, checkTaskPermission('read'), (req, res) => {
   const taskId = parseInt(req.params.id);
-  
+
   db.get(`
     SELECT t.*, u.username as created_by_username
     FROM tasks t
@@ -113,11 +113,11 @@ router.get('/:id', authenticateToken, checkTaskPermission('read'), (req, res) =>
       console.error('Error fetching task:', err);
       return res.status(500).json({ error: 'Failed to fetch task' });
     }
-    
+
     if (!row) {
       return res.status(404).json({ error: 'Task not found' });
     }
-    
+
     res.json(row);
   });
 });
@@ -125,7 +125,7 @@ router.get('/:id', authenticateToken, checkTaskPermission('read'), (req, res) =>
 // Create new task
 router.post('/', authenticateToken, (req, res) => {
   const { name, description, type, schedule, command } = req.body;
-  
+
   if (!name || !type || !command) {
     return res.status(400).json({ error: 'Name, type, and command are required' });
   }
@@ -138,14 +138,14 @@ router.post('/', authenticateToken, (req, res) => {
   db.run(`
     INSERT INTO tasks (name, description, type, schedule, command, created_by)
     VALUES (?, ?, ?, ?, ?, ?)
-  `, [name, description, type, schedule, command, req.user.id], function(err) {
+  `, [name, description, type, schedule, command, req.user.id], function (err) {
     if (err) {
       console.error('Error creating task:', err);
       return res.status(500).json({ error: 'Failed to create task' });
     }
-    
+
     const taskId = this.lastID;
-    
+
     res.status(201).json({
       id: taskId,
       name,
@@ -164,7 +164,7 @@ router.post('/', authenticateToken, (req, res) => {
 router.put('/:id', authenticateToken, checkTaskPermission('write'), (req, res) => {
   const taskId = parseInt(req.params.id);
   const { name, description, type, schedule, command, status } = req.body;
-  
+
   if (!name || !type || !command) {
     return res.status(400).json({ error: 'Name, type, and command are required' });
   }
@@ -178,12 +178,12 @@ router.put('/:id', authenticateToken, checkTaskPermission('write'), (req, res) =
     UPDATE tasks 
     SET name = ?, description = ?, type = ?, schedule = ?, command = ?, status = ?
     WHERE id = ?
-  `, [name, description, type, schedule, command, status || 'inactive', taskId], function(err) {
+  `, [name, description, type, schedule, command, status || 'inactive', taskId], function (err) {
     if (err) {
       console.error('Error updating task:', err);
       return res.status(500).json({ error: 'Failed to update task' });
     }
-    
+
     if (this.changes === 0) {
       return res.status(404).json({ error: 'Task not found' });
     }
@@ -193,18 +193,18 @@ router.put('/:id', authenticateToken, checkTaskPermission('write'), (req, res) =
       if (activeCronJobs.has(taskId)) {
         activeCronJobs.get(taskId).stop();
       }
-      
+
       const job = cron.schedule(schedule, () => {
         const task = { id: taskId, name, type, command };
         executeTask(task);
       }, { scheduled: true });
-      
+
       activeCronJobs.set(taskId, job);
     } else if (activeCronJobs.has(taskId)) {
       activeCronJobs.get(taskId).stop();
       activeCronJobs.delete(taskId);
     }
-    
+
     res.json({ message: 'Task updated successfully' });
   });
 });
@@ -212,7 +212,7 @@ router.put('/:id', authenticateToken, checkTaskPermission('write'), (req, res) =
 // Execute task manually
 router.post('/:id/execute', authenticateToken, checkTaskPermission('execute'), async (req, res) => {
   const taskId = parseInt(req.params.id);
-  
+
   try {
     const task = await new Promise((resolve, reject) => {
       db.get(`SELECT * FROM tasks WHERE id = ?`, [taskId], (err, row) => {
@@ -227,7 +227,7 @@ router.post('/:id/execute', authenticateToken, checkTaskPermission('execute'), a
 
     // Execute task asynchronously
     executeTask(task);
-    
+
     res.json({ message: 'Task execution started' });
   } catch (error) {
     console.error('Error executing task:', error);
@@ -238,23 +238,23 @@ router.post('/:id/execute', authenticateToken, checkTaskPermission('execute'), a
 // Delete task
 router.delete('/:id', authenticateToken, checkTaskPermission('write'), (req, res) => {
   const taskId = parseInt(req.params.id);
-  
+
   // Stop cron job if active
   if (activeCronJobs.has(taskId)) {
     activeCronJobs.get(taskId).stop();
     activeCronJobs.delete(taskId);
   }
 
-  db.run(`DELETE FROM tasks WHERE id = ?`, [taskId], function(err) {
+  db.run(`DELETE FROM tasks WHERE id = ?`, [taskId], function (err) {
     if (err) {
       console.error('Error deleting task:', err);
       return res.status(500).json({ error: 'Failed to delete task' });
     }
-    
+
     if (this.changes === 0) {
       return res.status(404).json({ error: 'Task not found' });
     }
-    
+
     res.json({ message: 'Task deleted successfully' });
   });
 });
@@ -263,7 +263,7 @@ router.delete('/:id', authenticateToken, checkTaskPermission('write'), (req, res
 router.post('/:id/permissions', authenticateToken, requireAdmin, (req, res) => {
   const taskId = parseInt(req.params.id);
   const { userId, groupId, permissionType } = req.body;
-  
+
   if ((!userId && !groupId) || !permissionType) {
     return res.status(400).json({ error: 'User ID or Group ID and permission type required' });
   }
@@ -275,12 +275,12 @@ router.post('/:id/permissions', authenticateToken, requireAdmin, (req, res) => {
   db.run(`
     INSERT INTO task_permissions (task_id, user_id, group_id, permission_type)
     VALUES (?, ?, ?, ?)
-  `, [taskId, userId, groupId, permissionType], function(err) {
+  `, [taskId, userId, groupId, permissionType], function (err) {
     if (err) {
       console.error('Error granting task permission:', err);
       return res.status(500).json({ error: 'Failed to grant permission' });
     }
-    
+
     res.status(201).json({ message: 'Permission granted successfully' });
   });
 });

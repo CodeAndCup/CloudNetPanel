@@ -169,7 +169,7 @@ const Users: React.FC = () => {
                         <button className="inline-flex items-center p-2 border border-transparent rounded-full text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                           <Edit className="h-4 w-4" />
                         </button>
-                        {user.role !== 'admin' && (
+                        {user.role !== 'Administrators' && (
                           <button className="inline-flex items-center p-2 border border-transparent rounded-full text-red-600 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                             <Trash2 className="h-4 w-4" />
                           </button>

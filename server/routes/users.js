@@ -23,9 +23,9 @@ router.get('/', authenticateToken, requireAdmin, (req, res) => {
 // Get user by ID
 router.get('/:id', authenticateToken, (req, res) => {
   const userId = parseInt(req.params.id);
-  
+
   // Users can only view their own profile unless they're admin
-  if (req.user.role !== 'admin' && req.user.id !== userId) {
+  if (req.user.role !== 'Administrators' && req.user.id !== userId) {
     return res.status(403).json({ error: 'Access denied' });
   }
 
@@ -43,7 +43,7 @@ router.get('/:id', authenticateToken, (req, res) => {
 // Create new user (admin only)
 router.post('/', authenticateToken, requireAdmin, (req, res) => {
   const { username, email, role } = req.body;
-  
+
   if (!username || !email || !role) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
@@ -75,18 +75,18 @@ router.post('/', authenticateToken, requireAdmin, (req, res) => {
 router.put('/:id', authenticateToken, (req, res) => {
   const userId = parseInt(req.params.id);
   const userIndex = users.findIndex(u => u.id === userId);
-  
+
   if (userIndex === -1) {
     return res.status(404).json({ error: 'User not found' });
   }
 
   // Users can only update their own profile unless they're admin
-  if (req.user.role !== 'admin' && req.user.id !== userId) {
+  if (req.user.role !== 'Administrators' && req.user.id !== userId) {
     return res.status(403).json({ error: 'Access denied' });
   }
 
   // Prevent non-admins from changing their role
-  if (req.user.role !== 'admin' && req.body.role) {
+  if (req.user.role !== 'Administrators' && req.body.role) {
     delete req.body.role;
   }
 
@@ -101,7 +101,7 @@ router.put('/:id', authenticateToken, (req, res) => {
 router.delete('/:id', authenticateToken, requireAdmin, (req, res) => {
   const userId = parseInt(req.params.id);
   const userIndex = users.findIndex(u => u.id === userId);
-  
+
   if (userIndex === -1) {
     return res.status(404).json({ error: 'User not found' });
   }

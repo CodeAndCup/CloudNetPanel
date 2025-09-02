@@ -21,7 +21,7 @@ const authenticateToken = (req, res, next) => {
 };
 
 const requireAdmin = (req, res, next) => {
-  if (req.user.role !== 'admin') {
+  if (req.user.role !== 'Administrators') {
     return res.status(403).json({ error: 'Admin access required' });
   }
   next();
@@ -32,9 +32,9 @@ const checkFilePermission = (permissionType) => {
   return async (req, res, next) => {
     const userId = req.user.id;
     const filePath = req.params.path || req.body.path || req.query.path || '';
-    
+
     // Admin always has access
-    if (req.user.role === 'admin') {
+    if (req.user.role === 'Administrators') {
       return next();
     }
 
@@ -111,13 +111,13 @@ const checkTaskPermission = (permissionType) => {
   return async (req, res, next) => {
     const userId = req.user.id;
     const taskId = req.params.id || req.body.taskId;
-    
+
     if (!taskId) {
       return res.status(400).json({ error: 'Task ID required' });
     }
 
     // Admin always has access
-    if (req.user.role === 'admin') {
+    if (req.user.role === 'Administrators') {
       return next();
     }
 
