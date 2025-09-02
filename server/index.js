@@ -16,6 +16,7 @@ const groupRoutes = require('./routes/groups');
 const templateRoutes = require('./routes/templates');
 const backupRoutes = require('./routes/backups');
 const taskRoutes = require('./routes/tasks');
+const systemRoutes = require('./routes/system')
 const { initializeDefaultData } = require('./database/init');
 
 const app = express();
@@ -50,6 +51,7 @@ app.use('/api/groups', groupRoutes);
 app.use('/api/templates', templateRoutes);
 app.use('/api/backups', backupRoutes);
 app.use('/api/tasks', taskRoutes);
+app.use('/api/system-info', systemRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

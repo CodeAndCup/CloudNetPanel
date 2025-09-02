@@ -7,7 +7,7 @@ const db = require('../database/sqlite');
 const router = express.Router();
 
 // Base templates directory
-const TEMPLATES_DIR = path.join(__dirname, '../../templates');
+const TEMPLATES_DIR = path.join(__dirname, '../../../CloudNet-Server/local/templates');
 
 // Ensure templates directory exists
 const ensureTemplatesDir = async () => {

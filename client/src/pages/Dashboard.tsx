@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Server, Network, Users, Activity, TrendingUp, TrendingDown } from 'lucide-react';
 import axios from 'axios';
+import os from 'node:os';
+import { cpuUsage } from 'process';
 
 interface DashboardStats {
   totalServers: number;
@@ -9,6 +11,10 @@ interface DashboardStats {
   onlineNodes: number;
   totalUsers: number;
   activeUsers: number;
+  cpuUsage: number;
+  cpuMaxUsage: number,
+  memoryUsage: number;
+  diskUsage: number;
 }
 
 const Dashboard: React.FC = () => {
@@ -18,7 +24,11 @@ const Dashboard: React.FC = () => {
     totalNodes: 0,
     onlineNodes: 0,
     totalUsers: 0,
-    activeUsers: 0
+    activeUsers: 0,
+    cpuUsage: 0,
+    cpuMaxUsage: 0,
+    memoryUsage: 0,
+    diskUsage: 0,
   });
 
   const [servers, setServers] = useState<any[]>([]);
@@ -30,15 +40,17 @@ const Dashboard: React.FC = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const [serversRes, nodesRes, usersRes] = await Promise.all([
+      const [serversRes, nodesRes, usersRes, systemRes] = await Promise.all([
         axios.get('/api/servers'),
         axios.get('/api/nodes'),
-        axios.get('/api/users')
+        axios.get('/api/users'),
+        axios.get('/api/system-info')
       ]);
 
       const serverData = serversRes.data;
       const nodeData = nodesRes.data;
       const userData = usersRes.data;
+      const systemData = systemRes.data;
 
       setServers(serverData);
       setNodes(nodeData);
@@ -49,7 +61,11 @@ const Dashboard: React.FC = () => {
         totalNodes: nodeData.length,
         onlineNodes: nodeData.filter((n: any) => n.status === 'online').length,
         totalUsers: userData.length, //serverData.find((s: any) => s.type === 'Global-Proxy').maxPlayers, //
-        activeUsers: userData.filter((u: any) => u.status === 'active').length //serverData.find((s: any) => s.type === 'Global-Proxy').players //
+        activeUsers: userData.filter((u: any) => u.status === 'active').length, //serverData.find((s: any) => s.type === 'Global-Proxy').players //
+        cpuUsage: (serverData.reduce((sum: any, item: any) => sum + item.cpu, 0) / (systemData.cpuCores) * 100),
+        cpuMaxUsage: systemData.cpuCores * 100,
+        memoryUsage: (serverData.reduce((sum: any, item: any) => sum + item.ram, 0) / systemData.totalMemMB * 100),
+        diskUsage: 0,
       });
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
@@ -197,27 +213,27 @@ const Dashboard: React.FC = () => {
               <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Average CPU Usage</div>
               <div className="flex items-center">
                 <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-3">
-                  <div className="bg-blue-500 h-2 rounded-full" style={{ width: '45%' }}></div>
+                  <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${(stats.cpuUsage).toFixed(2)}%` }}></div>
                 </div>
-                <span className="text-sm text-gray-900 dark:text-white">45%</span>
+                <span className="text-sm text-gray-900 dark:text-white">{(stats.cpuUsage).toFixed(2)}% / {stats.cpuMaxUsage}%</span>
               </div>
             </div>
             <div>
               <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Memory Usage</div>
               <div className="flex items-center">
                 <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-3">
-                  <div className="bg-green-500 h-2 rounded-full" style={{ width: '67%' }}></div>
+                  <div className="bg-green-500 h-2 rounded-full" style={{ width: `${(stats.memoryUsage).toFixed(2)}%` }}></div>
                 </div>
-                <span className="text-sm text-gray-900 dark:text-white">67%</span>
+                <span className="text-sm text-gray-900 dark:text-white">{(stats.memoryUsage).toFixed(2)}%</span>
               </div>
             </div>
             <div>
               <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Disk Usage</div>
               <div className="flex items-center">
                 <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-3">
-                  <div className="bg-yellow-500 h-2 rounded-full" style={{ width: '34%' }}></div>
+                  <div className="bg-yellow-500 h-2 rounded-full" style={{ width: `${stats.diskUsage}%` }}></div>
                 </div>
-                <span className="text-sm text-gray-900 dark:text-white">34%</span>
+                <span className="text-sm text-gray-900 dark:text-white">{stats.diskUsage}%</span>
               </div>
             </div>
           </div>
