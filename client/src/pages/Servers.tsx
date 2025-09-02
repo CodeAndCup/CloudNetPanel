@@ -235,7 +235,7 @@ const Servers: React.FC = () => {
                   </div>
 
                   <div className="text-right text-sm text-gray-500 dark:text-gray-400">
-                    <p>CPU: {server.cpu}%</p>
+                    <p>CPU: {server.cpu * 100}%</p>
                     <p>RAM: {server.ram} MB</p>
                     <p>{server.uptime}</p>
                   </div>
