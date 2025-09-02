@@ -25,9 +25,25 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Username and password required' });
     }
 
+    let user = null;
+
+    db.get(`SELECT * FROM users WHERE username = ?`, [username], (err,dbUser) => {
+      if(err) {
+        console.error('Error fetching user: ', err);
+        return res.status(500).json({ error: 'Failed to fetch users' });
+      }
+
+      if(!dbUser) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+      }
+
+      user=json(dbUser);
+    });
+
+    console.log(user); // actualy it's null need to be fix
+
     // For demo purposes, use default admin
     // In production, this would query the database
-    let user = null;
     if (username === DEFAULT_ADMIN.username) {
       user = DEFAULT_ADMIN;
     }
