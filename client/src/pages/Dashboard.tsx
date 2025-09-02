@@ -131,8 +131,8 @@ const Dashboard: React.FC = () => {
                         <div className="text-2xl font-semibold text-gray-900 dark:text-white">
                           {card.value}
                         </div>
-                        <div className="ml-2 flex items-baseline text-sm font-semibold text-green-600">
-                          <TrendIcon className="self-center flex-shrink-0 h-4 w-4 text-green-500" />
+                        <div className={`ml-2 flex items-baseline text-sm font-semibold ${card.trend === 'up' ? "text-green-600" : "text-red-600"}`}>
+                          <TrendIcon className={`self-center flex-shrink-0 h-4 w-4 ${card.trend === 'up' ? "text-green-500" : "text-red-500"}`} />
                         </div>
                       </dd>
                       <dd className="text-sm text-gray-500 dark:text-gray-400">

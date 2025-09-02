@@ -6,47 +6,7 @@ const config = require('../config/cloudnet');
 const router = express.Router();
 
 // Mock node data
-let nodes = [
-  {
-    id: 1,
-    name: 'Node-1',
-    status: 'online',
-    ip: '192.168.1.10',
-    cpu: 25.4,
-    ram: 45.8,
-    disk: 62.1,
-    servers: 2,
-    maxServers: 10,
-    uptime: '5d 12h 45m',
-    location: 'Primary Datacenter'
-  },
-  {
-    id: 2,
-    name: 'Node-2',
-    status: 'online',
-    ip: '192.168.1.11',
-    cpu: 67.2,
-    ram: 78.9,
-    disk: 34.5,
-    servers: 1,
-    maxServers: 8,
-    uptime: '3d 8h 22m',
-    location: 'Secondary Datacenter'
-  },
-  {
-    id: 3,
-    name: 'Node-3',
-    status: 'offline',
-    ip: '192.168.1.12',
-    cpu: 0,
-    ram: 0,
-    disk: 0,
-    servers: 0,
-    maxServers: 12,
-    uptime: '0m',
-    location: 'Backup Datacenter'
-  }
-];
+let nodes = [];
 
 // Get all nodes
 router.get('/', authenticateToken, async (req, res) => {
