@@ -13,13 +13,13 @@ const Login: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     setError('');
-    
+
     const success = await login(username, password);
-    
+
     if (!success) {
       setError('Invalid username or password');
     }
-    
+
     setLoading(false);
   };
 
@@ -37,7 +37,7 @@ const Login: React.FC = () => {
             Sign in to your account
           </p>
         </div>
-        
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
@@ -60,7 +60,7 @@ const Login: React.FC = () => {
                 />
               </div>
             </div>
-            
+
             <div>
               <label htmlFor="password" className="sr-only">
                 Password
@@ -98,13 +98,12 @@ const Login: React.FC = () => {
               {loading ? 'Signing in...' : 'Sign in'}
             </button>
           </div>
-          
-          <div className="text-center">
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              Default credentials: admin / password
-            </p>
-          </div>
         </form>
+        <div className="text-center bottom-0">
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            Made with <span className="text-red-500">♥</span> by Perrier
+          </p>
+        </div>
       </div>
     </div>
   );

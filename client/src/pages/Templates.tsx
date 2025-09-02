@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Folder, 
-  File, 
-  Plus, 
-  Edit, 
-  Trash2, 
+import {
+  Folder,
+  File,
+  Plus,
+  Edit,
+  Trash2,
   Download,
   Upload,
   ArrowLeft,
@@ -97,7 +97,7 @@ const Templates: React.FC = () => {
         path: editingFile.path,
         content: editingFile.content
       });
-      
+
       setIsEditing(false);
       fetchFiles(currentPath);
     } catch (error) {
@@ -109,13 +109,13 @@ const Templates: React.FC = () => {
     if (!newFileName) return;
 
     const filePath = currentPath ? `${currentPath}/${newFileName}` : newFileName;
-    
+
     try {
       await axios.put('/api/templates/files/content', {
         path: filePath,
         content: ''
       });
-      
+
       setShowNewFileDialog(false);
       setNewFileName('');
       fetchFiles(currentPath);
@@ -128,12 +128,12 @@ const Templates: React.FC = () => {
     if (!newFolderName) return;
 
     const folderPath = currentPath ? `${currentPath}/${newFolderName}` : newFolderName;
-    
+
     try {
       await axios.post('/api/templates/files/directory', {
         path: folderPath
       });
-      
+
       setShowNewFolderDialog(false);
       setNewFolderName('');
       fetchFiles(currentPath);
@@ -149,7 +149,7 @@ const Templates: React.FC = () => {
       await axios.delete('/api/templates/files', {
         data: { path: file.path }
       });
-      
+
       fetchFiles(currentPath);
     } catch (error) {
       console.error('Error deleting item:', error);
@@ -255,8 +255,8 @@ const Templates: React.FC = () => {
             </div>
             <textarea
               value={editingFile.content}
-              onChange={(e) => setEditingFile({...editingFile, content: e.target.value})}
-              className="w-full h-96 p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 font-mono text-sm"
+              onChange={(e) => setEditingFile({ ...editingFile, content: e.target.value })}
+              className="w-full h-[42rem] p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 font-mono text-sm"
               placeholder="File content..."
             />
           </div>
