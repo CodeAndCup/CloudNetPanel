@@ -34,10 +34,12 @@ const Users: React.FC = () => {
 
   const getRoleColor = (role: string) => {
     switch (role) {
-      case 'admin':
+      case 'Administrators':
         return 'bg-red-100 text-red-800';
-      case 'moderator':
+      case 'Developers':
         return 'bg-blue-100 text-blue-800';
+      case 'Senariste':
+        return 'bg-purple-100 text-purple-800';
       case 'user':
         return 'bg-gray-100 text-gray-800';
       default:
