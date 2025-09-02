@@ -31,27 +31,57 @@ app.use(cors({
   credentials: true
 }));
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+// Rate limiting - More permissive for navigation and authenticated users
+const generalLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 minutes (shorter window)
+  max: 300, // Higher limit for general requests
+  message: { error: 'Too many requests, please try again later' }
 });
-app.use(limiter);
+
+// Stricter rate limiting for auth endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Lower limit for auth attempts
+  message: { error: 'Too many authentication attempts, please try again later' }
+});
+
+// Very permissive for navigation/info endpoints
+const navigationLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 100, // High limit for navigation
+  skip: (req) => {
+    // Skip rate limiting for authenticated admin users
+    const authHeader = req.headers['authorization'];
+    if (authHeader) {
+      try {
+        const token = authHeader.split(' ')[1];
+        const jwt = require('jsonwebtoken');
+        const decoded = jwt.verify(token, require('./middleware/auth').JWT_SECRET);
+        return decoded.role === 'Administrators';
+      } catch (e) {
+        // Token invalid, apply rate limiting
+      }
+    }
+    return false;
+  }
+});
+
+app.use(generalLimiter);
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// API routes
-app.use('/api/auth', authRoutes);
-app.use('/api/servers', serverRoutes);
-app.use('/api/nodes', nodeRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/groups', groupRoutes);
-app.use('/api/templates', templateRoutes);
+// API routes with appropriate rate limiting
+app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/servers', navigationLimiter, serverRoutes);
+app.use('/api/nodes', navigationLimiter, nodeRoutes);
+app.use('/api/users', navigationLimiter, userRoutes);
+app.use('/api/groups', navigationLimiter, groupRoutes);
+app.use('/api/templates', navigationLimiter, templateRoutes);
 app.use('/api/backups', backupRoutes);
 app.use('/api/tasks', taskRoutes);
-app.use('/api/system-info', systemRoutes);
+app.use('/api/system-info', navigationLimiter, systemRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
