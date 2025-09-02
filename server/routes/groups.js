@@ -8,9 +8,9 @@ const router = express.Router();
 router.get('/', authenticateToken, (req, res) => {
   db.all(`
     SELECT g.*, 
-           COUNT(ug.user_id) as user_count
+           COUNT(u.id) as user_count
     FROM groups g
-    LEFT JOIN user_groups ug ON g.id = ug.group_id
+    LEFT JOIN users u ON g.name = u.role
     GROUP BY g.id
     ORDER BY g.name
   `, (err, rows) => {
