@@ -94,7 +94,7 @@ const initializeDefaultData = () => {
       name: 'admin',
       mail: 'admin@cloudnet.local',
       password: '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
-      role: 'admin'
+      role: 'Administrators'
     }
   ];
 

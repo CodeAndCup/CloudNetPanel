@@ -22,6 +22,7 @@ const { initializeDefaultData } = require('./database/init');
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
+const cloudnetApi = require('./services/cloudnetApi');
 const PORT = process.env.PORT || 5000;
 
 // Security middleware
@@ -31,27 +32,57 @@ app.use(cors({
   credentials: true
 }));
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
+// Rate limiting - More permissive for navigation and authenticated users
+const generalLimiter = rateLimit({
+  windowMs: 5 * 60 * 1000, // 5 minutes (shorter window)
+  max: 300, // Higher limit for general requests
+  message: { error: 'Too many requests, please try again later' }
 });
-app.use(limiter);
+
+// Stricter rate limiting for auth endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Lower limit for auth attempts
+  message: { error: 'Too many authentication attempts, please try again later' }
+});
+
+// Very permissive for navigation/info endpoints
+const navigationLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 100, // High limit for navigation
+  skip: (req) => {
+    // Skip rate limiting for authenticated admin users
+    const authHeader = req.headers['authorization'];
+    if (authHeader) {
+      try {
+        const token = authHeader.split(' ')[1];
+        const jwt = require('jsonwebtoken');
+        const decoded = jwt.verify(token, require('./middleware/auth').JWT_SECRET);
+        return decoded.role === 'Administrators';
+      } catch (e) {
+        // Token invalid, apply rate limiting
+      }
+    }
+    return false;
+  }
+});
+
+app.use(generalLimiter);
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// API routes
-app.use('/api/auth', authRoutes);
-app.use('/api/servers', serverRoutes);
-app.use('/api/nodes', nodeRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/groups', groupRoutes);
-app.use('/api/templates', templateRoutes);
+// API routes with appropriate rate limiting
+app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/servers', navigationLimiter, serverRoutes);
+app.use('/api/nodes', navigationLimiter, nodeRoutes);
+app.use('/api/users', navigationLimiter, userRoutes);
+app.use('/api/groups', navigationLimiter, groupRoutes);
+app.use('/api/templates', navigationLimiter, templateRoutes);
 app.use('/api/backups', backupRoutes);
 app.use('/api/tasks', taskRoutes);
-app.use('/api/system-info', systemRoutes);
+app.use('/api/system-info', navigationLimiter, systemRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -86,7 +117,7 @@ app.use('*', (req, res) => {
 wss.on('connection', (ws, req) => {
   console.log('WebSocket connection established');
   
-  ws.on('message', (message) => {
+  ws.on('message', async (message) => {
     try {
       const data = JSON.parse(message);
       
@@ -98,18 +129,98 @@ wss.on('connection', (ws, req) => {
             type: 'log_subscribed',
             serverId: data.serverId
           }));
+          
+          // Try to fetch recent logs from CloudNet API
+          try {
+            if (cloudnetApi.config.enabled) {
+              const logs = await cloudnetApi.getServerLogs(data.serverId, 50);
+              if (logs && logs.lines) {
+                logs.lines.forEach((line, index) => {
+                  setTimeout(() => {
+                    ws.send(JSON.stringify({
+                      type: 'server_log',
+                      serverId: data.serverId,
+                      timestamp: new Date().toISOString(),
+                      message: line
+                    }));
+                  }, index * 10); // Small delay to avoid flooding
+                });
+              }
+            } else {
+              // Send mock logs when CloudNet API is disabled
+              const mockLogs = [
+                '[INFO] Server started successfully',
+                '[INFO] Loading plugins...',
+                '[INFO] Server is ready for players',
+                '[INFO] Current memory usage: 128MB'
+              ];
+              mockLogs.forEach((line, index) => {
+                setTimeout(() => {
+                  ws.send(JSON.stringify({
+                    type: 'server_log',
+                    serverId: data.serverId,
+                    timestamp: new Date().toISOString(),
+                    message: line
+                  }));
+                }, index * 100);
+              });
+            }
+          } catch (error) {
+            console.warn('Could not fetch server logs:', error.message);
+            // Send a fallback message
+            ws.send(JSON.stringify({
+              type: 'server_log',
+              serverId: data.serverId,
+              timestamp: new Date().toISOString(),
+              message: '[INFO] Connected to server console (log history unavailable)'
+            }));
+          }
           break;
           
         case 'send_command':
-          // Send command to server
+          // Send command to server via CloudNet API
           if (data.serverId && data.command) {
-            // TODO: Implement actual command sending
-            ws.send(JSON.stringify({
-              type: 'command_sent',
-              serverId: data.serverId,
-              command: data.command,
-              response: 'Command executed successfully'
-            }));
+            try {
+              // For CloudNet, we can try to send commands via the REST API
+              if (cloudnetApi.config.enabled) {
+                const response = await cloudnetApi.sendCommand(data.serverId, data.command);
+                
+                ws.send(JSON.stringify({
+                  type: 'command_sent',
+                  serverId: data.serverId,
+                  command: data.command,
+                  response: response.message || 'Command sent to server',
+                  success: true
+                }));
+              } else {
+                // Mock response when CloudNet API is disabled
+                ws.send(JSON.stringify({
+                  type: 'command_sent',
+                  serverId: data.serverId,
+                  command: data.command,
+                  response: `[MOCK] Command "${data.command}" sent to server ${data.serverId}`,
+                  success: true
+                }));
+              }
+              
+              // Also broadcast the command as a log entry
+              ws.send(JSON.stringify({
+                type: 'server_log',
+                serverId: data.serverId,
+                timestamp: new Date().toISOString(),
+                message: `> ${data.command}`
+              }));
+              
+            } catch (error) {
+              console.error('Error sending command:', error);
+              ws.send(JSON.stringify({
+                type: 'command_sent',
+                serverId: data.serverId,
+                command: data.command,
+                response: `Error: ${error.message}`,
+                success: false
+              }));
+            }
           }
           break;
           
@@ -130,6 +241,10 @@ wss.on('connection', (ws, req) => {
 
   ws.on('close', () => {
     console.log('WebSocket connection closed');
+    // Clean up any intervals
+    if (ws.heartbeatInterval) {
+      clearInterval(ws.heartbeatInterval);
+    }
   });
 
   // Send initial connection acknowledgment
@@ -137,6 +252,16 @@ wss.on('connection', (ws, req) => {
     type: 'connected',
     message: 'WebSocket connection established'
   }));
+
+  // Set up heartbeat to keep connection alive
+  ws.heartbeatInterval = setInterval(() => {
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({
+        type: 'heartbeat',
+        timestamp: new Date().toISOString()
+      }));
+    }
+  }, 30000); // Send heartbeat every 30 seconds
 });
 
 // Broadcast logs to subscribed clients (example function)

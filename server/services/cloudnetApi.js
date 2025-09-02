@@ -205,6 +205,36 @@ class CloudNetApiService {
     return this.makeRequest('PATCH', `/service/${id}/lifecycle?target=restart`);
   }
 
+  // Send command to server
+  async sendCommand(id, command) {
+    try {
+      // Try to send command via CloudNet REST API
+      // Note: This endpoint may vary based on CloudNet version
+      const response = await this.makeRequest('POST', `/service/${id}/command`, {
+        command: command.trim()
+      });
+      return response;
+    } catch (error) {
+      // If specific command endpoint doesn't exist, try alternative approaches
+      if (error.response?.status === 404) {
+        throw new Error(`Command execution not supported by CloudNet API version. Command: ${command}`);
+      }
+      throw error;
+    }
+  }
+
+  // Get server logs (if supported)
+  async getServerLogs(id, lines = 100) {
+    try {
+      return await this.makeRequest('GET', `/service/${id}/logs?lines=${lines}`);
+    } catch (error) {
+      if (error.response?.status === 404) {
+        throw new Error('Log retrieval not supported by CloudNet API version');
+      }
+      throw error;
+    }
+  }
+
   // Note: Service CRUD operations may not be available in CloudNet REST API
   async createServer(serverData) {
     throw new Error('Service creation via REST API is not supported by CloudNet');
