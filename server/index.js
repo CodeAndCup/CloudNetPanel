@@ -17,7 +17,9 @@ const templateRoutes = require('./routes/templates');
 const backupRoutes = require('./routes/backups');
 const taskRoutes = require('./routes/tasks');
 const systemRoutes = require('./routes/system')
+const activitiesRoutes = require('./routes/activities');
 const { initializeDefaultData } = require('./database/init');
+const { logActivity } = require('./middleware/activity');
 
 const app = express();
 const server = http.createServer(app);
@@ -73,16 +75,17 @@ app.use(generalLimiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// API routes with appropriate rate limiting
+// API routes with appropriate rate limiting and activity logging
 app.use('/api/auth', authLimiter, authRoutes);
-app.use('/api/servers', navigationLimiter, serverRoutes);
-app.use('/api/nodes', navigationLimiter, nodeRoutes);
-app.use('/api/users', navigationLimiter, userRoutes);
-app.use('/api/groups', navigationLimiter, groupRoutes);
-app.use('/api/templates', navigationLimiter, templateRoutes);
-app.use('/api/backups', backupRoutes);
-app.use('/api/tasks', taskRoutes);
+app.use('/api/servers', navigationLimiter, logActivity('server_action', 'server'), serverRoutes);
+app.use('/api/nodes', navigationLimiter, logActivity('node_action', 'node'), nodeRoutes);
+app.use('/api/users', navigationLimiter, logActivity('user_action', 'user'), userRoutes);
+app.use('/api/groups', navigationLimiter, logActivity('group_action', 'group'), groupRoutes);
+app.use('/api/templates', navigationLimiter, logActivity('template_action', 'file'), templateRoutes);
+app.use('/api/backups', logActivity('backup_action', 'backup'), backupRoutes);
+app.use('/api/tasks', logActivity('task_action', 'task'), taskRoutes);
 app.use('/api/system-info', navigationLimiter, systemRoutes);
+app.use('/api/activities', navigationLimiter, activitiesRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -93,25 +96,30 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Serve static files from React app in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/build')));
+// Serve static files from React app
+const clientBuildPath = path.join(__dirname, '../client/build');
+if (fs.existsSync(clientBuildPath)) {
+  app.use(express.static(clientBuildPath));
   
+  // Handle React Router - send all non-API requests to index.html
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+    // Skip API routes
+    if (req.path.startsWith('/api/')) {
+      return res.status(404).json({ error: 'API route not found' });
+    }
+    res.sendFile(path.join(clientBuildPath, 'index.html'));
+  });
+} else {
+  console.log('Client build not found. Run "npm run build" first or use development mode with separate client server.');
+  
+  // 404 handler for when no client build exists
+  app.use('*', (req, res) => {
+    if (req.path.startsWith('/api/')) {
+      return res.status(404).json({ error: 'API route not found' });
+    }
+    res.status(404).json({ error: 'Client not built. Run "npm run build" first.' });
   });
 }
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
-});
-
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({ error: 'Route not found' });
-});
 
 // WebSocket connection handling for real-time features
 wss.on('connection', (ws, req) => {

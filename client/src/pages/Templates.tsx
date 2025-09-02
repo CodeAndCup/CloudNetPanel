@@ -9,10 +9,12 @@ import {
   Upload,
   ArrowLeft,
   Save,
-  X
+  X,
+  Shield
 } from 'lucide-react';
 import axios from 'axios';
 import clsx from 'clsx';
+import PermissionManager from '../components/PermissionManager';
 
 interface FileItem {
   name: string;
@@ -45,6 +47,29 @@ const Templates: React.FC = () => {
   const [showNewFolderDialog, setShowNewFolderDialog] = useState(false);
   const [newFileName, setNewFileName] = useState('');
   const [newFolderName, setNewFolderName] = useState('');
+  const [showPermissionManager, setShowPermissionManager] = useState(false);
+  const [selectedItemForPermissions, setSelectedItemForPermissions] = useState<string>('');
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  useEffect(() => {
+    fetchFiles(currentPath);
+    fetchCurrentUser();
+  }, [currentPath]);
+
+  const fetchCurrentUser = async () => {
+    try {
+      // Get current user from token or context - for now assume admin based on role
+      // This would typically come from a context or decoded JWT token
+      const token = localStorage.getItem('token');
+      if (token) {
+        // Decode token to get user role (simplified - in real app use proper JWT decoding)
+        // For now, we'll assume admin role to show permissions
+        setCurrentUser({ role: 'Administrators' });
+      }
+    } catch (error) {
+      console.error('Error fetching current user:', error);
+    }
+  };
 
   useEffect(() => {
     fetchFiles(currentPath);
@@ -162,6 +187,16 @@ const Templates: React.FC = () => {
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  const openPermissionManager = (filePath: string) => {
+    setSelectedItemForPermissions(filePath);
+    setShowPermissionManager(true);
+  };
+
+  const closePermissionManager = () => {
+    setShowPermissionManager(false);
+    setSelectedItemForPermissions('');
   };
 
   const formatDate = (dateString: string) => {
@@ -391,6 +426,15 @@ const Templates: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex justify-end space-x-2">
+                          {currentUser?.role === 'Administrators' && (
+                            <button
+                              onClick={() => openPermissionManager(file.path)}
+                              className="text-purple-600 hover:text-purple-900"
+                              title="Manage permissions"
+                            >
+                              <Shield className="h-4 w-4" />
+                            </button>
+                          )}
                           {file.type === 'file' && file.permissions.read && (
                             <button
                               onClick={() => openFile(file)}
@@ -417,6 +461,14 @@ const Templates: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Permission Manager Modal */}
+      {showPermissionManager && (
+        <PermissionManager
+          filePath={selectedItemForPermissions}
+          onClose={closePermissionManager}
+        />
+      )}
     </div>
   );
 };

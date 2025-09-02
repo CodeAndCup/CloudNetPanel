@@ -33,6 +33,9 @@ const Groups: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [editingGroup, setEditingGroup] = useState<Group | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletingGroup, setDeletingGroup] = useState<Group | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [newGroup, setNewGroup] = useState({
     name: '',
     description: ''
@@ -92,13 +95,24 @@ const Groups: React.FC = () => {
   };
 
   const deleteGroup = async (group: Group) => {
-    if (!confirm(`Are you sure you want to delete group "${group.name}"?`)) return;
+    setDeletingGroup(group);
+    setShowDeleteModal(true);
+  };
 
+  const handleDeleteGroup = async () => {
+    if (!deletingGroup) return;
+    
+    setDeleting(true);
+    
     try {
-      await axios.delete(`/api/groups/${group.id}`);
+      await axios.delete(`/api/groups/${deletingGroup.id}`);
       fetchGroups();
+      setShowDeleteModal(false);
+      setDeletingGroup(null);
     } catch (error) {
       console.error('Error deleting group:', error);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -225,6 +239,40 @@ const Groups: React.FC = () => {
               >
                 Update Group
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Group Modal */}
+      {showDeleteModal && deletingGroup && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-700">
+            <div className="mt-3">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white text-center mb-4">
+                Delete Group
+              </h3>
+              
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 text-center">
+                Are you sure you want to delete group "{deletingGroup.name}"? This action cannot be undone and will remove all group permissions.
+              </p>
+
+              <div className="flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setShowDeleteModal(false)}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-300 hover:bg-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteGroup}
+                  disabled={deleting}
+                  className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50"
+                >
+                  {deleting ? 'Deleting...' : 'Delete Group'}
+                </button>
+              </div>
             </div>
           </div>
         </div>

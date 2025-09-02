@@ -1,0 +1,69 @@
+const db = require('../database/sqlite');
+
+// Activity logging middleware
+const logActivity = (action, resourceType) => {
+  return (req, res, next) => {
+    const originalSend = res.send;
+    
+    res.send = function(data) {
+      // Only log successful operations
+      if (res.statusCode >= 200 && res.statusCode < 300) {
+        const userId = req.user ? req.user.id : null;
+        const ipAddress = req.ip || req.connection.remoteAddress;
+        
+        // Extract resource ID from various sources
+        let resourceId = null;
+        if (req.params.id) {
+          resourceId = req.params.id;
+        } else if (req.body && req.body.name) {
+          resourceId = req.body.name;
+        } else if (req.query && req.query.path) {
+          resourceId = req.query.path;
+        }
+
+        // Create details object with relevant information
+        const details = {
+          method: req.method,
+          path: req.path,
+          body: req.method !== 'GET' ? sanitizeBody(req.body) : null,
+          query: Object.keys(req.query).length > 0 ? req.query : null
+        };
+
+        // Log the activity
+        if (userId) {
+          db.run(`
+            INSERT INTO activities (user_id, action, resource_type, resource_id, details, ip_address)
+            VALUES (?, ?, ?, ?, ?, ?)
+          `, [userId, action, resourceType, resourceId, JSON.stringify(details), ipAddress], (err) => {
+            if (err) {
+              console.error('Error logging activity:', err);
+            }
+          });
+        }
+      }
+      
+      originalSend.call(this, data);
+    };
+    
+    next();
+  };
+};
+
+// Sanitize sensitive data from request body before logging
+const sanitizeBody = (body) => {
+  if (!body) return null;
+  
+  const sanitized = { ...body };
+  
+  // Remove sensitive fields
+  const sensitiveFields = ['password', 'token', 'secret', 'key'];
+  sensitiveFields.forEach(field => {
+    if (sanitized[field]) {
+      sanitized[field] = '[REDACTED]';
+    }
+  });
+  
+  return sanitized;
+};
+
+module.exports = { logActivity };

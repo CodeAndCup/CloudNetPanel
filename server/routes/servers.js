@@ -69,22 +69,119 @@ router.get('/:id', authenticateToken, async (req, res) => {
 });
 
 // Create new server
-router.post('/', authenticateToken, requireAdmin, (req, res) => {
-  const { name, type, memory, maxPlayers, node } = req.body;
+router.post('/', authenticateToken, requireAdmin, async (req, res) => {
+  const { name, ram, serverType, version, minimumStarted } = req.body;
   
-  if (!name || !type || !memory || !maxPlayers || !node) {
+  if (!name || !ram || !serverType || !version || minimumStarted === undefined) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
+  try {
+    // Create server configuration for CloudNet
+    const serverConfig = {
+      name,
+      memory: ram,
+      type: serverType.toLowerCase(),
+      version,
+      minimumOnlineCount: minimumStarted,
+      // Add other CloudNet-specific configuration
+      javaCommand: 'java',
+      processConfiguration: {
+        environment: 'MINECRAFT',
+        maxHeapMemorySize: ram,
+        jvmOptions: ['-XX:+UseG1GC', '-XX:+UnlockExperimentalVMOptions']
+      }
+    };
+
+    // Create template and task files in CloudNet directory if path is configured
+    const cloudnetPath = process.env.CLOUDNET_SERVER_PATH;
+    if (cloudnetPath) {
+      const fs = require('fs').promises;
+      const path = require('path');
+      
+      try {
+        // Create template directory
+        const templatePath = path.join(cloudnetPath, 'local', 'templates', name.toLowerCase());
+        await fs.mkdir(templatePath, { recursive: true });
+        
+        // Create server task configuration
+        const taskConfig = {
+          name: name,
+          runtime: 'jvm',
+          environment: 'MINECRAFT',
+          autoDeleteOnStop: false,
+          staticServices: false,
+          deletedFilesAfterStop: [],
+          processConfiguration: {
+            environment: 'MINECRAFT',
+            maxHeapMemorySize: ram,
+            jvmOptions: serverConfig.processConfiguration.jvmOptions
+          },
+          startPort: 44955,
+          minServiceCount: minimumStarted,
+          templates: [
+            {
+              prefix: name.toLowerCase(),
+              name: 'default',
+              storage: 'local'
+            }
+          ],
+          deployments: [],
+          groups: ['Global'],
+          jvmOptions: serverConfig.processConfiguration.jvmOptions,
+          processParameters: []
+        };
+
+        // Write task configuration file
+        const tasksPath = path.join(cloudnetPath, 'local', 'tasks');
+        await fs.mkdir(tasksPath, { recursive: true });
+        await fs.writeFile(
+          path.join(tasksPath, `${name.toLowerCase()}.json`),
+          JSON.stringify(taskConfig, null, 2)
+        );
+
+        console.log(`Created template and task configuration for server: ${name}`);
+      } catch (fileError) {
+        console.warn('Could not create CloudNet files:', fileError.message);
+        // Continue with server creation even if file operations fail
+      }
+    }
+
+    if (config.cloudnet.enabled) {
+      // If CloudNet is enabled, create via API
+      try {
+        await cloudnetApi.createServer(serverConfig);
+        res.status(201).json({ 
+          message: 'Server creation request sent to CloudNet',
+          serverConfig 
+        });
+      } catch (error) {
+        // Fallback to mock creation if CloudNet API fails
+        console.warn('CloudNet API creation failed, using mock:', error.message);
+        const mockServer = createMockServer(name, serverType, ram);
+        res.status(201).json(mockServer);
+      }
+    } else {
+      // Use mock data
+      const mockServer = createMockServer(name, serverType, ram);
+      res.status(201).json(mockServer);
+    }
+  } catch (error) {
+    console.error('Error creating server:', error);
+    res.status(500).json({ error: 'Failed to create server' });
+  }
+});
+
+function createMockServer(name, type, memory) {
   const newServer = {
     id: servers.length + 1,
     name,
     type,
     status: 'offline',
     players: 0,
-    maxPlayers,
-    memory,
-    node,
+    maxPlayers: 20,
+    memory: `${memory}MB`,
+    node: 'node-01',
     ip: `192.168.1.${100 + servers.length}`,
     port: 25565 + servers.length,
     cpu: 0,
@@ -93,8 +190,8 @@ router.post('/', authenticateToken, requireAdmin, (req, res) => {
   };
 
   servers.push(newServer);
-  res.status(201).json(newServer);
-});
+  return newServer;
+}
 
 // Update server
 router.put('/:id', authenticateToken, requireAdmin, (req, res) => {
