@@ -4,35 +4,7 @@ const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const router = express.Router();
 
 // Mock user data
-let users = [
-  {
-    id: 1,
-    username: 'admin',
-    email: 'admin@cloudnet.local',
-    role: 'admin',
-    createdAt: '2024-01-15T10:30:00Z',
-    lastLogin: '2024-01-20T14:22:00Z',
-    status: 'active'
-  },
-  {
-    id: 2,
-    username: 'moderator1',
-    email: 'mod@cloudnet.local',
-    role: 'moderator',
-    createdAt: '2024-01-16T09:15:00Z',
-    lastLogin: '2024-01-19T16:45:00Z',
-    status: 'active'
-  },
-  {
-    id: 3,
-    username: 'user1',
-    email: 'user@cloudnet.local',
-    role: 'user',
-    createdAt: '2024-01-17T11:20:00Z',
-    lastLogin: '2024-01-18T13:30:00Z',
-    status: 'active'
-  }
-];
+let users = [];
 
 // Get all users (admin only)
 router.get('/', authenticateToken, requireAdmin, (req, res) => {

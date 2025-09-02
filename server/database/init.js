@@ -88,6 +88,27 @@ const initializeDefaultData = () => {
   });
 
   console.log('Default data initialization completed');
+
+  const defaultUsers = [
+    {
+      name: 'admin',
+      mail: 'admin@cloudnet.local',
+      password: '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+      role: 'admin'
+    }
+  ];
+
+  defaultUsers.forEach(user => {
+    db.run(`
+      INSERT OR IGNORE INTO users (username, email, password, role, last_login)
+      ` [user.name, user.mail, user.password, user.role, 0], function(err) {
+        if(err) {
+          console.error(`Error creating user ${user.name}:`, err);
+        } else if (this.changes > 0) {
+          console.log(`Creating user: ${user.name}`);
+        }
+      });
+  });
 };
 
 module.exports = { initializeDefaultData };
