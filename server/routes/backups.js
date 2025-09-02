@@ -10,7 +10,7 @@ const router = express.Router();
 const execAsync = promisify(exec);
 
 // Base directories
-const TEMPLATES_DIR = path.join(__dirname, '../../templates');
+const TEMPLATES_DIR = path.join(__dirname, '../../../CloudNet-Server/local/');
 const BACKUPS_DIR = path.join(__dirname, '../../backups');
 
 // Ensure backup directory exists
