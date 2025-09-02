@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs').promises;
 const path = require('path');
-const { authenticateToken, checkFilePermission } = require('../middleware/auth');
+const { authenticateToken, checkFilePermission, requireAdmin } = require('../middleware/auth');
 const db = require('../database/sqlite');
 
 const router = express.Router();
@@ -251,4 +251,111 @@ router.post('/files/upload', authenticateToken, checkFilePermission('write'), as
   res.status(501).json({ error: 'File upload not yet implemented' });
 });
 
+// Permission Management Endpoints (Admin only)
+
+// Get permissions for a specific file/folder path
+router.get('/permissions', authenticateToken, requireAdmin, async (req, res) => {
+  const { path: requestedPath } = req.query;
+  
+  if (!requestedPath) {
+    return res.status(400).json({ error: 'Path parameter required' });
+  }
+
+  try {
+    // Get file permissions for the path
+    const permissions = await new Promise((resolve, reject) => {
+      db.all(`
+        SELECT fp.*, g.name as group_name, u.username 
+        FROM file_permissions fp
+        LEFT JOIN groups g ON fp.group_id = g.id
+        LEFT JOIN users u ON fp.user_id = u.id
+        WHERE fp.path = ?
+        ORDER BY g.name, u.username
+      `, [requestedPath], (err, rows) => {
+        if (err) reject(err);
+        else resolve(rows);
+      });
+    });
+
+    res.json({
+      path: requestedPath,
+      permissions: permissions
+    });
+  } catch (error) {
+    console.error('Error fetching permissions:', error);
+    res.status(500).json({ error: 'Failed to fetch permissions' });
+  }
+});
+
+// Set permissions for a file/folder path
+router.post('/permissions', authenticateToken, requireAdmin, async (req, res) => {
+  const { path: requestedPath, permissions } = req.body;
+
+  if (!requestedPath || !permissions || !Array.isArray(permissions)) {
+    return res.status(400).json({ error: 'Path and permissions array required' });
+  }
+
+  try {
+    // Begin transaction - first remove existing permissions
+    await new Promise((resolve, reject) => {
+      db.run('DELETE FROM file_permissions WHERE path = ?', [requestedPath], (err) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+
+    // Add new permissions
+    for (const perm of permissions) {
+      const { type, permission_type, group_id, user_id } = perm;
+      
+      if (!permission_type || (!group_id && !user_id)) {
+        continue; // Skip invalid permissions
+      }
+
+      await new Promise((resolve, reject) => {
+        db.run(`
+          INSERT INTO file_permissions (path, group_id, user_id, permission_type)
+          VALUES (?, ?, ?, ?)
+        `, [requestedPath, group_id || null, user_id || null, permission_type], (err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
+    }
+
+    res.json({ 
+      message: 'Permissions updated successfully',
+      path: requestedPath 
+    });
+  } catch (error) {
+    console.error('Error updating permissions:', error);
+    res.status(500).json({ error: 'Failed to update permissions' });
+  }
+});
+
+// Get all available groups and users for permission assignment
+router.get('/permission-entities', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    const groups = await new Promise((resolve, reject) => {
+      db.all('SELECT id, name, description FROM groups ORDER BY name', (err, rows) => {
+        if (err) reject(err);
+        else resolve(rows);
+      });
+    });
+
+    const users = await new Promise((resolve, reject) => {
+      db.all('SELECT id, username, email, role FROM users ORDER BY username', (err, rows) => {
+        if (err) reject(err);
+        else resolve(rows);
+      });
+    });
+
+    res.json({ groups, users });
+  } catch (error) {
+    console.error('Error fetching permission entities:', error);
+    res.status(500).json({ error: 'Failed to fetch groups and users' });
+  }
+});
+
+module.exports = router;
 module.exports = router;
