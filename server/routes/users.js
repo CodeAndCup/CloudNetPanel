@@ -9,10 +9,15 @@ let users = [];
 
 // Get all users (admin only)
 router.get('/', authenticateToken, requireAdmin, (req, res) => {
-  res.json(users.map(user => ({
-    ...user,
-    password: undefined // Don't send password
-  })));
+  db.all(`
+    SELECT username, email, role, created_at, last_login, status FROM users;
+  `, (err, rows) => {
+    if (err) {
+      console.error('Error fetching users:', err);
+      return res.status(500).json({ error: 'Failed to fetch users' });
+    }
+    res.json(rows);
+  });
 });
 
 // Get user by ID
