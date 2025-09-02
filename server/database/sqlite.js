@@ -134,6 +134,21 @@ db.serialize(() => {
       FOREIGN KEY (created_by) REFERENCES users (id)
     )
   `);
+
+  // Activities/Audit log table
+  db.run(`
+    CREATE TABLE IF NOT EXISTS activities (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      action TEXT NOT NULL,
+      resource_type TEXT NOT NULL, -- 'user', 'server', 'file', 'group', 'task', etc.
+      resource_id TEXT, -- ID or path of the resource
+      details TEXT, -- JSON string with additional details
+      ip_address TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users (id)
+    )
+  `);
 });
 
 module.exports = db;

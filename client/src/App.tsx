@@ -11,6 +11,7 @@ import Groups from './pages/Groups';
 import Templates from './pages/Templates';
 import Backups from './pages/Backups';
 import Tasks from './pages/Tasks';
+import Activities from './pages/Activities';
 import Layout from './components/Layout';
 import LoadingSpinner from './components/LoadingSpinner';
 
@@ -52,6 +53,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/tasks" element={<Tasks />} />
         <Route path="/users" element={<Users />} />
         <Route path="/groups" element={<Groups />} />
+        <Route path="/activities" element={<Activities />} />
         <Route path="/login" element={<Navigate to="/dashboard" />} />
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>

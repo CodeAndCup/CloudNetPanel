@@ -16,7 +16,8 @@ import {
   Settings,
   UserCheck,
   Sun,
-  Moon
+  Moon,
+  Activity
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -39,6 +40,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Tasks', href: '/tasks', icon: Settings },
     { name: 'Users', href: '/users', icon: Users },
     { name: 'Groups', href: '/groups', icon: UserCheck },
+    { name: 'Activities', href: '/activities', icon: Activity },
   ];
 
   const isActive = (href: string) => {
