@@ -14,6 +14,7 @@ interface DashboardStats {
   cpuUsage: number;
   cpuMaxUsage: number,
   memoryUsage: number;
+  memoryMaxUsage: number,
   diskUsage: number;
 }
 
@@ -28,6 +29,7 @@ const Dashboard: React.FC = () => {
     cpuUsage: 0,
     cpuMaxUsage: 0,
     memoryUsage: 0,
+    memoryMaxUsage: 0,
     diskUsage: 0,
   });
 
@@ -62,9 +64,10 @@ const Dashboard: React.FC = () => {
         onlineNodes: nodeData.filter((n: any) => n.status === 'online').length,
         totalUsers: userData.length, //serverData.find((s: any) => s.type === 'Global-Proxy').maxPlayers, //
         activeUsers: userData.filter((u: any) => u.status === 'active').length, //serverData.find((s: any) => s.type === 'Global-Proxy').players //
-        cpuUsage: (serverData.reduce((sum: any, item: any) => sum + item.cpu, 0) / (systemData.cpuCores) * 100),
+        cpuUsage: (serverData.reduce((sum: any, item: any) => sum + item.cpu, 0) * 100),
         cpuMaxUsage: systemData.cpuCores * 100,
-        memoryUsage: (serverData.reduce((sum: any, item: any) => sum + item.ram, 0) / systemData.totalMemMB * 100),
+        memoryUsage: (serverData.reduce((sum: any, item: any) => sum + item.ram, 0)),
+        memoryMaxUsage: systemData.totalMemMB,
         diskUsage: 0,
       });
     } catch (error) {
@@ -213,7 +216,7 @@ const Dashboard: React.FC = () => {
               <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Average CPU Usage</div>
               <div className="flex items-center">
                 <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-3">
-                  <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${(stats.cpuUsage).toFixed(2)}%` }}></div>
+                  <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${(stats.cpuUsage/stats.cpuMaxUsage*100).toFixed(2)}%` }}></div>
                 </div>
                 <span className="text-sm text-gray-900 dark:text-white">{(stats.cpuUsage).toFixed(2)}% / {stats.cpuMaxUsage}%</span>
               </div>
@@ -222,9 +225,9 @@ const Dashboard: React.FC = () => {
               <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Memory Usage</div>
               <div className="flex items-center">
                 <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-3">
-                  <div className="bg-green-500 h-2 rounded-full" style={{ width: `${(stats.memoryUsage).toFixed(2)}%` }}></div>
+                  <div className="bg-green-500 h-2 rounded-full" style={{ width: `${(stats.memoryUsage / stats.memoryMaxUsage * 100).toFixed(2)}%` }}></div>
                 </div>
-                <span className="text-sm text-gray-900 dark:text-white">{(stats.memoryUsage).toFixed(2)}%</span>
+                <span className="text-sm text-gray-900 dark:text-white">{(stats.memoryUsage / stats.memoryMaxUsage * 100).toFixed(2)}%</span>
               </div>
             </div>
             <div>
