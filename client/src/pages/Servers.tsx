@@ -3,6 +3,7 @@ import { Play, Square, RotateCcw, Plus, Trash2, Edit, Terminal, Eye, X } from 'l
 import axios from 'axios';
 import clsx from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
+import { getWebSocketUrl } from '../config/api';
 
 interface Server {
   id: number;
@@ -87,7 +88,6 @@ const Servers: React.FC = () => {
   }, [logs]);
 
   const connectWebSocket = (serverId: number) => {
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const token = localStorage.getItem('token');
     
     if (!token) {
@@ -96,7 +96,7 @@ const Servers: React.FC = () => {
       return;
     }
     
-    const wsUrl = `${protocol}//${window.location.host}?token=${encodeURIComponent(token)}`;
+    const wsUrl = `${getWebSocketUrl()}?token=${encodeURIComponent(token)}`;
     const socket = new WebSocket(wsUrl);
 
     socket.onopen = () => {
