@@ -41,15 +41,15 @@ const PermissionManager: React.FC<PermissionManagerProps> = ({ filePath, onClose
     fetchPermissions();
     fetchGroups();
     fetchUsers();
-  }, []);
+  }, [filePath]);
 
   const fetchPermissions = async () => {
     try {
-      // This would be a new API endpoint to get permissions for a specific path
-      // For now, we'll show an empty list
-      setPermissions([]);
+      const response = await axios.get(`/api/templates/permissions?path=${encodeURIComponent(filePath || '')}`);
+      setPermissions(response.data.permissions || []);
     } catch (error) {
       console.error('Error fetching permissions:', error);
+      setPermissions([]);
     }
   };
 
@@ -75,12 +75,15 @@ const PermissionManager: React.FC<PermissionManagerProps> = ({ filePath, onClose
     if (!newPermission.targetId) return;
 
     try {
-      // This would be implemented in the backend
-      console.log('Adding permission:', {
-        path: filePath,
-        [newPermission.targetType === 'group' ? 'groupId' : 'userId']: parseInt(newPermission.targetId),
-        permissionType: newPermission.permissionType
-      });
+      const permissionData = {
+        path: filePath || '',
+        permissions: [{
+          [newPermission.targetType === 'group' ? 'group_id' : 'user_id']: parseInt(newPermission.targetId),
+          permission_type: newPermission.permissionType
+        }]
+      };
+
+      await axios.post('/api/templates/permissions', permissionData);
       
       // Reset form
       setNewPermission({
