@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Square, RotateCcw, Plus, Trash2, Edit, Terminal, Eye } from 'lucide-react';
+import { Play, Square, RotateCcw, Plus, Trash2, Edit, Terminal, Eye, X } from 'lucide-react';
 import axios from 'axios';
 import clsx from 'clsx';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Server {
   id: number;
@@ -28,6 +29,7 @@ interface NewServer {
 }
 
 const Servers: React.FC = () => {
+  const { user } = useAuth();
   const [servers, setServers] = useState<Server[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<{ [key: number]: string }>({});
@@ -86,7 +88,15 @@ const Servers: React.FC = () => {
 
   const connectWebSocket = (serverId: number) => {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}`;
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      console.error('No authentication token available for WebSocket connection');
+      setLogs(prev => [...prev, `[${new Date().toISOString()}] ERROR: Authentication required`]);
+      return;
+    }
+    
+    const wsUrl = `${protocol}//${window.location.host}?token=${encodeURIComponent(token)}`;
     const socket = new WebSocket(wsUrl);
 
     socket.onopen = () => {
@@ -110,6 +120,12 @@ const Servers: React.FC = () => {
         case 'connected':
           setLogs(prev => [...prev, `[${new Date().toISOString()}] Connected to server logs`]);
           break;
+        case 'error':
+          setLogs(prev => [...prev, `[${new Date().toISOString()}] ERROR: ${data.message}`]);
+          break;
+        case 'log_subscribed':
+          setLogs(prev => [...prev, `[${new Date().toISOString()}] Subscribed to server logs for ${data.serverId}`]);
+          break;
       }
     };
 
@@ -119,6 +135,7 @@ const Servers: React.FC = () => {
 
     socket.onerror = (error) => {
       console.error('WebSocket error:', error);
+      setLogs(prev => [...prev, `[${new Date().toISOString()}] WebSocket connection error`]);
     };
 
     setWs(socket);
