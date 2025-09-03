@@ -6,7 +6,53 @@ const config = require('../config/cloudnet');
 const router = express.Router();
 
 // Mock server data
-let servers = [];
+let servers = [
+  {
+    id: 1,
+    name: 'TestServer-1',
+    type: 'Spigot',
+    status: 'online',
+    players: 5,
+    maxPlayers: 20,
+    memory: '1024 MB',
+    node: 'Node-1',
+    ip: '127.0.0.1',
+    port: 25565,
+    cpu: 25.5,
+    ram: 512,
+    uptime: '2h 15m'
+  },
+  {
+    id: 2,
+    name: 'TestServer-2',
+    type: 'Paper',
+    status: 'offline',
+    players: 0,
+    maxPlayers: 50,
+    memory: '2048 MB',
+    node: 'Node-1',
+    ip: '127.0.0.1',
+    port: 25566,
+    cpu: 0,
+    ram: 0,
+    uptime: '0m'
+  },
+  {
+    id: 3,
+    name: 'TestServer-3',
+    type: 'Velocity',
+    status: 'starting',
+    players: 0,
+    maxPlayers: 100,
+    memory: '512 MB',
+    node: 'Node-2',
+    ip: '127.0.0.1',
+    port: 25567,
+    cpu: 15.2,
+    ram: 256,
+    uptime: '5m'
+  }
+];
 
 // Get all servers
 router.get('/', authenticateToken, async (req, res) => {
