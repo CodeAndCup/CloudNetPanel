@@ -366,7 +366,7 @@ const Servers: React.FC = () => {
       {/* Server Console Modal */}
       {showLogs && selectedServer && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-4 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-700">
+          <div className="relative top-[4rem] mx-auto p-5 border w-11/12 max-w-[76rem] shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-700">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-medium text-gray-900 dark:text-white">
                 {selectedServer.name} - Console
@@ -380,7 +380,7 @@ const Servers: React.FC = () => {
             </div>
 
             {/* Logs Display */}
-            <div className="bg-black text-green-400 p-4 rounded-md font-mono text-sm h-96 overflow-y-auto mb-4">
+            <div className="bg-black text-green-400 p-4 rounded-md font-mono text-sm h-[42rem] overflow-y-auto mb-4">
               {logs.map((log, index) => (
                 <div key={index} className="whitespace-pre-wrap">
                   {log}
