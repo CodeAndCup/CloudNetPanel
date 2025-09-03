@@ -60,7 +60,7 @@ router.get('/', authenticateToken, async (req, res) => {
     if (config.cloudnet.enabled) {
       // Use CloudNet REST API
       const cloudnetServers = await cloudnetApi.getServers();
-      const transformedServers = cloudnetServers.map(server => 
+      const transformedServers = cloudnetServers.map(server =>
         cloudnetApi.transformServerData(server)
       );
       res.json(transformedServers);
@@ -70,7 +70,7 @@ router.get('/', authenticateToken, async (req, res) => {
     }
   } catch (error) {
     console.error('Error fetching servers:', error);
-    
+
     // Fallback to mock data on API error
     if (config.cloudnet.enabled) {
       console.log('Falling back to mock data due to CloudNet API error');
@@ -99,7 +99,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
     }
   } catch (error) {
     console.error('Error fetching server:', error);
-    
+
     // Fallback to mock data on API error
     if (config.cloudnet.enabled) {
       console.log('Falling back to mock data due to CloudNet API error');
@@ -114,10 +114,22 @@ router.get('/:id', authenticateToken, async (req, res) => {
   }
 });
 
+router.get('/:id/cachedLogs', authenticateToken, async (req, res) => {
+  const serverId = req.params.id;
+
+  try {
+    const logs = await cloudnetApi.getCachedLogs(serverId);
+    res.json(logs);
+  } catch (error) {
+    console.error('Error fetching cached logs:', error);
+    res.status(500).json({ error: 'Failed to fetch cached logs' });
+  }
+});
+
 // Create new server
 router.post('/', authenticateToken, requireAdmin, async (req, res) => {
   const { name, ram, serverType, version, minimumStarted } = req.body;
-  
+
   if (!name || !ram || !serverType || !version || minimumStarted === undefined) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
@@ -144,12 +156,12 @@ router.post('/', authenticateToken, requireAdmin, async (req, res) => {
     if (cloudnetPath) {
       const fs = require('fs').promises;
       const path = require('path');
-      
+
       try {
         // Create template directory
         const templatePath = path.join(cloudnetPath, 'local', 'templates', name.toLowerCase());
         await fs.mkdir(templatePath, { recursive: true });
-        
+
         // Create server task configuration
         const taskConfig = {
           name: name,
@@ -197,9 +209,9 @@ router.post('/', authenticateToken, requireAdmin, async (req, res) => {
       // If CloudNet is enabled, create via API
       try {
         await cloudnetApi.createServer(serverConfig);
-        res.status(201).json({ 
+        res.status(201).json({
           message: 'Server creation request sent to CloudNet',
-          serverConfig 
+          serverConfig
         });
       } catch (error) {
         // Fallback to mock creation if CloudNet API fails

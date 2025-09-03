@@ -205,6 +205,10 @@ class CloudNetApiService {
     return this.makeRequest('PATCH', `/service/${id}/lifecycle?target=restart`);
   }
 
+  async getCachedLogs(id) {
+    return this.makeRequest('GET', `/service/${id}/logLines`);
+  }
+
   // Send command to server
   async sendCommand(id, command) {
     try {

@@ -92,8 +92,8 @@ app.use('/api/activities', navigationLimiter, activitiesRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     timestamp: new Date().toISOString(),
     version: '1.0.0'
   });
@@ -103,7 +103,7 @@ app.get('/api/health', (req, res) => {
 const clientBuildPath = path.join(__dirname, '../client/build');
 if (fs.existsSync(clientBuildPath)) {
   app.use(express.static(clientBuildPath));
-  
+
   // Handle React Router - send all non-API requests to index.html
   app.get('*', (req, res) => {
     // Skip API routes
@@ -114,7 +114,7 @@ if (fs.existsSync(clientBuildPath)) {
   });
 } else {
   console.log('Client build not found. Run "npm run build" first or use development mode with separate client server.');
-  
+
   // 404 handler for when no client build exists
   app.use('*', (req, res) => {
     if (req.path.startsWith('/api/')) {
@@ -159,7 +159,7 @@ const createCloudNetWebSocket = async (serviceId, user) => {
   try {
     // Ensure we have a valid CloudNet token
     await cloudnetApi.ensureValidToken();
-    
+
     if (!cloudnetApi.authToken) {
       throw new Error('No CloudNet authentication token available');
     }
@@ -224,12 +224,12 @@ const createCloudNetWebSocket = async (serviceId, user) => {
 // WebSocket connection handling for real-time features
 wss.on('connection', async (ws, req) => {
   console.log('WebSocket connection attempt...');
-  
+
   try {
     // Authenticate the WebSocket connection
     const user = authenticateWebSocket(req);
     console.log(`WebSocket authenticated for user: ${user.username}`);
-    
+
     ws.user = user;
   } catch (error) {
     console.error('WebSocket authentication failed:', error.message);
@@ -240,11 +240,12 @@ wss.on('connection', async (ws, req) => {
     ws.close();
     return;
   }
-  
+
   ws.on('message', async (message) => {
     try {
       const data = JSON.parse(message);
-      
+      console.log(`WebSocket message received: ${data.type}`);
+
       switch (data.type) {
         case 'subscribe_logs':
           // Subscribe to server logs
@@ -253,19 +254,19 @@ wss.on('connection', async (ws, req) => {
             type: 'log_subscribed',
             serverId: data.serverId
           }));
-          
+
           // Connect to CloudNet WebSocket or use existing connection
           try {
             if (cloudnetApi.config.enabled) {
               const connection = await createCloudNetWebSocket(data.serverId, ws.user);
-              
+
               if (connection) {
                 // Add this client to the connection's client set
                 connection.clients.add(ws);
-                
+
                 // Store reference for cleanup
                 ws.cloudnetConnection = connection;
-                
+
                 console.log(`Client subscribed to CloudNet WebSocket for service ${data.serverId}`);
               } else {
                 ws.send(JSON.stringify({
@@ -275,7 +276,7 @@ wss.on('connection', async (ws, req) => {
                   message: '[ERROR] Could not connect to CloudNet WebSocket - using fallback'
                 }));
               }
-              
+
               // Try to fetch recent logs from CloudNet REST API as history
               const logs = await cloudnetApi.getServerLogs(data.serverId, 20);
               if (logs && logs.lines) {
@@ -321,7 +322,7 @@ wss.on('connection', async (ws, req) => {
             }));
           }
           break;
-          
+
         case 'send_command':
           // Send command to server via CloudNet API
           if (data.serverId && data.command) {
@@ -329,7 +330,7 @@ wss.on('connection', async (ws, req) => {
               // For CloudNet, we can try to send commands via the REST API
               if (cloudnetApi.config.enabled) {
                 const response = await cloudnetApi.sendCommand(data.serverId, data.command);
-                
+
                 ws.send(JSON.stringify({
                   type: 'command_sent',
                   serverId: data.serverId,
@@ -347,7 +348,7 @@ wss.on('connection', async (ws, req) => {
                   success: true
                 }));
               }
-              
+
               // Also broadcast the command as a log entry
               ws.send(JSON.stringify({
                 type: 'server_log',
@@ -355,7 +356,7 @@ wss.on('connection', async (ws, req) => {
                 timestamp: new Date().toISOString(),
                 message: `> ${data.command}`
               }));
-              
+
             } catch (error) {
               console.error('Error sending command:', error);
               ws.send(JSON.stringify({
@@ -368,7 +369,7 @@ wss.on('connection', async (ws, req) => {
             }
           }
           break;
-          
+
         default:
           ws.send(JSON.stringify({
             type: 'error',
@@ -386,11 +387,11 @@ wss.on('connection', async (ws, req) => {
 
   ws.on('close', () => {
     console.log('WebSocket connection closed');
-    
+
     // Clean up CloudNet connection if this was the last client
     if (ws.cloudnetConnection) {
       ws.cloudnetConnection.clients.delete(ws);
-      
+
       // If no more clients are connected to this service, close the CloudNet connection
       if (ws.cloudnetConnection.clients.size === 0) {
         console.log(`Closing CloudNet WebSocket for service ${ws.cloudnetConnection.serviceId} - no more clients`);
@@ -398,7 +399,7 @@ wss.on('connection', async (ws, req) => {
         cloudnetConnections.delete(ws.cloudnetConnection.serviceId);
       }
     }
-    
+
     // Clean up any intervals
     if (ws.heartbeatInterval) {
       clearInterval(ws.heartbeatInterval);
@@ -439,7 +440,7 @@ const broadcastServerLog = (serverId, logLine) => {
 server.listen(PORT, () => {
   console.log(`CloudNet Panel server running on port ${PORT}`);
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  
+
   // Log CloudNet API configuration
   const config = require('./config/cloudnet');
   console.log(`CloudNet API Enabled: ${config.cloudnet.enabled}`);
@@ -449,7 +450,7 @@ server.listen(PORT, () => {
   } else {
     console.log('CloudNet API is DISABLED - will use mock data');
   }
-  
+
   // Initialize default data after server starts
   setTimeout(() => {
     initializeDefaultData();

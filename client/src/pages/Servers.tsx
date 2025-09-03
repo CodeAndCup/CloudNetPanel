@@ -89,13 +89,13 @@ const Servers: React.FC = () => {
 
   const connectWebSocket = (serverId: number) => {
     const token = localStorage.getItem('token');
-    
+
     if (!token) {
       console.error('No authentication token available for WebSocket connection');
       setLogs(prev => [...prev, `[${new Date().toISOString()}] ERROR: Authentication required`]);
       return;
     }
-    
+
     const wsUrl = `${getWebSocketUrl()}?token=${encodeURIComponent(token)}`;
     const socket = new WebSocket(wsUrl);
 
@@ -107,9 +107,9 @@ const Servers: React.FC = () => {
       }));
     };
 
-    socket.onmessage = (event) => {
+    socket.onmessage = async (event) => {
       const data = JSON.parse(event.data);
-      
+
       switch (data.type) {
         case 'server_log':
           setLogs(prev => [...prev, `[${data.timestamp}] ${data.message}`]);
@@ -125,6 +125,8 @@ const Servers: React.FC = () => {
           break;
         case 'log_subscribed':
           setLogs(prev => [...prev, `[${new Date().toISOString()}] Subscribed to server logs for ${data.serverId}`]);
+          const { data: cachedLogs } = await axios.get(`/api/servers/${data.serverId}/cachedLogs`);
+          setLogs(prev => [...prev, ...cachedLogs.lines.map((log: string) => `${log}`)]);
           break;
       }
     };
@@ -188,25 +190,25 @@ const Servers: React.FC = () => {
 
   const handleServerAction = async (serverId: number, action: string) => {
     setActionLoading(prev => ({ ...prev, [serverId]: action }));
-    
+
     try {
       await axios.post(`/api/servers/${serverId}/${action}`);
       // Update the server status in the UI
-      setServers(prev => prev.map(server => 
-        server.id === serverId 
+      setServers(prev => prev.map(server =>
+        server.id === serverId
           ? { ...server, status: action === 'start' ? 'starting' : action === 'stop' ? 'stopping' : 'restarting' }
           : server
       ));
-      
+
       // Simulate status change after a delay
       setTimeout(() => {
-        setServers(prev => prev.map(server => 
-          server.id === serverId 
+        setServers(prev => prev.map(server =>
+          server.id === serverId
             ? { ...server, status: action === 'stop' ? 'offline' : 'online' }
             : server
         ));
       }, 2000);
-      
+
     } catch (error) {
       console.error(`Error ${action}ing server:`, error);
     } finally {
@@ -256,7 +258,7 @@ const Servers: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Servers</h1>
-        <button 
+        <button
           onClick={() => setShowCreateModal(true)}
           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
@@ -338,7 +340,7 @@ const Servers: React.FC = () => {
                       )}
                     </button>
 
-                    <button 
+                    <button
                       onClick={() => openServerConsole(server)}
                       className="inline-flex items-center p-2 border border-transparent rounded-full text-blue-600 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                       title="View logs and console"
@@ -376,7 +378,7 @@ const Servers: React.FC = () => {
                 <X className="h-6 w-6" />
               </button>
             </div>
-            
+
             {/* Logs Display */}
             <div className="bg-black text-green-400 p-4 rounded-md font-mono text-sm h-96 overflow-y-auto mb-4">
               {logs.map((log, index) => (
@@ -417,7 +419,7 @@ const Servers: React.FC = () => {
               <h3 className="text-lg font-medium text-gray-900 dark:text-white text-center mb-4">
                 Create Server
               </h3>
-              
+
               <form onSubmit={handleCreateServer} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
