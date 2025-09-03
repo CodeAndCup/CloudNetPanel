@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Square, RotateCcw, Plus, Trash2, Edit, Terminal, Eye } from 'lucide-react';
+import { Play, Square, RotateCcw, Plus, Trash2, Edit, Terminal, Eye, X } from 'lucide-react';
 import axios from 'axios';
 import clsx from 'clsx';
 
