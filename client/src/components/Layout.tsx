@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -7,17 +7,17 @@ import {
   LayoutDashboard, 
   Server, 
   Network, 
-  Users, 
   LogOut, 
   Menu,
   X,
   FileText,
   Archive,
   Settings,
-  UserCheck,
   Sun,
   Moon,
-  Activity
+  Activity,
+  ChevronDown,
+  User
 } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -30,6 +30,22 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  // Close profile dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setProfileOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -38,9 +54,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Templates', href: '/templates', icon: FileText },
     { name: 'Backups', href: '/backups', icon: Archive },
     { name: 'Tasks', href: '/tasks', icon: Settings },
-    { name: 'Users', href: '/users', icon: Users },
-    { name: 'Groups', href: '/groups', icon: UserCheck },
     { name: 'Activities', href: '/activities', icon: Activity },
+    { name: 'Administration', href: '/admin', icon: Settings },
   ];
 
   const isActive = (href: string) => {
@@ -168,15 +183,45 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       <Sun className="h-5 w-5" />
                     )}
                   </button>
-                  <span className="text-sm text-gray-700 dark:text-gray-300">
-                    Welcome, {user?.username}
-                  </span>
-                  <button
-                    onClick={logout}
-                    className="bg-white dark:bg-gray-800 p-1 rounded-full text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                  >
-                    <LogOut className="h-6 w-6" />
-                  </button>
+
+                  {/* Profile dropdown */}
+                  <div className="relative" ref={profileRef}>
+                    <button
+                      onClick={() => setProfileOpen(!profileOpen)}
+                      className="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    >
+                      <span className="text-sm text-gray-700 dark:text-gray-300 mr-2">
+                        Welcome, {user?.username}
+                      </span>
+                      <ChevronDown className="h-4 w-4 text-gray-500" />
+                    </button>
+
+                    {/* Dropdown menu */}
+                    {profileOpen && (
+                      <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-50">
+                        <div className="py-1">
+                          <Link
+                            to="/profile"
+                            className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                            onClick={() => setProfileOpen(false)}
+                          >
+                            <User className="h-4 w-4 mr-3" />
+                            Profile Settings
+                          </Link>
+                          <button
+                            onClick={() => {
+                              setProfileOpen(false);
+                              logout();
+                            }}
+                            className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          >
+                            <LogOut className="h-4 w-4 mr-3" />
+                            Sign Out
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
