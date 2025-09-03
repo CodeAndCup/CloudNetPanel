@@ -1,0 +1,127 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "create": "Create",
+    "update": "Update",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "active": "Active",
+    "inactive": "Inactive",
+    "name": "Name",
+    "description": "Description",
+    "actions": "Actions",
+    "status": "Status",
+    "created": "Created",
+    "lastLogin": "Last Login"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "servers": "Servers",
+    "nodes": "Nodes",
+    "users": "Users",
+    "groups": "Groups",
+    "templates": "Templates",
+    "tasks": "Tasks",
+    "backups": "Backups",
+    "activities": "Activities",
+    "admin": "Administration",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Login",
+    "username": "Username",
+    "password": "Password",
+    "email": "Email",
+    "loginButton": "Sign In",
+    "loginError": "Invalid credentials",
+    "loginRequired": "Please log in to access this page"
+  },
+  "users": {
+    "title": "User Management",
+    "addUser": "Add User",
+    "editUser": "Edit User",
+    "deleteUser": "Delete User",
+    "createUser": "Create User",
+    "updateUser": "Update User",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "role": "Role",
+    "confirmDelete": "Are you sure you want to delete this user?",
+    "passwordHint": "(leave blank to keep current)",
+    "roles": {
+      "Users": "User",
+      "Developers": "Developer", 
+      "Moderators": "Moderator",
+      "Administrators": "Administrator"
+    }
+  },
+  "groups": {
+    "title": "Group Management",
+    "addGroup": "Create Group",
+    "editGroup": "Edit Group",
+    "deleteGroup": "Delete Group",
+    "createGroup": "Create Group",
+    "updateGroup": "Update Group",
+    "name": "Name",
+    "description": "Description",
+    "userCount": "Users",
+    "confirmDelete": "Are you sure you want to delete this group?"
+  },
+  "webhooks": {
+    "title": "Webhook Management",
+    "addWebhook": "Add Webhook",
+    "editWebhook": "Edit Webhook",
+    "deleteWebhook": "Delete Webhook",
+    "createWebhook": "Create Webhook",
+    "updateWebhook": "Update Webhook",
+    "name": "Name",
+    "url": "URL",
+    "events": "Events",
+    "eventsToSubscribe": "Events to Subscribe",
+    "lastTriggered": "Last Triggered",
+    "confirmDelete": "Are you sure you want to delete this webhook?",
+    "never": "Never",
+    "enable": "Enable",
+    "disable": "Disable"
+  },
+  "templates": {
+    "title": "Template Management",
+    "permissions": "Manage Permissions",
+    "addPermission": "Add Permission",
+    "currentPermissions": "Current Permissions",
+    "noPermissions": "No specific permissions set.",
+    "adminAccess": "Admins have full access by default.",
+    "permissionTypes": {
+      "read": "Read",
+      "write": "Write",
+      "delete": "Delete"
+    },
+    "targetTypes": {
+      "group": "Group",
+      "user": "User"
+    },
+    "remove": "Remove"
+  },
+  "errors": {
+    "generic": "An error occurred. Please try again.",
+    "networkError": "Network error. Please check your connection.",
+    "unauthorized": "You are not authorized to perform this action.",
+    "notFound": "The requested resource was not found.",
+    "validationError": "Please check your input and try again."
+  },
+  "success": {
+    "saved": "Changes saved successfully",
+    "created": "Created successfully",
+    "updated": "Updated successfully",
+    "deleted": "Deleted successfully"
+  }
+}

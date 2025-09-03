@@ -1,6 +1,6 @@
 // This component will be moved from the main Groups.tsx page
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Users, UserCheck } from 'lucide-react';
+import { Plus, Edit, Trash2, Users, UserCheck, X } from 'lucide-react';
 import axios from 'axios';
 
 interface GroupData {
@@ -11,10 +11,22 @@ interface GroupData {
   created_at: string;
 }
 
+interface GroupFormData {
+  name: string;
+  description: string;
+}
+
 const GroupsTab: React.FC = () => {
   const [groups, setGroups] = useState<GroupData[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingGroup, setEditingGroup] = useState<GroupData | null>(null);
+  const [formData, setFormData] = useState<GroupFormData>({
+    name: '',
+    description: ''
+  });
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     fetchGroups();
@@ -33,6 +45,57 @@ const GroupsTab: React.FC = () => {
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString();
+  };
+
+  const openEditModal = (group: GroupData) => {
+    setEditingGroup(group);
+    setFormData({
+      name: group.name,
+      description: group.description
+    });
+    setShowEditModal(true);
+  };
+
+  const closeModals = () => {
+    setShowAddModal(false);
+    setShowEditModal(false);
+    setEditingGroup(null);
+    setFormData({
+      name: '',
+      description: ''
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    try {
+      if (editingGroup) {
+        await axios.put(`/api/groups/${editingGroup.id}`, formData);
+      } else {
+        await axios.post('/api/groups', formData);
+      }
+      await fetchGroups();
+      closeModals();
+    } catch (error) {
+      console.error('Error saving group:', error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const deleteGroup = async (groupId: number) => {
+    if (!confirm('Are you sure you want to delete this group?')) {
+      return;
+    }
+
+    try {
+      await axios.delete(`/api/groups/${groupId}`);
+      setGroups(prev => prev.filter(group => group.id !== groupId));
+    } catch (error) {
+      console.error('Error deleting group:', error);
+    }
   };
 
   if (loading) {
@@ -116,10 +179,16 @@ const GroupsTab: React.FC = () => {
                   <div className="flex items-center space-x-2">
                     {group.name !== 'Administrators' && (
                       <>
-                        <button className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
+                        <button 
+                          onClick={() => openEditModal(group)}
+                          className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300"
+                        >
                           <Edit className="h-4 w-4" />
                         </button>
-                        <button className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                        <button 
+                          onClick={() => deleteGroup(group.id)}
+                          className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                        >
                           <Trash2 className="h-4 w-4" />
                         </button>
                       </>
@@ -131,6 +200,71 @@ const GroupsTab: React.FC = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Add/Edit Group Modal */}
+      {(showAddModal || showEditModal) && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-700">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-white">
+                {editingGroup ? 'Edit Group' : 'Create New Group'}
+              </h3>
+              <button
+                onClick={closeModals}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  placeholder="Enter group name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Description
+                </label>
+                <textarea
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  placeholder="Enter group description"
+                />
+              </div>
+
+              <div className="flex justify-end space-x-3 pt-4">
+                <button
+                  type="button"
+                  onClick={closeModals}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-300 hover:bg-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                >
+                  {submitting ? 'Saving...' : (editingGroup ? 'Update Group' : 'Create Group')}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
