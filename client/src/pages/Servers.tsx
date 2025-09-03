@@ -369,7 +369,7 @@ const Servers: React.FC = () => {
           <div className="relative top-[4rem] mx-auto p-5 border w-11/12 max-w-[76rem] shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-700">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                {selectedServer.name} - Console
+                {selectedServer.name} - Console | <span className="font-mono bg-gray-100 dark:bg-gray-700 rounded p-1">{selectedServer.id}</span> | <span className="font-mono bg-gray-100 dark:bg-gray-700 rounded p-1">{selectedServer.ip}:{selectedServer.port}</span>
               </h3>
               <button
                 onClick={closeServerConsole}
