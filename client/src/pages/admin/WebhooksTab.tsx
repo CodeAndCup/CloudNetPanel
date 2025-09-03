@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Webhook, ExternalLink, Activity } from 'lucide-react';
+import { Plus, Edit, Trash2, Webhook, ExternalLink, Activity, X } from 'lucide-react';
 import axios from 'axios';
 
 interface WebhookData {
@@ -12,10 +12,41 @@ interface WebhookData {
   last_triggered: string | null;
 }
 
+interface WebhookFormData {
+  name: string;
+  url: string;
+  events: string[];
+  active: boolean;
+}
+
 const WebhooksTab: React.FC = () => {
   const [webhooks, setWebhooks] = useState<WebhookData[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingWebhook, setEditingWebhook] = useState<WebhookData | null>(null);
+  const [formData, setFormData] = useState<WebhookFormData>({
+    name: '',
+    url: '',
+    events: [],
+    active: true
+  });
+  const [submitting, setSubmitting] = useState(false);
+
+  const availableEvents = [
+    'user.created',
+    'user.login',
+    'user.logout',
+    'server.started',
+    'server.stopped',
+    'server.crashed',
+    'backup.created',
+    'backup.completed',
+    'backup.failed',
+    'task.created',
+    'task.completed',
+    'task.failed'
+  ];
 
   useEffect(() => {
     fetchWebhooks();
@@ -23,29 +54,8 @@ const WebhooksTab: React.FC = () => {
 
   const fetchWebhooks = async () => {
     try {
-      // For now, we'll use mock data since the webhook API doesn't exist yet
-      // TODO: Replace with actual API call when backend is implemented
-      const mockData: WebhookData[] = [
-        {
-          id: 1,
-          name: 'Discord Notifications',
-          url: 'https://discord.com/api/webhooks/123/456',
-          events: ['user.created', 'server.started', 'server.stopped'],
-          active: true,
-          created_at: new Date().toISOString(),
-          last_triggered: new Date(Date.now() - 3600000).toISOString()
-        },
-        {
-          id: 2,
-          name: 'Slack Alerts',
-          url: 'https://hooks.slack.com/services/T00/B00/XXX',
-          events: ['user.login', 'backup.completed'],
-          active: false,
-          created_at: new Date(Date.now() - 86400000).toISOString(),
-          last_triggered: null
-        }
-      ];
-      setWebhooks(mockData);
+      const response = await axios.get('/api/webhooks');
+      setWebhooks(response.data);
     } catch (error) {
       console.error('Error fetching webhooks:', error);
     } finally {
@@ -60,13 +70,77 @@ const WebhooksTab: React.FC = () => {
 
   const toggleWebhook = async (id: number, active: boolean) => {
     try {
-      // TODO: Implement API call to toggle webhook
+      await axios.patch(`/api/webhooks/${id}/toggle`, { active });
       setWebhooks(prev => prev.map(webhook => 
         webhook.id === id ? { ...webhook, active } : webhook
       ));
     } catch (error) {
       console.error('Error toggling webhook:', error);
     }
+  };
+
+  const deleteWebhook = async (id: number) => {
+    if (!confirm('Are you sure you want to delete this webhook?')) {
+      return;
+    }
+
+    try {
+      await axios.delete(`/api/webhooks/${id}`);
+      setWebhooks(prev => prev.filter(webhook => webhook.id !== id));
+    } catch (error) {
+      console.error('Error deleting webhook:', error);
+    }
+  };
+
+  const openEditModal = (webhook: WebhookData) => {
+    setEditingWebhook(webhook);
+    setFormData({
+      name: webhook.name,
+      url: webhook.url,
+      events: webhook.events,
+      active: webhook.active
+    });
+    setShowEditModal(true);
+  };
+
+  const closeModals = () => {
+    setShowAddModal(false);
+    setShowEditModal(false);
+    setEditingWebhook(null);
+    setFormData({
+      name: '',
+      url: '',
+      events: [],
+      active: true
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    try {
+      if (editingWebhook) {
+        await axios.put(`/api/webhooks/${editingWebhook.id}`, formData);
+      } else {
+        await axios.post('/api/webhooks', formData);
+      }
+      await fetchWebhooks();
+      closeModals();
+    } catch (error) {
+      console.error('Error saving webhook:', error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const toggleEvent = (event: string) => {
+    setFormData(prev => ({
+      ...prev,
+      events: prev.events.includes(event)
+        ? prev.events.filter(e => e !== event)
+        : [...prev.events, event]
+    }));
   };
 
   if (loading) {
@@ -180,10 +254,16 @@ const WebhooksTab: React.FC = () => {
                     >
                       {webhook.active ? 'Disable' : 'Enable'}
                     </button>
-                    <button className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">
+                    <button
+                      onClick={() => openEditModal(webhook)}
+                      className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300"
+                    >
                       <Edit className="h-4 w-4" />
                     </button>
-                    <button className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                    <button 
+                      onClick={() => deleteWebhook(webhook.id)}
+                      className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                    >
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
@@ -210,6 +290,105 @@ const WebhooksTab: React.FC = () => {
               <Plus className="h-4 w-4 mr-2" />
               Add Webhook
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Add/Edit Webhook Modal */}
+      {(showAddModal || showEditModal) && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-[600px] shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-700">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-white">
+                {editingWebhook ? 'Edit Webhook' : 'Add New Webhook'}
+              </h3>
+              <button
+                onClick={closeModals}
+                className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  placeholder="Enter webhook name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  URL
+                </label>
+                <input
+                  type="url"
+                  required
+                  value={formData.url}
+                  onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                  placeholder="https://..."
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                  Events to Subscribe
+                </label>
+                <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+                  {availableEvents.map((event) => (
+                    <label key={event} className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={formData.events.includes(event)}
+                        onChange={() => toggleEvent(event)}
+                        className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                      />
+                      <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                        {event}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={formData.active}
+                  onChange={(e) => setFormData({ ...formData, active: e.target.checked })}
+                  className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                />
+                <label className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                  Active
+                </label>
+              </div>
+
+              <div className="flex space-x-3 pt-4">
+                <button
+                  type="button"
+                  onClick={closeModals}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-300 hover:bg-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={submitting || formData.events.length === 0}
+                  className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                >
+                  {submitting ? 'Saving...' : (editingWebhook ? 'Update Webhook' : 'Create Webhook')}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

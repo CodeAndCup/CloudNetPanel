@@ -333,6 +333,29 @@ router.post('/permissions', authenticateToken, requireAdmin, async (req, res) =>
   }
 });
 
+// Delete a specific permission by ID
+router.delete('/permissions/:permissionId', authenticateToken, requireAdmin, async (req, res) => {
+  const permissionId = parseInt(req.params.permissionId);
+  
+  if (!permissionId) {
+    return res.status(400).json({ error: 'Permission ID required' });
+  }
+
+  try {
+    await new Promise((resolve, reject) => {
+      db.run('DELETE FROM file_permissions WHERE id = ?', [permissionId], function(err) {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+
+    res.json({ message: 'Permission removed successfully' });
+  } catch (error) {
+    console.error('Error deleting permission:', error);
+    res.status(500).json({ error: 'Failed to delete permission' });
+  }
+});
+
 // Get all available groups and users for permission assignment
 router.get('/permission-entities', authenticateToken, requireAdmin, async (req, res) => {
   try {
