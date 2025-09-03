@@ -149,6 +149,20 @@ db.serialize(() => {
       FOREIGN KEY (user_id) REFERENCES users (id)
     )
   `);
+
+  // Webhooks table
+  db.run(`
+    CREATE TABLE IF NOT EXISTS webhooks (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      url TEXT NOT NULL,
+      events TEXT NOT NULL, -- JSON array of event types
+      active BOOLEAN DEFAULT 1,
+      created_by INTEGER,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (created_by) REFERENCES users (id)
+    )
+  `);
 });
 
 module.exports = db;

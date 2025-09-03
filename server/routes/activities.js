@@ -4,6 +4,51 @@ const db = require('../database/sqlite');
 
 const router = express.Router();
 
+// Get current user's activities
+router.get('/my-activity', authenticateToken, (req, res) => {
+  const userId = req.user.id;
+  const resourceType = req.query.resource_type;
+  const days = parseInt(req.query.days) || 30;
+  
+  let whereClause = 'WHERE user_id = ?';
+  let whereParams = [userId];
+  
+  if (resourceType) {
+    whereClause += ' AND resource_type = ?';
+    whereParams.push(resourceType);
+  }
+  
+  // Add date filter
+  whereClause += ` AND created_at >= datetime('now', '-${days} days')`;
+
+  db.all(`
+    SELECT 
+      id,
+      action,
+      resource_type,
+      resource_id,
+      details,
+      created_at
+    FROM activities
+    ${whereClause}
+    ORDER BY created_at DESC
+    LIMIT 100
+  `, whereParams, (err, rows) => {
+    if (err) {
+      console.error('Error fetching user activities:', err);
+      return res.status(500).json({ error: 'Failed to fetch activities' });
+    }
+
+    // Parse details JSON for each activity
+    const activities = rows.map(row => ({
+      ...row,
+      details: row.details || ''
+    }));
+
+    res.json(activities);
+  });
+});
+
 // Get all activities (admin only)
 router.get('/', authenticateToken, requireAdmin, (req, res) => {
   const page = parseInt(req.query.page) || 1;

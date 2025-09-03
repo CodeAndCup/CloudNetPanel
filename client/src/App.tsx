@@ -12,6 +12,16 @@ import Templates from './pages/Templates';
 import Backups from './pages/Backups';
 import Tasks from './pages/Tasks';
 import Activities from './pages/Activities';
+
+// Admin pages
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminGroups from './pages/admin/AdminGroups';
+import AdminWebhooks from './pages/admin/AdminWebhooks';
+
+// Profile pages
+import ProfileAccount from './pages/profile/ProfileAccount';
+import ProfileActivity from './pages/profile/ProfileActivity';
+
 import Layout from './components/Layout';
 import LoadingSpinner from './components/LoadingSpinner';
 
@@ -51,9 +61,33 @@ const AppRoutes: React.FC = () => {
         <Route path="/templates" element={<Templates />} />
         <Route path="/backups" element={<Backups />} />
         <Route path="/tasks" element={<Tasks />} />
-        <Route path="/users" element={<Users />} />
-        <Route path="/groups" element={<Groups />} />
-        <Route path="/activities" element={<Activities />} />
+        
+        {/* Admin routes - only for admin users */}
+        {user?.role === 'Administrators' && (
+          <>
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/groups" element={<AdminGroups />} />
+            <Route path="/admin/webhooks" element={<AdminWebhooks />} />
+          </>
+        )}
+        
+        {/* Profile routes */}
+        <Route path="/profile/account" element={<ProfileAccount />} />
+        <Route path="/profile/activity" element={<ProfileActivity />} />
+        
+        {/* Legacy routes - redirect to new structure */}
+        <Route path="/users" element={
+          user?.role === 'Administrators' 
+            ? <Navigate to="/admin/users" replace /> 
+            : <Navigate to="/dashboard" replace />
+        } />
+        <Route path="/groups" element={
+          user?.role === 'Administrators' 
+            ? <Navigate to="/admin/groups" replace /> 
+            : <Navigate to="/dashboard" replace />
+        } />
+        <Route path="/activities" element={<Navigate to="/profile/activity" replace />} />
+        
         <Route path="/login" element={<Navigate to="/dashboard" />} />
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
