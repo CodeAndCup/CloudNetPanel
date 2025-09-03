@@ -251,7 +251,7 @@ const Templates: React.FC = () => {
           </li>
           {currentPath.split('/').filter(p => p).map((part, index, array) => (
             <li key={index} className="flex items-center">
-              <span className="text-gray-400 mx-2">/</span>
+              <span className="text-gray-400 mx-2">\</span>
               <button
                 onClick={() => navigateToPath(array.slice(0, index + 1).join('/'))}
                 className="text-blue-600 hover:text-blue-800"

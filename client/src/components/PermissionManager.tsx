@@ -45,10 +45,13 @@ const PermissionManager: React.FC<PermissionManagerProps> = ({ filePath, onClose
 
   const fetchPermissions = async () => {
     try {
+      console.log('Fetching permissions for path:', filePath);
       const response = await axios.get(`/api/templates/permissions?path=${encodeURIComponent(filePath || '')}`);
+      console.log('Permissions response:', response.data);
       setPermissions(response.data.permissions || []);
     } catch (error) {
       console.error('Error fetching permissions:', error);
+      console.error('Error details:', error.response?.data);
       setPermissions([]);
     }
   };
@@ -75,15 +78,30 @@ const PermissionManager: React.FC<PermissionManagerProps> = ({ filePath, onClose
     if (!newPermission.targetId) return;
 
     try {
-      const permissionData = {
-        path: filePath || '',
-        permissions: [{
-          [newPermission.targetType === 'group' ? 'group_id' : 'user_id']: parseInt(newPermission.targetId),
-          permission_type: newPermission.permissionType
-        }]
+      // Create new permission object
+      const newPerm = {
+        [newPermission.targetType === 'group' ? 'group_id' : 'user_id']: parseInt(newPermission.targetId),
+        permission_type: newPermission.permissionType
       };
 
-      await axios.post('/api/templates/permissions', permissionData);
+      // Include all existing permissions plus the new one
+      const allPermissions = [
+        ...permissions.map(p => ({
+          group_id: p.group_id || null,
+          user_id: p.user_id || null,
+          permission_type: p.permission_type
+        })),
+        newPerm
+      ];
+
+      const permissionData = {
+        path: filePath || '',
+        permissions: allPermissions
+      };
+
+      console.log('Sending permission data:', permissionData);
+      const response = await axios.post('/api/templates/permissions', permissionData);
+      console.log('Permission response:', response.data);
       
       // Reset form
       setNewPermission({
@@ -95,6 +113,7 @@ const PermissionManager: React.FC<PermissionManagerProps> = ({ filePath, onClose
       fetchPermissions();
     } catch (error) {
       console.error('Error adding permission:', error);
+      console.error('Error details:', error.response?.data);
     }
   };
 
