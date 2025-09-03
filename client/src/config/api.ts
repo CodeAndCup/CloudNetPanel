@@ -1,6 +1,6 @@
 // API Configuration for CloudNet Panel
 
-const isDevelopment = import.meta.env.DEV;
+const isDevelopment = (import.meta as any).env?.DEV || process.env.NODE_ENV === 'development';
 
 // API Base URL
 export const API_BASE_URL = isDevelopment 

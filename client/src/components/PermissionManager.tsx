@@ -49,7 +49,7 @@ const PermissionManager: React.FC<PermissionManagerProps> = ({ filePath, onClose
       const response = await axios.get(`/api/templates/permissions?path=${encodeURIComponent(filePath || '')}`);
       console.log('Permissions response:', response.data);
       setPermissions(response.data.permissions || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching permissions:', error);
       console.error('Error details:', error.response?.data);
       setPermissions([]);
@@ -78,9 +78,10 @@ const PermissionManager: React.FC<PermissionManagerProps> = ({ filePath, onClose
     if (!newPermission.targetId) return;
 
     try {
-      // Create new permission object
+      // Create new permission object with both group_id and user_id properly set
       const newPerm = {
-        [newPermission.targetType === 'group' ? 'group_id' : 'user_id']: parseInt(newPermission.targetId),
+        group_id: newPermission.targetType === 'group' ? parseInt(newPermission.targetId) : null,
+        user_id: newPermission.targetType === 'user' ? parseInt(newPermission.targetId) : null,
         permission_type: newPermission.permissionType
       };
 
@@ -111,8 +112,18 @@ const PermissionManager: React.FC<PermissionManagerProps> = ({ filePath, onClose
       });
       
       fetchPermissions();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error adding permission:', error);
+      console.error('Error details:', error.response?.data);
+    }
+  };
+
+  const removePermission = async (permissionId: number) => {
+    try {
+      await axios.delete(`/api/templates/permissions/${permissionId}`);
+      fetchPermissions();
+    } catch (error: any) {
+      console.error('Error removing permission:', error);
       console.error('Error details:', error.response?.data);
     }
   };
@@ -208,7 +219,7 @@ const PermissionManager: React.FC<PermissionManagerProps> = ({ filePath, onClose
                     </span>
                   </div>
                   <button
-                    onClick={() => {/* TODO: Implement delete permission */}}
+                    onClick={() => removePermission(permission.id)}
                     className="text-red-600 hover:text-red-800"
                   >
                     Remove

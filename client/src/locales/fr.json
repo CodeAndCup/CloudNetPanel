@@ -1,0 +1,127 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "add": "Ajouter",
+    "create": "Créer",
+    "update": "Mettre à jour",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "yes": "Oui",
+    "no": "Non",
+    "active": "Actif",
+    "inactive": "Inactif",
+    "name": "Nom",
+    "description": "Description",
+    "actions": "Actions",
+    "status": "Statut",
+    "created": "Créé",
+    "lastLogin": "Dernière connexion"
+  },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "servers": "Serveurs",
+    "nodes": "Nœuds",
+    "users": "Utilisateurs",
+    "groups": "Groupes",
+    "templates": "Modèles",
+    "tasks": "Tâches",
+    "backups": "Sauvegardes",
+    "activities": "Activités",
+    "admin": "Administration",
+    "profile": "Profil",
+    "logout": "Déconnexion"
+  },
+  "auth": {
+    "login": "Connexion",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "email": "Email",
+    "loginButton": "Se connecter",
+    "loginError": "Identifiants invalides",
+    "loginRequired": "Veuillez vous connecter pour accéder à cette page"
+  },
+  "users": {
+    "title": "Gestion des utilisateurs",
+    "addUser": "Ajouter un utilisateur",
+    "editUser": "Modifier l'utilisateur",
+    "deleteUser": "Supprimer l'utilisateur",
+    "createUser": "Créer un utilisateur",
+    "updateUser": "Mettre à jour l'utilisateur",
+    "username": "Nom d'utilisateur",
+    "email": "Email",
+    "password": "Mot de passe",
+    "role": "Rôle",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
+    "passwordHint": "(laisser vide pour conserver l'actuel)",
+    "roles": {
+      "Users": "Utilisateur",
+      "Developers": "Développeur",
+      "Moderators": "Modérateur",
+      "Administrators": "Administrateur"
+    }
+  },
+  "groups": {
+    "title": "Gestion des groupes",
+    "addGroup": "Créer un groupe",
+    "editGroup": "Modifier le groupe",
+    "deleteGroup": "Supprimer le groupe",
+    "createGroup": "Créer un groupe",
+    "updateGroup": "Mettre à jour le groupe",
+    "name": "Nom",
+    "description": "Description",
+    "userCount": "Utilisateurs",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce groupe ?"
+  },
+  "webhooks": {
+    "title": "Gestion des webhooks",
+    "addWebhook": "Ajouter un webhook",
+    "editWebhook": "Modifier le webhook",
+    "deleteWebhook": "Supprimer le webhook",
+    "createWebhook": "Créer un webhook",
+    "updateWebhook": "Mettre à jour le webhook",
+    "name": "Nom",
+    "url": "URL",
+    "events": "Événements",
+    "eventsToSubscribe": "Événements à souscrire",
+    "lastTriggered": "Dernière activation",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce webhook ?",
+    "never": "Jamais",
+    "enable": "Activer",
+    "disable": "Désactiver"
+  },
+  "templates": {
+    "title": "Gestion des modèles",
+    "permissions": "Gérer les permissions",
+    "addPermission": "Ajouter une permission",
+    "currentPermissions": "Permissions actuelles",
+    "noPermissions": "Aucune permission spécifique définie.",
+    "adminAccess": "Les administrateurs ont un accès complet par défaut.",
+    "permissionTypes": {
+      "read": "Lecture",
+      "write": "Écriture",
+      "delete": "Suppression"
+    },
+    "targetTypes": {
+      "group": "Groupe",
+      "user": "Utilisateur"
+    },
+    "remove": "Supprimer"
+  },
+  "errors": {
+    "generic": "Une erreur s'est produite. Veuillez réessayer.",
+    "networkError": "Erreur réseau. Veuillez vérifier votre connexion.",
+    "unauthorized": "Vous n'êtes pas autorisé à effectuer cette action.",
+    "notFound": "La ressource demandée n'a pas été trouvée.",
+    "validationError": "Veuillez vérifier votre saisie et réessayer."
+  },
+  "success": {
+    "saved": "Modifications enregistrées avec succès",
+    "created": "Créé avec succès",
+    "updated": "Mis à jour avec succès",
+    "deleted": "Supprimé avec succès"
+  }
+}
