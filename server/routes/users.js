@@ -7,7 +7,7 @@ const router = express.Router();
 // Get all users (admin only)
 router.get('/', authenticateToken, requireAdmin, (req, res) => {
   db.all(`
-    SELECT username, email, role, created_at, last_login, status FROM users;
+    SELECT id, username, email, role, created_at, last_login, status FROM users;
   `, (err, rows) => {
     if (err) {
       console.error('Error fetching users:', err);
