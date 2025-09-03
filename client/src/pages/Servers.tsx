@@ -112,7 +112,7 @@ const Servers: React.FC = () => {
 
       switch (data.type) {
         case 'server_log':
-          setLogs(prev => [...prev, `[${data.timestamp}] ${data.message}`]);
+          setLogs(prev => [...prev, `${data.message}`]);
           break;
         case 'command_sent':
           setLogs(prev => [...prev, `[${new Date().toISOString()}] Command executed: ${data.command}`]);
