@@ -435,7 +435,7 @@ const Templates: React.FC = () => {
                               <Shield className="h-4 w-4" />
                             </button>
                           )}
-                          {file.type === 'file' && file.permissions.read && (
+                          {file.type === 'file' && !file.name.includes('.jar') && file.permissions.read && (
                             <button
                               onClick={() => openFile(file)}
                               className="text-blue-600 hover:text-blue-900"
