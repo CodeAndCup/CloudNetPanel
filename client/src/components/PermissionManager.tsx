@@ -98,6 +98,15 @@ const PermissionManager: React.FC<PermissionManagerProps> = ({ filePath, onClose
     }
   };
 
+  const removePermission = async (permissionId: number) => {
+    try {
+      await axios.delete(`/api/templates/permissions/${permissionId}`);
+      fetchPermissions();
+    } catch (error) {
+      console.error('Error removing permission:', error);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
       <div className="relative top-20 mx-auto p-5 border w-2/3 max-w-2xl shadow-lg rounded-md bg-white">
@@ -189,7 +198,7 @@ const PermissionManager: React.FC<PermissionManagerProps> = ({ filePath, onClose
                     </span>
                   </div>
                   <button
-                    onClick={() => {/* TODO: Implement delete permission */}}
+                    onClick={() => removePermission(permission.id)}
                     className="text-red-600 hover:text-red-800"
                   >
                     Remove

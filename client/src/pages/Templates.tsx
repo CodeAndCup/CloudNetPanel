@@ -94,7 +94,7 @@ const Templates: React.FC = () => {
   };
 
   const navigateUp = () => {
-    const pathParts = currentPath.split('/').filter(p => p);
+    const pathParts = currentPath.split(/[/\\]/).filter(p => p);
     pathParts.pop();
     navigateToPath(pathParts.join('/'));
   };
@@ -249,7 +249,7 @@ const Templates: React.FC = () => {
               templates
             </button>
           </li>
-          {currentPath.split('/').filter(p => p).map((part, index, array) => (
+          {currentPath.split(/[/\\]/).filter(p => p).map((part, index, array) => (
             <li key={index} className="flex items-center">
               <span className="text-gray-400 mx-2">/</span>
               <button
