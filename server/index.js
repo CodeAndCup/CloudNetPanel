@@ -20,11 +20,13 @@ const systemRoutes = require('./routes/system')
 const activitiesRoutes = require('./routes/activities');
 const webhookRoutes = require('./routes/webhooks');
 const statisticsRoutes = require('./routes/statistics');
+const updatesRoutes = require('./routes/updates');
 const { initializeDefaultData } = require('./database/init');
 const { logActivity } = require('./middleware/activity');
 const { JWT_SECRET } = require('./middleware/auth');
 const jwt = require('jsonwebtoken');
 const url = require('url');
+const githubUpdateService = require('./services/githubUpdateService');
 
 const app = express();
 const server = http.createServer(app);
@@ -93,6 +95,7 @@ app.use('/api/system-info', navigationLimiter, systemRoutes);
 app.use('/api/activities', navigationLimiter, activitiesRoutes);
 app.use('/api/webhooks', navigationLimiter, logActivity('webhook_action', 'webhook'), webhookRoutes);
 app.use('/api/statistics', navigationLimiter, logActivity('statistics_view', 'statistics'), statisticsRoutes);
+app.use('/api/updates', navigationLimiter, logActivity('update_action', 'system'), updatesRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -459,4 +462,23 @@ server.listen(PORT, () => {
   setTimeout(() => {
     initializeDefaultData();
   }, 1000);
+
+  // Check for updates on startup (non-blocking)
+  setTimeout(async () => {
+    try {
+      console.log('Checking for updates...');
+      const updateInfo = await githubUpdateService.getUpdateInfo();
+      
+      if (updateInfo.error) {
+        console.log(`Update check failed: ${updateInfo.message}`);
+      } else if (!updateInfo.upToDate) {
+        console.log(`🚀 Update available! Current: ${updateInfo.currentVersion}, Latest: ${updateInfo.latestVersion}`);
+        console.log(`📦 Download: ${updateInfo.downloadUrl}`);
+      } else {
+        console.log(`✅ CloudNet Panel is up to date (${updateInfo.currentVersion})`);
+      }
+    } catch (error) {
+      console.log(`Update check failed: ${error.message}`);
+    }
+  }, 5000); // Check for updates 5 seconds after startup
 });
