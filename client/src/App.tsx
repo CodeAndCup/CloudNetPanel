@@ -11,7 +11,6 @@ import Templates from './pages/Templates';
 import Backups from './pages/Backups';
 import Tasks from './pages/Tasks';
 import Activities from './pages/Activities';
-import Statistics from './pages/Statistics';
 import Admin from './pages/Admin';
 import Profile from './pages/Profile';
 import Layout from './components/Layout';
@@ -19,21 +18,21 @@ import LoadingSpinner from './components/LoadingSpinner';
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading } = useAuth();
-  
+
   if (loading) {
     return <LoadingSpinner />;
   }
-  
+
   return user ? <>{children}</> : <Navigate to="/login" />;
 };
 
 const AppRoutes: React.FC = () => {
   const { user, loading } = useAuth();
-  
+
   if (loading) {
     return <LoadingSpinner />;
   }
-  
+
   if (!user) {
     return (
       <Routes>
@@ -42,7 +41,7 @@ const AppRoutes: React.FC = () => {
       </Routes>
     );
   }
-  
+
   return (
     <Layout>
       <Routes>
@@ -54,7 +53,6 @@ const AppRoutes: React.FC = () => {
         <Route path="/backups" element={<Backups />} />
         <Route path="/tasks" element={<Tasks />} />
         <Route path="/activities" element={<Activities />} />
-        <Route path="/statistics" element={<Statistics />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Navigate to="/dashboard" />} />

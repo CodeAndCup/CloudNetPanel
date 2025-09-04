@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
-import { 
-  Cloud, 
-  LayoutDashboard, 
-  Server, 
-  Network, 
-  LogOut, 
+import {
+  Cloud,
+  LayoutDashboard,
+  Server,
+  Network,
+  LogOut,
   Menu,
   X,
   FileText,
@@ -58,7 +58,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Backups', href: '/backups', icon: Archive },
     { name: 'Tasks', href: '/tasks', icon: Settings },
     { name: 'Activities', href: '/activities', icon: Activity },
-    { name: 'Statistics', href: '/statistics', icon: BarChart3 },
     { name: 'Administration', href: '/admin', icon: Settings },
   ];
 
@@ -243,7 +242,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </main>
         </div>
       </div>
-      
+
       <Footer />
     </div>
   );

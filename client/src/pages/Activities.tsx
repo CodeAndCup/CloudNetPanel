@@ -120,7 +120,7 @@ const Activities: React.FC = () => {
   const formatAction = (action: string, resourceType: string) => {
     const actionMap: { [key: string]: string } = {
       'server_action': 'Server Management',
-      'user_action': 'User Management', 
+      'user_action': 'User Management',
       'group_action': 'Group Management',
       'template_action': 'Template Management',
       'file_action': 'File Management',
@@ -242,64 +242,6 @@ const Activities: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Statistics */}
-      {showStats && stats && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Top Actions</h3>
-            <div className="space-y-2">
-              {stats.actionStats.slice(0, 5).map((stat, index) => (
-                <div key={stat.action} className="flex justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {formatAction(stat.action, '')}
-                  </span>
-                  <span className="text-sm font-medium text-gray-900 dark:text-white">
-                    {stat.count}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Top Resources</h3>
-            <div className="space-y-2">
-              {stats.resourceStats.slice(0, 5).map((stat, index) => (
-                <div key={stat.resource_type} className="flex justify-between">
-                  <span className="text-sm text-gray-600 dark:text-gray-400 capitalize">
-                    {stat.resource_type}s
-                  </span>
-                  <span className="text-sm font-medium text-gray-900 dark:text-white">
-                    {stat.count}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Most Active Users</h3>
-            <div className="space-y-2">
-              {stats.userStats.slice(0, 5).map((stat, index) => (
-                <div key={stat.username} className="flex justify-between">
-                  <div>
-                    <span className="text-sm font-medium text-gray-900 dark:text-white">
-                      {stat.username}
-                    </span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
-                      {stat.role}
-                    </span>
-                  </div>
-                  <span className="text-sm font-medium text-gray-900 dark:text-white">
-                    {stat.activity_count}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Activities List */}
       <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md">

@@ -19,7 +19,6 @@ const taskRoutes = require('./routes/tasks');
 const systemRoutes = require('./routes/system')
 const activitiesRoutes = require('./routes/activities');
 const webhookRoutes = require('./routes/webhooks');
-const statisticsRoutes = require('./routes/statistics');
 const updatesRoutes = require('./routes/updates');
 const { initializeDefaultData } = require('./database/init');
 const { logActivity } = require('./middleware/activity');
@@ -94,7 +93,6 @@ app.use('/api/tasks', logActivity('task_action', 'task'), taskRoutes);
 app.use('/api/system-info', navigationLimiter, systemRoutes);
 app.use('/api/activities', navigationLimiter, activitiesRoutes);
 app.use('/api/webhooks', navigationLimiter, logActivity('webhook_action', 'webhook'), webhookRoutes);
-app.use('/api/statistics', navigationLimiter, logActivity('statistics_view', 'statistics'), statisticsRoutes);
 app.use('/api/updates', navigationLimiter, logActivity('update_action', 'system'), updatesRoutes);
 
 // Health check endpoint
@@ -468,7 +466,7 @@ server.listen(PORT, () => {
     try {
       console.log('Checking for updates...');
       const updateInfo = await githubUpdateService.getUpdateInfo();
-      
+
       if (updateInfo.error) {
         console.log(`Update check failed: ${updateInfo.message}`);
       } else if (!updateInfo.upToDate) {

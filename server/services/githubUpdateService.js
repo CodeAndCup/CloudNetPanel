@@ -4,7 +4,7 @@ const path = require('path');
 
 class GitHubUpdateService {
   constructor() {
-    this.repositoryOwner = 'SAOFR-DEV';
+    this.repositoryOwner = 'PerrierBottle';
     this.repositoryName = 'CloudNetPanel';
     this.currentVersion = '1.0.0'; // This should be read from package.json
     this.apiBaseUrl = 'https://api.github.com';
@@ -111,9 +111,9 @@ class GitHubUpdateService {
     try {
       const currentVersion = await this.getCurrentVersion();
       const latestRelease = await this.getLatestRelease();
-      
+
       const hasUpdate = this.compareVersions(currentVersion, latestRelease.tagName) < 0;
-      
+
       return {
         hasUpdate,
         currentVersion,
@@ -150,7 +150,7 @@ class GitHubUpdateService {
   async getUpdateInfo() {
     try {
       const updateCheck = await this.checkForUpdates();
-      
+
       if (!updateCheck.hasUpdate) {
         return {
           upToDate: true,
