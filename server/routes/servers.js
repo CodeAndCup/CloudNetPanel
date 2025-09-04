@@ -64,6 +64,7 @@ router.get('/', authenticateToken, async (req, res) => {
         cloudnetApi.transformServerData(server)
       );
       res.json(transformedServers);
+      
     } else {
       // Use mock data
       res.json(servers);

@@ -1,6 +1,7 @@
 const express = require('express');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const db = require('../database/sqlite');
+const { act } = require('react');
 
 const router = express.Router();
 
@@ -97,16 +98,16 @@ router.get('/stats', authenticateToken, requireAdmin, (req, res) => {
   let dateCondition = '';
   switch (timeframe) {
     case '1d':
-      dateCondition = "WHERE created_at >= datetime('now', '-1 day')";
+      dateCondition = "WHERE a.created_at >= datetime('now', '-1 day')";
       break;
     case '7d':
-      dateCondition = "WHERE created_at >= datetime('now', '-7 days')";
+      dateCondition = "WHERE a.created_at >= datetime('now', '-7 days')";
       break;
     case '30d':
-      dateCondition = "WHERE created_at >= datetime('now', '-30 days')";
+      dateCondition = "WHERE a.created_at >= datetime('now', '-30 days')";
       break;
     default:
-      dateCondition = "WHERE created_at >= datetime('now', '-7 days')";
+      dateCondition = "WHERE a.created_at >= datetime('now', '-7 days')";
   }
 
   // Get activities by action type
@@ -114,7 +115,7 @@ router.get('/stats', authenticateToken, requireAdmin, (req, res) => {
     SELECT 
       action,
       COUNT(*) as count
-    FROM activities
+    FROM activities a
     ${dateCondition}
     GROUP BY action
     ORDER BY count DESC
@@ -129,7 +130,7 @@ router.get('/stats', authenticateToken, requireAdmin, (req, res) => {
       SELECT 
         resource_type,
         COUNT(*) as count
-      FROM activities
+      FROM activities a
       ${dateCondition}
       GROUP BY resource_type
       ORDER BY count DESC
@@ -173,8 +174,8 @@ router.delete('/cleanup', authenticateToken, requireAdmin, (req, res) => {
   const days = parseInt(req.body.days) || 90; // Default to 90 days
   
   db.run(`
-    DELETE FROM activities 
-    WHERE created_at < datetime('now', '-${days} days')
+    DELETE FROM activities a
+    WHERE a.created_at < datetime('now', '-${days} days')
   `, (err) => {
     if (err) {
       console.error('Error cleaning up activities:', err);
@@ -186,6 +187,23 @@ router.delete('/cleanup', authenticateToken, requireAdmin, (req, res) => {
       deletedDays: days
     });
   });
+});
+
+// Put new activities
+router.put('/newactivity', authenticateToken, (req, res) => {
+  const userId = req.query.userId;
+  const action = req.query.action || 'Unidentified';
+  const resource_type = req.query.resource_type || 'Unidentified';
+  const details = req.query.details || 'Unidentified';
+  
+  db.run(`
+    INSERT INTO activities (user_id, action, resource_type, details)
+    VALUES (?,?,?,?)
+    `, [userId, action, resource_type, details], function (err) {
+      if(err) console.error('An error occured while inserting new activity', err);
+    });
+
+  res.status(200);
 });
 
 module.exports = router;
