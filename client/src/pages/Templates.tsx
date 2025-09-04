@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Folder,
   File,
@@ -50,6 +50,9 @@ const Templates: React.FC = () => {
   const [showPermissionManager, setShowPermissionManager] = useState(false);
   const [selectedItemForPermissions, setSelectedItemForPermissions] = useState<string>('');
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchFiles(currentPath);
@@ -203,6 +206,78 @@ const Templates: React.FC = () => {
     return new Date(dateString).toLocaleString();
   };
 
+  const uploadFiles = async (fileList: FileList) => {
+    setUploading(true);
+    
+    try {
+      const formData = new FormData();
+      
+      // Add all files to FormData
+      for (let i = 0; i < fileList.length; i++) {
+        formData.append('files', fileList[i]);
+      }
+      
+      // Add current path to FormData
+      formData.append('path', currentPath);
+      
+      await axios.post('/api/templates/files/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      
+      // Refresh files list after successful upload
+      fetchFiles(currentPath);
+    } catch (error) {
+      console.error('Error uploading files:', error);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      uploadFiles(files);
+    }
+  };
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      uploadFiles(files);
+    }
+    // Reset the input so the same file can be selected again
+    if (e.target) {
+      e.target.value = '';
+    }
+  };
+
+  const triggerFileUpload = () => {
+    fileInputRef.current?.click();
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -235,6 +310,21 @@ const Templates: React.FC = () => {
             <Plus className="h-4 w-4 mr-2" />
             New File
           </button>
+          <button
+            onClick={triggerFileUpload}
+            disabled={uploading}
+            className="inline-flex items-center justify-center rounded-md border border-transparent bg-purple-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50"
+          >
+            <Upload className="h-4 w-4 mr-2" />
+            Upload Files
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            onChange={handleFileInputChange}
+            className="hidden"
+          />
         </div>
       </div>
 
@@ -361,8 +451,38 @@ const Templates: React.FC = () => {
       )}
 
       {/* File List */}
-      <div className="bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md">
+      <div 
+        className={clsx(
+          "bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md transition-colors",
+          isDragOver && "border-2 border-dashed border-blue-500 bg-blue-50 dark:bg-blue-900/20"
+        )}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+      >
         <div className="px-4 py-5 sm:p-6">
+          {/* Upload indicator */}
+          {uploading && (
+            <div className="mb-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-md p-3">
+              <div className="flex items-center">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-3"></div>
+                <span className="text-sm text-blue-700 dark:text-blue-300">Uploading files...</span>
+              </div>
+            </div>
+          )}
+
+          {/* Drag and drop overlay */}
+          {isDragOver && (
+            <div className="absolute inset-0 flex items-center justify-center bg-blue-50 dark:bg-blue-900/20 bg-opacity-75 z-10">
+              <div className="text-center">
+                <Upload className="mx-auto h-12 w-12 text-blue-500 mb-4" />
+                <p className="text-lg font-medium text-blue-700 dark:text-blue-300">Drop files here to upload</p>
+                <p className="text-sm text-blue-600 dark:text-blue-400">to {currentPath || 'root directory'}</p>
+              </div>
+            </div>
+          )}
+
           {currentPath && (
             <button
               onClick={navigateUp}
@@ -378,7 +498,7 @@ const Templates: React.FC = () => {
               <Folder className="mx-auto h-12 w-12 text-gray-400" />
               <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No files</h3>
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Get started by creating a new file or folder.
+                Get started by creating a new file or folder, or drag files here to upload them.
               </p>
             </div>
           ) : (

@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs').promises;
 const path = require('path');
+const multer = require('multer');
 const { authenticateToken, checkFilePermission, requireAdmin } = require('../middleware/auth');
 const db = require('../database/sqlite');
 
@@ -25,6 +26,29 @@ const ensureTemplatesDir = async () => {
 
 // Initialize templates directory
 ensureTemplatesDir();
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    // Use templates directory as temporary location
+    cb(null, TEMPLATES_DIR);
+  },
+  filename: (req, file, cb) => {
+    // Use temporary filename to avoid conflicts
+    cb(null, `temp_${Date.now()}_${file.originalname}`);
+  }
+});
+
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 50 * 1024 * 1024 // 50MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Allow all file types for templates
+    cb(null, true);
+  }
+});
 
 // Helper function to get safe file path
 const getSafeFilePath = (relativePath) => {
@@ -246,9 +270,51 @@ router.delete('/files', authenticateToken, checkFilePermission('delete'), async 
 });
 
 // Upload file
-router.post('/files/upload', authenticateToken, checkFilePermission('write'), async (req, res) => {
-  // This will be implemented with multer middleware later
-  res.status(501).json({ error: 'File upload not yet implemented' });
+router.post('/files/upload', authenticateToken, checkFilePermission('write'), upload.array('files'), async (req, res) => {
+  try {
+    const uploadPath = req.body.path || '';
+    
+    // Validate upload path is within templates directory
+    const fullPath = getSafeFilePath(uploadPath);
+    if (!fullPath.startsWith(TEMPLATES_DIR)) {
+      return res.status(403).json({ error: 'Access denied: Path outside templates directory' });
+    }
+
+    const uploadedFiles = req.files || [];
+    const results = [];
+
+    for (const file of uploadedFiles) {
+      // Move file to correct directory if needed
+      const destinationDir = getSafeFilePath(uploadPath);
+      const finalPath = path.join(destinationDir, file.originalname);
+      
+      // Ensure destination directory exists
+      await fs.mkdir(destinationDir, { recursive: true });
+      
+      // Move file if not in the right place
+      if (file.path !== finalPath) {
+        await fs.rename(file.path, finalPath);
+      }
+      
+      const relativePath = getRelativePath(finalPath);
+      const stats = await fs.stat(finalPath);
+      
+      results.push({
+        name: file.originalname,
+        path: relativePath,
+        size: stats.size,
+        uploaded: new Date().toISOString()
+      });
+    }
+
+    res.json({
+      message: `Successfully uploaded ${results.length} file(s)`,
+      files: results
+    });
+  } catch (error) {
+    console.error('Error uploading files:', error);
+    res.status(500).json({ error: 'Failed to upload files' });
+  }
 });
 
 // Permission Management Endpoints (Admin only)
