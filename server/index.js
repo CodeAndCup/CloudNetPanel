@@ -19,6 +19,7 @@ const taskRoutes = require('./routes/tasks');
 const systemRoutes = require('./routes/system')
 const activitiesRoutes = require('./routes/activities');
 const webhookRoutes = require('./routes/webhooks');
+const statisticsRoutes = require('./routes/statistics');
 const { initializeDefaultData } = require('./database/init');
 const { logActivity } = require('./middleware/activity');
 const { JWT_SECRET } = require('./middleware/auth');
@@ -91,6 +92,7 @@ app.use('/api/tasks', logActivity('task_action', 'task'), taskRoutes);
 app.use('/api/system-info', navigationLimiter, systemRoutes);
 app.use('/api/activities', navigationLimiter, activitiesRoutes);
 app.use('/api/webhooks', navigationLimiter, logActivity('webhook_action', 'webhook'), webhookRoutes);
+app.use('/api/statistics', navigationLimiter, logActivity('statistics_view', 'statistics'), statisticsRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

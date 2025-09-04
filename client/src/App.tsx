@@ -11,6 +11,7 @@ import Templates from './pages/Templates';
 import Backups from './pages/Backups';
 import Tasks from './pages/Tasks';
 import Activities from './pages/Activities';
+import Statistics from './pages/Statistics';
 import Admin from './pages/Admin';
 import Profile from './pages/Profile';
 import Layout from './components/Layout';
@@ -53,6 +54,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/backups" element={<Backups />} />
         <Route path="/tasks" element={<Tasks />} />
         <Route path="/activities" element={<Activities />} />
+        <Route path="/statistics" element={<Statistics />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={<Navigate to="/dashboard" />} />
