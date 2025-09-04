@@ -5,6 +5,12 @@ const logActivity = (action, resourceType) => {
   return (req, res, next) => {
     const originalSend = res.send;
     
+    // Check if res.send has already been wrapped by our middleware to prevent duplicates
+    if (originalSend._activityLogged) {
+      // Skip this middleware application to avoid duplicate logging
+      return next();
+    }
+    
     res.send = function(data) {
       // Only log successful operations
       if (res.statusCode >= 200 && res.statusCode < 300) {
@@ -44,6 +50,9 @@ const logActivity = (action, resourceType) => {
       
       originalSend.call(this, data);
     };
+    
+    // Mark this response as having activity logging applied to prevent duplicate wrapping
+    res.send._activityLogged = true;
     
     next();
   };
