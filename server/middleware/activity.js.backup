@@ -3,19 +3,27 @@ const db = require('../database/sqlite');
 // Activity logging middleware
 const logActivity = (action, resourceType) => {
   return (req, res, next) => {
+    console.log(`[DEBUG] logActivity middleware applied for ${action}/${resourceType} on ${req.method} ${req.path}`);
+    
     const originalSend = res.send;
     
-    // Check if res.send has already been wrapped by our middleware to prevent duplicates
+    // Check if res.send has already been wrapped by our middleware
     if (originalSend._activityLogged) {
-      // Skip this middleware application to avoid duplicate logging
-      return next();
+      console.warn(`[WARNING] Activity middleware already applied to this response! This could cause duplicates.`);
+      console.warn(`[WARNING] Request: ${req.method} ${req.path}`);
+      console.warn(`[WARNING] Action: ${action}, ResourceType: ${resourceType}`);
+      return next(); // Skip this middleware to avoid duplicates
     }
     
     res.send = function(data) {
+      console.log(`[DEBUG] res.send called for ${req.method} ${req.path} with status ${res.statusCode}`);
+      
       // Only log successful operations
       if (res.statusCode >= 200 && res.statusCode < 300) {
         const userId = req.user ? req.user.id : null;
         const ipAddress = req.ip || req.connection.remoteAddress;
+        
+        console.log(`[DEBUG] Logging activity: ${action} for user ${userId}`);
         
         // Extract resource ID from various sources
         let resourceId = null;
@@ -43,6 +51,8 @@ const logActivity = (action, resourceType) => {
           `, [userId, action, resourceType, resourceId, JSON.stringify(details), ipAddress], (err) => {
             if (err) {
               console.error('Error logging activity:', err);
+            } else {
+              console.log(`[DEBUG] Activity logged successfully: ${action}/${resourceType}`);
             }
           });
         }
@@ -51,7 +61,7 @@ const logActivity = (action, resourceType) => {
       originalSend.call(this, data);
     };
     
-    // Mark this response as having activity logging applied to prevent duplicate wrapping
+    // Mark this response as having activity logging applied
     res.send._activityLogged = true;
     
     next();
