@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Activity, User, Server, File, Users, Filter, RefreshCw, Trash2 } from 'lucide-react';
 import axios from '../services/axiosConfig';
 import clsx from 'clsx';
+import { useTranslation } from '../contexts/I18nContext';
 
 interface Activity {
   id: number;
@@ -24,6 +25,7 @@ interface ActivityStats {
 }
 
 const Activities: React.FC = () => {
+  const { t } = useTranslation();
   const [activities, setActivities] = useState<Activity[]>([]);
   const [stats, setStats] = useState<ActivityStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -118,38 +120,8 @@ const Activities: React.FC = () => {
   };
 
   const formatAction = (action: string, resourceType: string) => {
-    const actionMap: { [key: string]: string } = {
-      // Server actions
-      'server_start': 'Start Server',
-      'server_stop': 'Stop Server',  
-      'server_restart': 'Restart Server',
-      'server_create': 'Create Server',
-      'server_command': 'Send Command',
-      // User actions
-      'user_create': 'Create User',
-      'user_update': 'Update User',
-      'user_delete': 'Delete User',
-      // Group actions
-      'group_create': 'Create Group',
-      'group_update': 'Update Group',
-      'group_delete': 'Delete Group',
-      'group_add_user': 'Add User to Group',
-      'group_remove_user': 'Remove User from Group',
-      // File actions
-      'file_upload': 'Upload File',
-      'file_update': 'Modify File',
-      'file_delete': 'Delete File',
-      'directory_create': 'Create Directory',
-      // Legacy fallbacks
-      'server_action': 'Server Management',
-      'user_action': 'User Management',
-      'group_action': 'Group Management',
-      'template_action': 'Template Management',
-      'file_action': 'File Management',
-      'task_action': 'Task Management',
-      'backup_action': 'Backup Management'
-    };
-    return actionMap[action] || action;
+    // Use translation keys for actions
+    return t(`activities.actions.${action}`) || action;
   };
 
   const formatDate = (dateString: string) => {
@@ -168,7 +140,7 @@ const Activities: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Activity Log</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('activities.title')}</h1>
           <p className="text-sm text-gray-600 dark:text-gray-400">
             Track all user actions and system events
           </p>
@@ -197,37 +169,37 @@ const Activities: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Resource Type
+              {t('activities.filters.type')}
             </label>
             <select
               value={filters.resourceType}
               onChange={(e) => handleFilterChange('resourceType', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             >
-              <option value="">All Types</option>
-              <option value="user">Users</option>
-              <option value="server">Servers</option>
-              <option value="file">Files</option>
-              <option value="group">Groups</option>
-              <option value="task">Tasks</option>
-              <option value="backup">Backups</option>
+              <option value="">{t('activities.filters.allTypes')}</option>
+              <option value="user">{t('users.title')}</option>
+              <option value="server">{t('activities.types.server')}</option>
+              <option value="file">{t('templates.title')}</option>
+              <option value="group">{t('groups.title')}</option>
+              <option value="task">{t('tasks.title')}</option>
+              <option value="backup">{t('backups.title')}</option>
             </select>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Action
+              {t('activities.filters.action')}
             </label>
             <select
               value={filters.action}
               onChange={(e) => handleFilterChange('action', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             >
-              <option value="">All Actions</option>
-              <option value="server_action">Server Actions</option>
-              <option value="user_action">User Actions</option>
-              <option value="group_action">Group Actions</option>
-              <option value="template_action">Template Actions</option>
+              <option value="">{t('activities.filters.allActions')}</option>
+              <option value="server_action">{t('activities.categories.server_action')}</option>
+              <option value="user_action">{t('activities.actions.user_action')}</option>
+              <option value="group_action">{t('activities.actions.group_action')}</option>
+              <option value="template_action">{t('activities.actions.template_action')}</option>
             </select>
           </div>
 
