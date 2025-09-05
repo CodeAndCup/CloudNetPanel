@@ -23,7 +23,7 @@ const updatesRoutes = require('./routes/updates');
 const cloudnetRoutes = require('./routes/cloudnet');
 const { initializeDefaultData } = require('./database/init');
 const { logActivity } = require('./middleware/activity');
-const { JWT_SECRET } = require('./middleware/auth');
+const { JWT_SECRET, requireCloudNetConnectivity } = require('./middleware/auth');
 const jwt = require('jsonwebtoken');
 const url = require('url');
 const githubUpdateService = require('./services/githubUpdateService');
@@ -84,8 +84,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // API routes with appropriate rate limiting and activity logging
 app.use('/api/auth', authLimiter, authRoutes);
-app.use('/api/servers', navigationLimiter, logActivity('server_action', 'server'), serverRoutes);
-app.use('/api/nodes', navigationLimiter, logActivity('node_action', 'node'), nodeRoutes);
+app.use('/api/servers', navigationLimiter, requireCloudNetConnectivity, logActivity('server_action', 'server'), serverRoutes);
+app.use('/api/nodes', navigationLimiter, requireCloudNetConnectivity, logActivity('node_action', 'node'), nodeRoutes);
 app.use('/api/users', navigationLimiter, logActivity('user_action', 'user'), userRoutes);
 app.use('/api/groups', navigationLimiter, logActivity('group_action', 'group'), groupRoutes);
 app.use('/api/templates', navigationLimiter, logActivity('template_action', 'file'), templateRoutes);

@@ -17,23 +17,23 @@ import Layout from './components/Layout';
 import LoadingSpinner from './components/LoadingSpinner';
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { user, loading, sessionValid } = useAuth();
 
   if (loading) {
     return <LoadingSpinner />;
   }
 
-  return user ? <>{children}</> : <Navigate to="/login" />;
+  return user && sessionValid ? <>{children}</> : <Navigate to="/login" />;
 };
 
 const AppRoutes: React.FC = () => {
-  const { user, loading } = useAuth();
+  const { user, loading, sessionValid } = useAuth();
 
   if (loading) {
     return <LoadingSpinner />;
   }
 
-  if (!user) {
+  if (!user || !sessionValid) {
     return (
       <Routes>
         <Route path="/login" element={<Login />} />

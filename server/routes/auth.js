@@ -105,6 +105,38 @@ router.get('/me', authenticateToken, (req, res) => {
   });
 });
 
+// Check both session validity and CloudNet connectivity
+router.get('/status', authenticateToken, async (req, res) => {
+  try {
+    // Check CloudNet connectivity
+    const cloudNetStatus = await cloudnetApi.healthCheck();
+    
+    res.json({
+      user: {
+        id: req.user.id,
+        username: req.user.username,
+        email: req.user.email,
+        role: req.user.role
+      },
+      sessionValid: true,
+      cloudNetConnected: true,
+      cloudNetStatus
+    });
+  } catch (error) {
+    res.json({
+      user: {
+        id: req.user.id,
+        username: req.user.username,
+        email: req.user.email,
+        role: req.user.role
+      },
+      sessionValid: true,
+      cloudNetConnected: false,
+      cloudNetError: error.message
+    });
+  }
+});
+
 // Logout endpoint
 router.post('/logout', authenticateToken, (req, res) => {
   // In a production app, you might want to blacklist the token

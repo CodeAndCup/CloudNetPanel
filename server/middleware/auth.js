@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const db = require('../database/sqlite');
+const cloudnetApi = require('../services/cloudnetApi');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'cloudnet-panel-secret-key-change-in-production';
 
@@ -161,10 +162,25 @@ const checkTaskPermission = (permissionType) => {
   };
 };
 
+// Middleware to check CloudNet API connectivity
+const requireCloudNetConnectivity = async (req, res, next) => {
+  try {
+    await cloudnetApi.healthCheck();
+    next();
+  } catch (error) {
+    return res.status(503).json({
+      error: 'CloudNet API not available',
+      message: error.message,
+      type: 'cloudnet_unavailable'
+    });
+  }
+};
+
 module.exports = {
   authenticateToken,
   requireAdmin,
   checkFilePermission,
   checkTaskPermission,
+  requireCloudNetConnectivity,
   JWT_SECRET
 };

@@ -23,6 +23,7 @@ import {
 import clsx from 'clsx';
 import Footer from './Footer';
 import UpdateNotification from './UpdateNotification';
+import CloudNetStatusBanner from './CloudNetStatusBanner';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -236,6 +237,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="py-6">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                 <UpdateNotification />
+                <CloudNetStatusBanner />
                 {children}
               </div>
             </div>
