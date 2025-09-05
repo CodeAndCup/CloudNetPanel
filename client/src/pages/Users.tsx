@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from '../contexts/I18nContext';
 import { Plus, Edit, Trash2, UserCheck, UserX } from 'lucide-react';
 import axios from '../services/axiosConfig';
 import clsx from 'clsx';
@@ -22,6 +23,7 @@ interface NewUser {
 }
 
 const Users: React.FC = () => {
+  const { t } = useTranslation();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -156,7 +158,7 @@ const Users: React.FC = () => {
   };
 
   const formatDate = (dateString: string) => {
-    if (!dateString) return 'Never';
+    if (!dateString) return t('common.never');
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -177,13 +179,13 @@ const Users: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Users</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('users.title')}</h1>
         <button 
           onClick={() => setShowAddModal(true)}
           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
           <Plus className="h-4 w-4 mr-2" />
-          Add User
+          {t('users.addUser')}
         </button>
       </div>
 
@@ -197,19 +199,19 @@ const Users: React.FC = () => {
                     User
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Role
+                    {t('users.role')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Status
+                    {t('common.status')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Created
+                    {t('common.created')}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    Last Login
+                    {t('common.lastLogin')}
                   </th>
                   <th className="relative px-6 py-3">
-                    <span className="sr-only">Actions</span>
+                    <span className="sr-only">{t('common.actions')}</span>
                   </th>
                 </tr>
               </thead>
@@ -294,13 +296,13 @@ const Users: React.FC = () => {
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
             <div className="mt-3">
               <h3 className="text-lg font-medium leading-6 text-gray-900 dark:text-white mb-4">
-                Add New User
+                {t('users.addUser')}
               </h3>
               
               <form onSubmit={handleCreateUser} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Username
+                    {t('users.username')}
                   </label>
                   <input
                     type="text"
@@ -313,7 +315,7 @@ const Users: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Email
+                    {t('users.email')}
                   </label>
                   <input
                     type="email"
@@ -326,7 +328,7 @@ const Users: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Password
+                    {t('users.password')}
                   </label>
                   <input
                     type="password"
@@ -339,17 +341,17 @@ const Users: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Role
+                    {t('users.role')}
                   </label>
                   <select
                     value={newUser.role}
                     onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   >
-                    <option value="Users">User</option>
-                    <option value="Developers">Developer</option>
-                    <option value="Moderators">Moderator</option>
-                    <option value="Administrators">Administrator</option>
+                    <option value="Users">{t('users.roles.Users')}</option>
+                    <option value="Developers">{t('users.roles.Developers')}</option>
+                    <option value="Moderators">{t('users.roles.Moderators')}</option>
+                    <option value="Administrators">{t('users.roles.Administrators')}</option>
                   </select>
                 </div>
 
@@ -375,14 +377,14 @@ const Users: React.FC = () => {
                     onClick={() => setShowAddModal(false)}
                     className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-300 hover:bg-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </button>
                   <button
                     type="submit"
                     disabled={creating}
                     className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                   >
-                    {creating ? 'Creating...' : 'Create User'}
+                    {creating ? t('common.loading') : t('users.createUser')}
                   </button>
                 </div>
               </form>
@@ -397,13 +399,13 @@ const Users: React.FC = () => {
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-700">
             <div className="mt-3">
               <h3 className="text-lg font-medium text-gray-900 dark:text-white text-center mb-4">
-                Edit User
+                {t('users.editUser')}
               </h3>
               
               <form onSubmit={handleEditUser} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Username
+                    {t('users.username')}
                   </label>
                   <input
                     type="text"
@@ -416,7 +418,7 @@ const Users: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Email
+                    {t('users.email')}
                   </label>
                   <input
                     type="email"
@@ -429,17 +431,17 @@ const Users: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Role
+                    {t('users.role')}
                   </label>
                   <select
                     value={editingUser.role}
                     onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                   >
-                    <option value="Users">User</option>
-                    <option value="Developers">Developer</option>
-                    <option value="Moderators">Moderator</option>
-                    <option value="Administrators">Administrator</option>
+                    <option value="Users">{t('users.roles.Users')}</option>
+                    <option value="Developers">{t('users.roles.Developers')}</option>
+                    <option value="Moderators">{t('users.roles.Moderators')}</option>
+                    <option value="Administrators">{t('users.roles.Administrators')}</option>
                   </select>
                 </div>
 
@@ -449,14 +451,14 @@ const Users: React.FC = () => {
                     onClick={() => setShowEditModal(false)}
                     className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-300 hover:bg-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </button>
                   <button
                     type="submit"
                     disabled={editing}
                     className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                   >
-                    {editing ? 'Updating...' : 'Update User'}
+                    {editing ? t('common.loading') : t('users.updateUser')}
                   </button>
                 </div>
               </form>
@@ -471,11 +473,11 @@ const Users: React.FC = () => {
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-700">
             <div className="mt-3">
               <h3 className="text-lg font-medium text-gray-900 dark:text-white text-center mb-4">
-                Delete User
+                {t('users.deleteUser')}
               </h3>
               
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 text-center">
-                Are you sure you want to delete user "{deletingUser.username}"? This action cannot be undone.
+                {t('users.confirmDelete')}
               </p>
 
               <div className="flex justify-end space-x-3">
@@ -484,14 +486,14 @@ const Users: React.FC = () => {
                   onClick={() => setShowDeleteModal(false)}
                   className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-300 hover:bg-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500"
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </button>
                 <button
                   onClick={handleDeleteUser}
                   disabled={deleting}
                   className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50"
                 >
-                  {deleting ? 'Deleting...' : 'Delete User'}
+                  {deleting ? t('common.loading') : t('users.deleteUser')}
                 </button>
               </div>
             </div>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from '../../contexts/I18nContext';
 import { Plus, Edit, Trash2, Webhook, ExternalLink, Activity, X } from 'lucide-react';
 import axios from '../../services/axiosConfig';
 
@@ -20,6 +21,7 @@ interface WebhookFormData {
 }
 
 const WebhooksTab: React.FC = () => {
+  const { t } = useTranslation();
   const [webhooks, setWebhooks] = useState<WebhookData[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);

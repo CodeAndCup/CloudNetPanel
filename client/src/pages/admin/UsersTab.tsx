@@ -1,5 +1,6 @@
 // This component will be moved from the main Users.tsx page
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from '../../contexts/I18nContext';
 import { Plus, Edit, Trash2, User, X } from 'lucide-react';
 import axios from '../../services/axiosConfig';
 
@@ -21,6 +22,7 @@ interface UserFormData {
 }
 
 const UsersTab: React.FC = () => {
+  const { t } = useTranslation();
   const [users, setUsers] = useState<UserData[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -131,14 +133,14 @@ const UsersTab: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-          User Management
+          {t('users.title')}
         </h2>
         <button
           onClick={() => setShowAddModal(true)}
           className="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           <Plus className="h-4 w-4 mr-2" />
-          Add User
+          {t('users.addUser')}
         </button>
       </div>
 
@@ -151,19 +153,19 @@ const UsersTab: React.FC = () => {
                 User
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                Role
+                {t('users.role')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                Status
+                {t('common.status')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                Created
+                {t('common.created')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                Last Login
+                {t('common.lastLogin')}
               </th>
               <th className="relative px-6 py-3">
-                <span className="sr-only">Actions</span>
+                <span className="sr-only">{t('common.actions')}</span>
               </th>
             </tr>
           </thead>

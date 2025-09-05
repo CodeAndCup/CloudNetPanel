@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from '../../contexts/I18nContext';
 import { Activity, Filter, Calendar, User, Server, FileText } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from '../../services/axiosConfig';
@@ -14,6 +15,7 @@ interface ActivityItem {
 }
 
 const ActivityTab: React.FC = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);

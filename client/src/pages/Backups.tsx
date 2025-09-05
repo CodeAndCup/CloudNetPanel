@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from '../contexts/I18nContext';
 import { 
   Archive, 
   Plus, 
@@ -26,6 +27,7 @@ interface Backup {
 }
 
 const Backups: React.FC = () => {
+  const { t } = useTranslation();
   const [backups, setBackups] = useState<Backup[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -138,6 +140,14 @@ const Backups: React.FC = () => {
     }
   };
 
+  const translateStatus = (status: string) => {
+    return t(`backups.status.${status}`) || status;
+  };
+
+  const translateType = (type: string) => {
+    return t(`common.${type}`) || type;
+  };
+
   const formatFileSize = (bytes?: number) => {
     if (!bytes) return 'N/A';
     const k = 1024;
@@ -162,7 +172,7 @@ const Backups: React.FC = () => {
     <div className="space-y-6">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Backups</h1>
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">{t('backups.title')}</h1>
           <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
             Manage template backups and schedules
           </p>
@@ -173,14 +183,14 @@ const Backups: React.FC = () => {
             className="inline-flex items-center justify-center rounded-md border border-transparent bg-purple-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
           >
             <Clock className="h-4 w-4 mr-2" />
-            Schedule Backup
+            {t('backups.scheduleBackup')}
           </button>
           <button
             onClick={() => setShowCreateDialog(true)}
             className="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             <Plus className="h-4 w-4 mr-2" />
-            Create Backup
+            {t('backups.createManualBackup')}
           </button>
         </div>
       </div>
@@ -189,20 +199,20 @@ const Backups: React.FC = () => {
       {showCreateDialog && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Create Manual Backup</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">{t('backups.createManualBackup')}</h3>
             <div className="space-y-4">
               <input
                 type="text"
                 value={newBackup.name}
                 onChange={(e) => setNewBackup({...newBackup, name: e.target.value})}
-                placeholder="Backup name..."
+                placeholder={t('backups.fields.name') + '...'}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <input
                 type="text"
                 value={newBackup.sourcePath}
                 onChange={(e) => setNewBackup({...newBackup, sourcePath: e.target.value})}
-                placeholder="Source path (e.g., spigot/config)"
+                placeholder={t('common.source') + ' path (e.g., spigot/config)'}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
             </div>
@@ -211,13 +221,13 @@ const Backups: React.FC = () => {
                 onClick={() => setShowCreateDialog(false)}
                 className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-700"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={createManualBackup}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
               >
-                Create Backup
+                {t('backups.actions.create')}
               </button>
             </div>
           </div>
@@ -228,20 +238,20 @@ const Backups: React.FC = () => {
       {showScheduleDialog && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Schedule Backup</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">{t('backups.scheduleBackup')}</h3>
             <div className="space-y-4">
               <input
                 type="text"
                 value={newScheduledBackup.name}
                 onChange={(e) => setNewScheduledBackup({...newScheduledBackup, name: e.target.value})}
-                placeholder="Backup name..."
+                placeholder={t('backups.fields.name') + '...'}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <input
                 type="text"
                 value={newScheduledBackup.sourcePath}
                 onChange={(e) => setNewScheduledBackup({...newScheduledBackup, sourcePath: e.target.value})}
-                placeholder="Source path (e.g., spigot/config)"
+                placeholder={t('common.source') + ' path (e.g., spigot/config)'}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <input
@@ -261,13 +271,13 @@ const Backups: React.FC = () => {
                 onClick={() => setShowScheduleDialog(false)}
                 className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-700"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={createScheduledBackup}
                 className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
               >
-                Schedule Backup
+                {t('backups.scheduleBackup')}
               </button>
             </div>
           </div>
@@ -281,25 +291,25 @@ const Backups: React.FC = () => {
             <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-300 uppercase tracking-wider">
-                  Name
+                  {t('backups.fields.name')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-300 uppercase tracking-wider">
-                  Type
+                  {t('backups.fields.type')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-300 uppercase tracking-wider">
-                  Source Path
+                  {t('backups.fields.source')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-300 uppercase tracking-wider">
-                  Status
+                  {t('backups.fields.status')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-300 uppercase tracking-wider">
-                  Size
+                  {t('backups.fields.size')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 dark:text-gray-300 uppercase tracking-wider">
-                  Created
+                  {t('backups.fields.created')}
                 </th>
                 <th className="relative px-6 py-3">
-                  <span className="sr-only">Actions</span>
+                  <span className="sr-only">{t('common.actions')}</span>
                 </th>
               </tr>
             </thead>
@@ -314,7 +324,7 @@ const Backups: React.FC = () => {
                           {backup.name}
                         </div>
                         <div className="text-sm text-gray-500 dark:text-gray-400">
-                          by {backup.created_by_username}
+                          {t('common.by')} {backup.created_by_username}
                         </div>
                       </div>
                     </div>
@@ -326,7 +336,7 @@ const Backups: React.FC = () => {
                         ? 'bg-purple-100 dark:bg-purple-900/20 text-purple-800 dark:text-purple-400'
                         : 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400'
                     )}>
-                      {backup.type}
+                      {translateType(backup.type)}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
@@ -339,7 +349,7 @@ const Backups: React.FC = () => {
                         'ml-2 inline-flex px-2 text-xs font-semibold rounded-full',
                         getStatusColor(backup.status)
                       )}>
-                        {backup.status}
+                        {translateStatus(backup.status)}
                       </span>
                     </div>
                   </td>
@@ -355,7 +365,7 @@ const Backups: React.FC = () => {
                         <button
                           onClick={() => downloadBackup(backup)}
                           className="text-blue-600 hover:text-blue-900"
-                          title="Download backup"
+                          title={t('backups.actions.download')}
                         >
                           <Download className="h-4 w-4" />
                         </button>
@@ -363,7 +373,7 @@ const Backups: React.FC = () => {
                       <button
                         onClick={() => deleteBackup(backup)}
                         className="text-red-600 hover:text-red-900"
-                        title="Delete backup"
+                        title={t('common.delete')}
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
