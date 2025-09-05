@@ -1,5 +1,6 @@
 const express = require('express');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
+const { logActivity } = require('../middleware/activity');
 const db = require('../database/sqlite');
 
 const router = express.Router();
@@ -54,7 +55,7 @@ router.get('/:id', authenticateToken, (req, res) => {
 });
 
 // Create new group (admin only)
-router.post('/', authenticateToken, requireAdmin, (req, res) => {
+router.post('/', authenticateToken, requireAdmin, logActivity('group_create', 'group', { resourceIdField: 'name' }), (req, res) => {
   const { name, description } = req.body;
   
   if (!name) {
@@ -83,7 +84,7 @@ router.post('/', authenticateToken, requireAdmin, (req, res) => {
 });
 
 // Update group (admin only)
-router.put('/:id', authenticateToken, requireAdmin, (req, res) => {
+router.put('/:id', authenticateToken, requireAdmin, logActivity('group_update', 'group'), (req, res) => {
   const groupId = parseInt(req.params.id);
   const { name, description } = req.body;
   
@@ -113,7 +114,7 @@ router.put('/:id', authenticateToken, requireAdmin, (req, res) => {
 });
 
 // Delete group (admin only)
-router.delete('/:id', authenticateToken, requireAdmin, (req, res) => {
+router.delete('/:id', authenticateToken, requireAdmin, logActivity('group_delete', 'group'), (req, res) => {
   const groupId = parseInt(req.params.id);
   
   db.run(`DELETE FROM groups WHERE id = ?`, [groupId], function(err) {
@@ -131,7 +132,7 @@ router.delete('/:id', authenticateToken, requireAdmin, (req, res) => {
 });
 
 // Add user to group (admin only)
-router.post('/:id/users', authenticateToken, requireAdmin, (req, res) => {
+router.post('/:id/users', authenticateToken, requireAdmin, logActivity('group_add_user', 'group'), (req, res) => {
   const groupId = parseInt(req.params.id);
   const { userId } = req.body;
   
@@ -156,7 +157,7 @@ router.post('/:id/users', authenticateToken, requireAdmin, (req, res) => {
 });
 
 // Remove user from group (admin only)
-router.delete('/:id/users/:userId', authenticateToken, requireAdmin, (req, res) => {
+router.delete('/:id/users/:userId', authenticateToken, requireAdmin, logActivity('group_remove_user', 'group'), (req, res) => {
   const groupId = parseInt(req.params.id);
   const userId = parseInt(req.params.userId);
   

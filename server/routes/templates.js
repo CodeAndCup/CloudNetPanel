@@ -3,6 +3,7 @@ const fs = require('fs').promises;
 const path = require('path');
 const multer = require('multer');
 const { authenticateToken, checkFilePermission, requireAdmin } = require('../middleware/auth');
+const { logActivity } = require('../middleware/activity');
 const db = require('../database/sqlite');
 
 const router = express.Router();
@@ -171,7 +172,7 @@ router.get('/files/content', authenticateToken, checkFilePermission('read'), asy
 });
 
 // Create or update file content
-router.put('/files/content', authenticateToken, checkFilePermission('write'), async (req, res) => {
+router.put('/files/content', authenticateToken, checkFilePermission('write'), logActivity('file_update', 'file', { resourceIdField: 'path' }), async (req, res) => {
   try {
     const { path: requestedPath, content } = req.body;
     
@@ -205,7 +206,7 @@ router.put('/files/content', authenticateToken, checkFilePermission('write'), as
 });
 
 // Create directory
-router.post('/files/directory', authenticateToken, checkFilePermission('write'), async (req, res) => {
+router.post('/files/directory', authenticateToken, checkFilePermission('write'), logActivity('directory_create', 'file', { resourceIdField: 'path' }), async (req, res) => {
   try {
     const { path: requestedPath } = req.body;
     
@@ -233,7 +234,7 @@ router.post('/files/directory', authenticateToken, checkFilePermission('write'),
 });
 
 // Delete file or directory
-router.delete('/files', authenticateToken, checkFilePermission('delete'), async (req, res) => {
+router.delete('/files', authenticateToken, checkFilePermission('delete'), logActivity('file_delete', 'file', { resourceIdField: 'path' }), async (req, res) => {
   try {
     const { path: requestedPath } = req.body;
     
@@ -270,7 +271,7 @@ router.delete('/files', authenticateToken, checkFilePermission('delete'), async 
 });
 
 // Upload file
-router.post('/files/upload', authenticateToken, checkFilePermission('write'), upload.array('files'), async (req, res) => {
+router.post('/files/upload', authenticateToken, checkFilePermission('write'), upload.array('files'), logActivity('file_upload', 'file', { resourceIdField: 'path' }), async (req, res) => {
   try {
     const uploadPath = req.body.path || '';
     

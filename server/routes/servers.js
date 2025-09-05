@@ -1,5 +1,6 @@
 const express = require('express');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
+const { logActivity } = require('../middleware/activity');
 const cloudnetApi = require('../services/cloudnetApi');
 const config = require('../config/cloudnet');
 
@@ -60,7 +61,7 @@ router.get('/:id/cachedLogs', authenticateToken, async (req, res) => {
 });
 
 // Create new server
-router.post('/', authenticateToken, requireAdmin, async (req, res) => {
+router.post('/', authenticateToken, requireAdmin, logActivity('server_create', 'server', { resourceIdField: 'name' }), async (req, res) => {
   const { name, ram, serverType, version, minimumStarted } = req.body;
 
   if (!name || !ram || !serverType || !version || minimumStarted === undefined) {
@@ -175,7 +176,7 @@ router.delete('/:id', authenticateToken, requireAdmin, (req, res) => {
 });
 
 // Server actions
-router.post('/:id/start', authenticateToken, async (req, res) => {
+router.post('/:id/start', authenticateToken, logActivity('server_start', 'server'), async (req, res) => {
   try {
     if (!config.cloudnet.enabled) {
       return res.status(503).json({ error: 'CloudNet API is not enabled - server control requires CloudNet' });
@@ -190,7 +191,7 @@ router.post('/:id/start', authenticateToken, async (req, res) => {
   }
 });
 
-router.post('/:id/stop', authenticateToken, async (req, res) => {
+router.post('/:id/stop', authenticateToken, logActivity('server_stop', 'server'), async (req, res) => {
   try {
     if (!config.cloudnet.enabled) {
       return res.status(503).json({ error: 'CloudNet API is not enabled - server control requires CloudNet' });
@@ -205,7 +206,7 @@ router.post('/:id/stop', authenticateToken, async (req, res) => {
   }
 });
 
-router.post('/:id/restart', authenticateToken, async (req, res) => {
+router.post('/:id/restart', authenticateToken, logActivity('server_restart', 'server'), async (req, res) => {
   try {
     if (!config.cloudnet.enabled) {
       return res.status(503).json({ error: 'CloudNet API is not enabled - server control requires CloudNet' });

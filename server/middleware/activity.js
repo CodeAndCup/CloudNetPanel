@@ -1,7 +1,7 @@
 const db = require('../database/sqlite');
 
-// Activity logging middleware
-const logActivity = (action, resourceType) => {
+// Activity logging middleware - for specific actions only
+const logActivity = (action, resourceType, options = {}) => {
   return (req, res, next) => {
     const originalSend = res.send;
     
@@ -23,8 +23,12 @@ const logActivity = (action, resourceType) => {
           resourceId = req.params.id;
         } else if (req.body && req.body.name) {
           resourceId = req.body.name;
+        } else if (req.body && req.body.username) {
+          resourceId = req.body.username;
         } else if (req.query && req.query.path) {
           resourceId = req.query.path;
+        } else if (options.resourceIdField && req.body[options.resourceIdField]) {
+          resourceId = req.body[options.resourceIdField];
         }
 
         // Create details object with relevant information
@@ -58,6 +62,20 @@ const logActivity = (action, resourceType) => {
   };
 };
 
+// Simple function to log activity directly (for use in route handlers)
+const logActivityDirect = (userId, action, resourceType, resourceId, details, ipAddress) => {
+  if (!userId) return;
+  
+  db.run(`
+    INSERT INTO activities (user_id, action, resource_type, resource_id, details, ip_address)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `, [userId, action, resourceType, resourceId, JSON.stringify(details), ipAddress], (err) => {
+    if (err) {
+      console.error('Error logging activity:', err);
+    }
+  });
+};
+
 // Sanitize sensitive data from request body before logging
 const sanitizeBody = (body) => {
   if (!body) return null;
@@ -75,4 +93,4 @@ const sanitizeBody = (body) => {
   return sanitized;
 };
 
-module.exports = { logActivity };
+module.exports = { logActivity, logActivityDirect };
