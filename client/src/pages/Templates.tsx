@@ -530,12 +530,16 @@ const Templates: React.FC = () => {
                           ) : (
                             <File className="h-5 w-5 text-gray-400 mr-3" />
                           )}
-                          <button
-                            onClick={() => openFile(file)}
-                            className="text-sm font-medium text-gray-900 dark:text-white hover:text-blue-600"
-                          >
-                            {file.name}
-                          </button>
+                          {file.name.includes('.jar') ? (
+                            <span className="text-sm font-medium text-gray-900 dark:text-white">{file.name}</span>
+                          ) : (
+                            <button
+                              onClick={() => openFile(file)}
+                              className="text-sm font-medium text-gray-900 dark:text-white hover:text-blue-600"
+                            >
+                              {file.name}
+                            </button>
+                          )}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
