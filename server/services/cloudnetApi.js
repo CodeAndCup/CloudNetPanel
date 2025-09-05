@@ -285,7 +285,6 @@ class CloudNetApiService {
 
   async getMaxTotalConnectedPlayers() {
     const servers = await this.getServers();
-    console.log(servers);
     return servers.filter(server => server.configuration.groups.includes(config.cloudnet.proxyGroup)).reduce((total, server) => {
       return total + (server.properties?.["Max-Players"] || 0);
     }, 0);
@@ -306,10 +305,10 @@ class CloudNetApiService {
       await this.makeRequest('GET', '/cluster');
       return { connected: true, message: 'CloudNet API is reachable' };
     } catch (error) {
-      const message = error.code === 'ECONNREFUSED' 
+      const message = error.code === 'ECONNREFUSED'
         ? 'CloudNet API server is not running or not reachable'
         : `CloudNet API error: ${error.message}`;
-      
+
       throw new Error(message);
     }
   }
