@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { authenticateToken, JWT_SECRET } = require('../middleware/auth');
 const db = require('../database/sqlite');
+const cloudnetApi = require('../services/cloudnetApi');
 
 const router = express.Router();
 
@@ -23,6 +24,17 @@ router.post('/login', async (req, res) => {
 
     if (!username || !password) {
       return res.status(400).json({ error: 'Username and password required' });
+    }
+
+    // First check CloudNet API connectivity
+    try {
+      await cloudnetApi.healthCheck();
+    } catch (error) {
+      return res.status(503).json({ 
+        error: 'CloudNet API not available',
+        message: error.message,
+        type: 'cloudnet_unavailable'
+      });
     }
 
     let user = null;

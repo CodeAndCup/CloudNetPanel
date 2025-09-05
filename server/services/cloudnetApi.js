@@ -291,6 +291,29 @@ class CloudNetApiService {
     }, 0);
   }
 
+  // Health check method to verify CloudNet API connectivity
+  async healthCheck() {
+    if (!this.config.enabled) {
+      throw new Error('CloudNet API is disabled in configuration');
+    }
+
+    if (!this.client) {
+      throw new Error('CloudNet API client not initialized');
+    }
+
+    try {
+      // Try to make a simple request to test connectivity
+      await this.makeRequest('GET', '/cluster');
+      return { connected: true, message: 'CloudNet API is reachable' };
+    } catch (error) {
+      const message = error.code === 'ECONNREFUSED' 
+        ? 'CloudNet API server is not running or not reachable'
+        : `CloudNet API error: ${error.message}`;
+      
+      throw new Error(message);
+    }
+  }
+
   // Transform CloudNet API data to our expected format
   transformServerData(cloudnetServer) {
     return {
