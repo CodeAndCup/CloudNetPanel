@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Shield, User, Users } from 'lucide-react';
 import axios from '../services/axiosConfig';
+import { useTranslation } from '../contexts/I18nContext';
 
 interface Permission {
   id: number;
@@ -28,6 +29,7 @@ interface PermissionManagerProps {
 }
 
 const PermissionManager: React.FC<PermissionManagerProps> = ({ filePath, onClose }) => {
+  const { t } = useTranslation();
   const [permissions, setPermissions] = useState<Permission[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -177,9 +179,9 @@ const PermissionManager: React.FC<PermissionManagerProps> = ({ filePath, onClose
               onChange={(e) => setNewPermission({...newPermission, permissionType: e.target.value})}
               className="p-2 border border-gray-300 rounded-md"
             >
-              <option value="read">Read</option>
-              <option value="write">Write</option>
-              <option value="delete">Delete</option>
+              <option value="read">{t('permissions.read')}</option>
+              <option value="write">{t('permissions.write')}</option>
+              <option value="delete">{t('common.delete')}</option>
             </select>
             
             <button

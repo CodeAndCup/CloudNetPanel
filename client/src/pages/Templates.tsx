@@ -479,8 +479,8 @@ const Templates: React.FC = () => {
             <div className="absolute inset-0 flex items-center justify-center bg-blue-50 dark:bg-blue-900/20 bg-opacity-75 z-10">
               <div className="text-center">
                 <Upload className="mx-auto h-12 w-12 text-blue-500 mb-4" />
-                <p className="text-lg font-medium text-blue-700 dark:text-blue-300">Drop files here to upload</p>
-                <p className="text-sm text-blue-600 dark:text-blue-400">to {currentPath || 'root directory'}</p>
+                <p className="text-lg font-medium text-blue-700 dark:text-blue-300">{t('templates.dropZone.dropFiles')}</p>
+                <p className="text-sm text-blue-600 dark:text-blue-400">{t('templates.dropZone.toDirectory', { directory: currentPath || t('templates.dropZone.rootDirectory') })}</p>
               </div>
             </div>
           )}
@@ -491,16 +491,16 @@ const Templates: React.FC = () => {
               className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4"
             >
               <ArrowLeft className="h-4 w-4 mr-1" />
-              Back
+              {t('common.back')}
             </button>
           )}
 
           {files.length === 0 ? (
             <div className="text-center py-12">
               <Folder className="mx-auto h-12 w-12 text-gray-400" />
-              <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No files</h3>
+              <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">{t('templates.emptyState.noFiles')}</h3>
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Get started by creating a new file or folder, or drag files here to upload them.
+                {t('templates.emptyState.getStarted')}
               </p>
             </div>
           ) : (

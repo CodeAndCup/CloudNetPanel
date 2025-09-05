@@ -197,7 +197,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         className="flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                       >
                         <span className="text-sm text-gray-700 dark:text-gray-300 mr-2">
-                          Welcome, {user?.username}
+                          {t('common.welcome')}, {user?.username}
                         </span>
                         <ChevronDown className="h-4 w-4 text-gray-500" />
                       </button>

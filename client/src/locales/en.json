@@ -19,7 +19,27 @@
     "actions": "Actions",
     "status": "Status",
     "created": "Created",
-    "lastLogin": "Last Login"
+    "lastLogin": "Last Login",
+    "back": "Back",
+    "welcome": "Welcome",
+    "by": "by",
+    "type": "Type",
+    "size": "Size",
+    "source": "Source",
+    "download": "Download",
+    "read": "Read",
+    "write": "Write",
+    "upload": "Upload",
+    "view": "View",
+    "send": "Send",
+    "checking": "Checking",
+    "failed": "Failed",
+    "successful": "Successful",
+    "completed": "Completed",
+    "pending": "Pending",
+    "manual": "Manual",
+    "scheduled": "Scheduled",
+    "never": "Never"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -107,10 +127,12 @@
   },
   "auth": {
     "login": "Login",
+    "signInToAccount": "Sign in to your account",
     "username": "Username",
     "password": "Password",
     "email": "Email",
-    "loginButton": "Sign In",
+    "loginButton": "Sign in",
+    "signingIn": "Signing in...",
     "loginError": "Invalid credentials",
     "loginRequired": "Please log in to access this page"
   },
@@ -174,7 +196,8 @@
     "actions": {
       "newFolder": "New Folder",
       "newFile": "New File",
-      "uploadFiles": "Upload Files"
+      "uploadFiles": "Upload Files",
+      "uploadFile": "Uploading..."
     },
     "createFolder": {
       "title": "Create New Folder",
@@ -192,6 +215,15 @@
       "title": "Editing: ",
       "save": "Save",
       "close": "Close"
+    },
+    "dropZone": {
+      "dropFiles": "Drop files here to upload",
+      "toDirectory": "to {{directory}}",
+      "rootDirectory": "root directory"
+    },
+    "emptyState": {
+      "noFiles": "No files",
+      "getStarted": "Get started by creating a new file or folder, or drag files here to upload them."
     }
   },
   "profile": {
@@ -219,5 +251,114 @@
     "created": "Created successfully",
     "updated": "Updated successfully",
     "deleted": "Deleted successfully"
+  },
+  "activities": {
+    "title": "Activity Log",
+    "allActivities": "All Activities", 
+    "fileOperations": "File Operations",
+    "serverActions": "Server Actions",
+    "filters": {
+      "type": "Type",
+      "action": "Action",
+      "allTypes": "All Types",
+      "allActions": "All Actions"
+    },
+    "types": {
+      "server": "Servers"
+    },
+    "actions": {
+      "server_start": "Start Server",
+      "server_stop": "Stop Server",
+      "server_restart": "Restart Server",
+      "server_create": "Create Server",
+      "server_command": "Send Command",
+      "user_create": "Create User",
+      "user_update": "Update User",
+      "user_delete": "Delete User",
+      "group_create": "Create Group",
+      "group_update": "Update Group",
+      "group_delete": "Delete Group",
+      "group_add_user": "Add User to Group",
+      "group_remove_user": "Remove User from Group",
+      "file_upload": "Upload File",
+      "file_update": "Modify File",
+      "file_delete": "Delete File",
+      "directory_create": "Create Directory",
+      "server_action": "Server Management",
+      "user_action": "User Management",
+      "group_action": "Group Management",
+      "template_action": "Template Management",
+      "file_action": "File Management",
+      "task_action": "Task Management",
+      "backup_action": "Backup Management"
+    },
+    "categories": {
+      "server_action": "Server Actions"
+    }
+  },
+  "backups": {
+    "title": "Backup Management",
+    "createManualBackup": "Create Manual Backup",
+    "scheduleBackup": "Schedule Backup",
+    "status": {
+      "completed": "Completed",
+      "failed": "Failed",
+      "running": "Running"
+    },
+    "actions": {
+      "create": "Create Backup",
+      "restore": "Restore",
+      "download": "Download"
+    },
+    "fields": {
+      "name": "Name",
+      "type": "Type",
+      "source": "Source",
+      "status": "Status",
+      "size": "Size",
+      "created": "Created"
+    }
+  },
+  "tasks": {
+    "title": "Task Management",
+    "createTask": "Create Task",
+    "editTask": "Edit Task"
+  },
+  "updateNotification": {
+    "checking": "Checking for updates...",
+    "checkFailed": "Update Check Failed",
+    "upToDate": "Up to date",
+    "updateAvailable": "Update Available",
+    "versionInfo": "Version {{current}} is the latest version",
+    "newVersionAvailable": "A new version of CloudNet Panel is available.",
+    "releasedOn": "Released on {{date}}.",
+    "releaseNotes": "Release Notes:",
+    "viewRelease": "View Release",
+    "showDetails": "Show Details",
+    "hideDetails": "Hide Details",
+    "checkAgain": "Check Again"
+  },
+  "permissions": {
+    "read": "Read",
+    "write": "Write",
+    "addPermission": "Add Permission"
+  },
+  "cloudnet": {
+    "notConnected": "CloudNet Not Connected",
+    "unableToConnect": "Unable to connect to CloudNet REST API",
+    "connectionFailed": "Connection Failed",
+    "connectionErrorMessage": "The CloudNet Panel requires a connection to the CloudNet REST API to function. Please ensure CloudNet is running and the API is accessible.",
+    "pleaseCheck": "Please check:",
+    "checkItems": {
+      "serverRunning": "CloudNet server is running",
+      "apiLoaded": "CloudNet REST API module is loaded",
+      "credentialsCorrect": "API URL and credentials are correct",
+      "networkConnectivity": "Network connectivity to CloudNet server"
+    },
+    "tryAgain": "Try Again"
+  },
+  "footer": {
+    "madeWith": "Made with",
+    "by": "by Perrier"
   }
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Download, X, ExternalLink, AlertCircle, CheckCircle, Loader } from 'lucide-react';
 import axios from '../services/axiosConfig';
+import { useTranslation } from '../contexts/I18nContext';
 
 interface UpdateInfo {
   upToDate: boolean;
@@ -20,6 +21,7 @@ interface UpdateNotificationProps {
 }
 
 const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss, autoCheck = true }) => {
+  const { t } = useTranslation();
   const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
   const [loading, setLoading] = useState(false);
   const [dismissed, setDismissed] = useState(false);
@@ -81,7 +83,7 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss, auto
         <div className="flex items-center">
           <Loader className="h-5 w-5 text-blue-600 dark:text-blue-400 animate-spin mr-3" />
           <span className="text-sm text-blue-800 dark:text-blue-200">
-            Checking for updates...
+            {t('updateNotification.checking')}
           </span>
         </div>
       </div>
@@ -100,7 +102,7 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss, auto
             <AlertCircle className="h-5 w-5 text-yellow-600 dark:text-yellow-400 mr-3" />
             <div>
               <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
-                Update Check Failed
+                {t('updateNotification.checkFailed')}
               </p>
               <p className="text-sm text-yellow-700 dark:text-yellow-300">
                 {updateInfo.message}
@@ -126,10 +128,10 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss, auto
             <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400 mr-3" />
             <div>
               <p className="text-sm font-medium text-green-800 dark:text-green-200">
-                Up to date
+                {t('updateNotification.upToDate')}
               </p>
               <p className="text-sm text-green-700 dark:text-green-300">
-                Version {updateInfo.currentVersion} is the latest version
+                {t('updateNotification.versionInfo', { current: updateInfo.currentVersion })}
               </p>
             </div>
           </div>
@@ -152,7 +154,7 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss, auto
           <div className="flex-1">
             <div className="flex items-center space-x-2">
               <p className="text-sm font-medium text-blue-800 dark:text-blue-200">
-                Update Available
+                {t('updateNotification.updateAvailable')}
               </p>
               <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200">
                 {updateInfo.currentVersion} → {updateInfo.latestVersion}
@@ -160,10 +162,10 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss, auto
             </div>
             
             <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
-              A new version of CloudNet Panel is available.
+              {t('updateNotification.newVersionAvailable')}
               {updateInfo.publishedAt && (
                 <span className="ml-1">
-                  Released on {formatDate(updateInfo.publishedAt)}.
+                  {t('updateNotification.releasedOn', { date: formatDate(updateInfo.publishedAt) })}
                 </span>
               )}
             </p>
@@ -171,7 +173,7 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss, auto
             {showDetails && updateInfo.releaseNotes && (
               <div className="mt-3 p-3 bg-white dark:bg-gray-800 rounded border border-blue-200 dark:border-blue-600">
                 <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Release Notes:
+                  {t('updateNotification.releaseNotes')}
                 </p>
                 <pre className="text-xs text-gray-600 dark:text-gray-400 whitespace-pre-wrap">
                   {parseReleaseNotes(updateInfo.releaseNotes)}
@@ -188,7 +190,7 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss, auto
                   className="inline-flex items-center text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200"
                 >
                   <ExternalLink className="h-4 w-4 mr-1" />
-                  View Release
+                  {t('updateNotification.viewRelease')}
                 </a>
               )}
               
@@ -196,14 +198,14 @@ const UpdateNotification: React.FC<UpdateNotificationProps> = ({ onDismiss, auto
                 onClick={() => setShowDetails(!showDetails)}
                 className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200"
               >
-                {showDetails ? 'Hide Details' : 'Show Details'}
+                {showDetails ? t('updateNotification.hideDetails') : t('updateNotification.showDetails')}
               </button>
               
               <button
                 onClick={checkForUpdates}
                 className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200"
               >
-                Check Again
+                {t('updateNotification.checkAgain')}
               </button>
             </div>
           </div>
