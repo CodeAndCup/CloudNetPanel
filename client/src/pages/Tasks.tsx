@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from '../contexts/I18nContext';
 import { 
   Settings, 
   Plus, 
@@ -29,6 +30,7 @@ interface Task {
 }
 
 const Tasks: React.FC = () => {
+  const { t } = useTranslation();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -155,7 +157,7 @@ const Tasks: React.FC = () => {
   };
 
   const formatDate = (dateString?: string) => {
-    if (!dateString) return 'Never';
+    if (!dateString) return t('common.never');
     return new Date(dateString).toLocaleString();
   };
 
@@ -171,7 +173,7 @@ const Tasks: React.FC = () => {
     <div className="space-y-6">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Tasks</h1>
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">{t('tasks.title')}</h1>
           <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
             Manage scheduled tasks and automation
           </p>
@@ -182,7 +184,7 @@ const Tasks: React.FC = () => {
             className="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             <Plus className="h-4 w-4 mr-2" />
-            Create Task
+            {t('tasks.createTask')}
           </button>
         </div>
       </div>
@@ -191,19 +193,19 @@ const Tasks: React.FC = () => {
       {showCreateDialog && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Create Task</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">{t('tasks.createTask')}</h3>
             <div className="space-y-4">
               <input
                 type="text"
                 value={newTask.name}
                 onChange={(e) => setNewTask({...newTask, name: e.target.value})}
-                placeholder="Task name..."
+                placeholder={t('common.name') + '...'}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <textarea
                 value={newTask.description}
                 onChange={(e) => setNewTask({...newTask, description: e.target.value})}
-                placeholder="Description (optional)..."
+                placeholder={t('common.description') + ' (optional)...'}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 rows={2}
               />
@@ -237,13 +239,13 @@ const Tasks: React.FC = () => {
                 onClick={() => setShowCreateDialog(false)}
                 className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={createTask}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
               >
-                Create Task
+                {t('tasks.createTask')}
               </button>
             </div>
           </div>
@@ -254,19 +256,19 @@ const Tasks: React.FC = () => {
       {editingTask && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Edit Task</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">{t('tasks.editTask')}</h3>
             <div className="space-y-4">
               <input
                 type="text"
                 value={editingTask.name}
                 onChange={(e) => setEditingTask({...editingTask, name: e.target.value})}
-                placeholder="Task name..."
+                placeholder={t('common.name') + '...'}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <textarea
                 value={editingTask.description || ''}
                 onChange={(e) => setEditingTask({...editingTask, description: e.target.value})}
-                placeholder="Description (optional)..."
+                placeholder={t('common.description') + ' (optional)...'}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 rows={2}
               />
@@ -284,8 +286,8 @@ const Tasks: React.FC = () => {
                 onChange={(e) => setEditingTask({...editingTask, status: e.target.value as any})}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               >
-                <option value="inactive">Inactive</option>
-                <option value="active">Active</option>
+                <option value="inactive">{t('common.inactive')}</option>
+                <option value="active">{t('common.active')}</option>
               </select>
               <input
                 type="text"
@@ -308,13 +310,13 @@ const Tasks: React.FC = () => {
                 onClick={() => setEditingTask(null)}
                 className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={updateTask}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
               >
-                Update Task
+                {t('common.update')} Task
               </button>
             </div>
           </div>
@@ -328,13 +330,13 @@ const Tasks: React.FC = () => {
             <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Name
+                  {t('common.name')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Type
+                  {t('common.type')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Status
+                  {t('common.status')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Schedule
@@ -343,7 +345,7 @@ const Tasks: React.FC = () => {
                   Last Run
                 </th>
                 <th className="relative px-6 py-3">
-                  <span className="sr-only">Actions</span>
+                  <span className="sr-only">{t('common.actions')}</span>
                 </th>
               </tr>
             </thead>

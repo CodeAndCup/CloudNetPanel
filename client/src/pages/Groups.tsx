@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from '../contexts/I18nContext';
 import {
   Users,
   Plus,
@@ -28,6 +29,7 @@ interface User {
 }
 
 const Groups: React.FC = () => {
+  const { t } = useTranslation();
   const [groups, setGroups] = useState<Group[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -150,7 +152,7 @@ const Groups: React.FC = () => {
     <div className="space-y-6">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Groups</h1>
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">{t('groups.title')}</h1>
           <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
             Manage user groups and permissions
           </p>
@@ -161,7 +163,7 @@ const Groups: React.FC = () => {
             className="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             <Plus className="h-4 w-4 mr-2" />
-            Create Group
+            {t('groups.addGroup')}
           </button>
         </div>
       </div>
@@ -170,19 +172,19 @@ const Groups: React.FC = () => {
       {showCreateDialog && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Create Group</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">{t('groups.createGroup')}</h3>
             <div className="space-y-4">
               <input
                 type="text"
                 value={newGroup.name}
                 onChange={(e) => setNewGroup({ ...newGroup, name: e.target.value })}
-                placeholder="Group name..."
+                placeholder={t('groups.name') + '...'}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <textarea
                 value={newGroup.description}
                 onChange={(e) => setNewGroup({ ...newGroup, description: e.target.value })}
-                placeholder="Description (optional)..."
+                placeholder={t('groups.description') + ' (optional)...'}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 rows={3}
               />
@@ -192,13 +194,13 @@ const Groups: React.FC = () => {
                 onClick={() => setShowCreateDialog(false)}
                 className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={createGroup}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
               >
-                Create Group
+                {t('groups.createGroup')}
               </button>
             </div>
           </div>
@@ -209,19 +211,19 @@ const Groups: React.FC = () => {
       {editingGroup && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Edit Group</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">{t('groups.editGroup')}</h3>
             <div className="space-y-4">
               <input
                 type="text"
                 value={editingGroup.name}
                 onChange={(e) => setEditingGroup({ ...editingGroup, name: e.target.value })}
-                placeholder="Group name..."
+                placeholder={t('groups.name') + '...'}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <textarea
                 value={editingGroup.description || ''}
                 onChange={(e) => setEditingGroup({ ...editingGroup, description: e.target.value })}
-                placeholder="Description (optional)..."
+                placeholder={t('groups.description') + ' (optional)...'}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 rows={3}
               />
@@ -231,13 +233,13 @@ const Groups: React.FC = () => {
                 onClick={() => setEditingGroup(null)}
                 className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={updateGroup}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
               >
-                Update Group
+                {t('groups.updateGroup')}
               </button>
             </div>
           </div>
@@ -250,11 +252,11 @@ const Groups: React.FC = () => {
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-700">
             <div className="mt-3">
               <h3 className="text-lg font-medium text-gray-900 dark:text-white text-center mb-4">
-                Delete Group
+                {t('groups.deleteGroup')}
               </h3>
               
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 text-center">
-                Are you sure you want to delete group "{deletingGroup.name}"? This action cannot be undone and will remove all group permissions.
+                {t('groups.confirmDelete')}
               </p>
 
               <div className="flex justify-end space-x-3">
@@ -263,14 +265,14 @@ const Groups: React.FC = () => {
                   onClick={() => setShowDeleteModal(false)}
                   className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-300 hover:bg-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500"
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </button>
                 <button
                   onClick={handleDeleteGroup}
                   disabled={deleting}
                   className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50"
                 >
-                  {deleting ? 'Deleting...' : 'Delete Group'}
+                  {deleting ? t('common.loading') : t('common.delete')} {t('navigation.groups').slice(0, -1)}
                 </button>
               </div>
             </div>
@@ -285,19 +287,19 @@ const Groups: React.FC = () => {
             <thead className="bg-gray-50 dark:bg-gray-700">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Name
+                  {t('common.name')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Description
+                  {t('common.description')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Users
+                  {t('navigation.users')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Created
+                  {t('common.created')}
                 </th>
                 <th className="relative px-6 py-3">
-                  <span className="sr-only">Actions</span>
+                  <span className="sr-only">{t('common.actions')}</span>
                 </th>
               </tr>
             </thead>
@@ -316,7 +318,7 @@ const Groups: React.FC = () => {
                     {group.description || '-'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {group.user_count} users
+                    {group.user_count} {group.user_count === 1 ? 'user' : 'users'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                     {formatDate(group.created_at)}
@@ -327,7 +329,7 @@ const Groups: React.FC = () => {
                         <button
                           onClick={() => setEditingGroup(group)}
                           className="text-blue-600 hover:text-blue-900"
-                          title="Edit group"
+                          title={t('common.edit') + ' group'}
                         >
                           <Edit className="h-4 w-4" />
                         </button>
@@ -336,7 +338,7 @@ const Groups: React.FC = () => {
                         <button
                           onClick={() => deleteGroup(group)}
                           className="text-red-600 hover:text-red-900"
-                          title="Delete group"
+                          title={t('common.delete') + ' group'}
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
