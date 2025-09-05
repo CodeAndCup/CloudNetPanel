@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from '../contexts/I18nContext';
 import { User, Activity, Settings } from 'lucide-react';
 import AccountTab from './profile/AccountTab';
 import ActivityTab from './profile/ActivityTab';
@@ -6,10 +7,11 @@ import ActivityTab from './profile/ActivityTab';
 type ProfileTab = 'account' | 'activity';
 
 const Profile: React.FC = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<ProfileTab>('account');
 
   const tabs = [
-    { id: 'account' as ProfileTab, name: 'Account', icon: User },
+    { id: 'account' as ProfileTab, name: t('profile.accountInformation'), icon: User },
     { id: 'activity' as ProfileTab, name: 'Activity', icon: Activity },
   ];
 
@@ -31,7 +33,7 @@ const Profile: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
             <Settings className="h-8 w-8 mr-3 text-blue-600" />
-            Profile Settings
+            {t('navigation.profile')} Settings
           </h1>
           <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
             Manage your account settings and view your activity

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from '../contexts/I18nContext';
 import { Users, UserCheck, Webhook, Plus, Settings } from 'lucide-react';
 import UsersTab from './admin/UsersTab';
 import GroupsTab from './admin/GroupsTab';
@@ -7,11 +8,12 @@ import WebhooksTab from './admin/WebhooksTab';
 type AdminTab = 'users' | 'groups' | 'webhooks';
 
 const Admin: React.FC = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<AdminTab>('users');
 
   const tabs = [
-    { id: 'users' as AdminTab, name: 'Users', icon: Users },
-    { id: 'groups' as AdminTab, name: 'Groups', icon: UserCheck },
+    { id: 'users' as AdminTab, name: t('navigation.users'), icon: Users },
+    { id: 'groups' as AdminTab, name: t('navigation.groups'), icon: UserCheck },
     { id: 'webhooks' as AdminTab, name: 'Webhooks', icon: Webhook },
   ];
 
@@ -35,7 +37,7 @@ const Admin: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
             <Settings className="h-8 w-8 mr-3 text-blue-600" />
-            Administration
+            {t('navigation.admin')}
           </h1>
           <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
             Manage users, groups, and system webhooks
