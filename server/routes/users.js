@@ -8,7 +8,7 @@ const router = express.Router();
 // Get all users (admin only)
 router.get('/', authenticateToken, requireAdmin, (req, res) => {
   db.all(`
-    SELECT id, username, email, role, created_at, last_login, status FROM users;
+    SELECT id, username, email, role, created_at, last_login, status, language FROM users;
   `, (err, rows) => {
     if (err) {
       console.error('Error fetching users:', err);
@@ -28,7 +28,7 @@ router.get('/:id', authenticateToken, (req, res) => {
   }
 
   db.get(`
-    SELECT id, username, email, role, created_at, last_login, status 
+    SELECT id, username, email, role, created_at, last_login, status, language 
     FROM users WHERE id = ?
   `, [userId], (err, user) => {
     if (err) {
@@ -108,7 +108,7 @@ router.post('/', authenticateToken, requireAdmin, logActivity('user_create', 'us
     // Return the created user (without password)
     const newUser = await new Promise((resolve, reject) => {
       db.get(`
-        SELECT id, username, email, role, created_at, last_login, status 
+        SELECT id, username, email, role, created_at, last_login, status, language 
         FROM users WHERE id = ?
       `, [userId], (err, row) => {
         if (err) reject(err);
@@ -177,7 +177,7 @@ router.put('/:id', authenticateToken, logActivity('user_update', 'user'), async 
     // Return updated user (without password)
     const updatedUser = await new Promise((resolve, reject) => {
       db.get(`
-        SELECT id, username, email, role, created_at, last_login, status 
+        SELECT id, username, email, role, created_at, last_login, status, language 
         FROM users WHERE id = ?
       `, [userId], (err, row) => {
         if (err) reject(err);
@@ -189,6 +189,65 @@ router.put('/:id', authenticateToken, logActivity('user_update', 'user'), async 
   } catch (error) {
     console.error('Error updating user:', error);
     res.status(500).json({ error: 'Failed to update user' });
+  }
+});
+
+// Update user language (accessible to the user themselves)
+router.patch('/:id/language', authenticateToken, logActivity('user_language_update', 'user'), async (req, res) => {
+  const userId = parseInt(req.params.id);
+  const { language } = req.body;
+
+  // Users can only update their own language unless they're admin
+  if (req.user.role !== 'Administrators' && req.user.id !== userId) {
+    return res.status(403).json({ error: 'Access denied' });
+  }
+
+  if (!language) {
+    return res.status(400).json({ error: 'Language is required' });
+  }
+
+  // Validate language code (basic validation)
+  const validLanguages = ['en', 'fr', 'de', 'es', 'it'];
+  if (!validLanguages.includes(language)) {
+    return res.status(400).json({ error: 'Invalid language code' });
+  }
+
+  try {
+    // Check if user exists
+    const existingUser = await new Promise((resolve, reject) => {
+      db.get(`SELECT id FROM users WHERE id = ?`, [userId], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
+    });
+
+    if (!existingUser) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Update user language
+    await new Promise((resolve, reject) => {
+      db.run(`UPDATE users SET language = ? WHERE id = ?`, [language, userId], (err) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+
+    // Return updated user (without password)
+    const updatedUser = await new Promise((resolve, reject) => {
+      db.get(`
+        SELECT id, username, email, role, created_at, last_login, status, language 
+        FROM users WHERE id = ?
+      `, [userId], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
+    });
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error('Error updating user language:', error);
+    res.status(500).json({ error: 'Failed to update user language' });
   }
 });
 

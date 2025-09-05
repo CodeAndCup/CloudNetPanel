@@ -5,10 +5,11 @@ import { useI18n } from '../../contexts/I18nContext';
 
 const AccountTab: React.FC = () => {
   const { user } = useAuth();
-  const { language, setLanguage, languages, t } = useI18n();
+  const { language, setLanguage, languages, t, updateUserLanguage } = useI18n();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [languageSaving, setLanguageSaving] = useState(false);
 
   const handlePasswordChange = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,11 +21,25 @@ const AccountTab: React.FC = () => {
     console.log('Changing password...');
   };
 
-  const handleLanguageChange = (e: React.FormEvent) => {
+  const handleLanguageChange = async (e: React.FormEvent) => {
     e.preventDefault();
-    // The language change is already handled by the setLanguage function
-    // which automatically updates localStorage and the UI
-    console.log('Language changed to:', language);
+    setLanguageSaving(true);
+    
+    try {
+      const success = await updateUserLanguage(language);
+      if (success) {
+        // Show success message (you could add a toast notification here)
+        console.log('Language updated successfully');
+      } else {
+        console.error('Failed to update language');
+        alert(t('errors.generic'));
+      }
+    } catch (error) {
+      console.error('Error updating language:', error);
+      alert(t('errors.generic'));
+    } finally {
+      setLanguageSaving(false);
+    }
   };
 
   return (
@@ -162,10 +177,11 @@ const AccountTab: React.FC = () => {
           <div className="mt-6">
             <button
               type="submit"
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              disabled={languageSaving}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save className="h-4 w-4 mr-2" />
-              {t('profile.saveLanguage')}
+              {languageSaving ? t('common.loading') : t('profile.saveLanguage')}
             </button>
           </div>
         </form>

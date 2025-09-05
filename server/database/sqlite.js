@@ -16,9 +16,29 @@ db.serialize(() => {
       role TEXT DEFAULT 'user',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       last_login DATETIME,
-      status TEXT DEFAULT 'active'
+      status TEXT DEFAULT 'active',
+      language TEXT DEFAULT 'en'
     )
   `);
+
+  // Add language column if it doesn't exist (for existing installations)
+  db.all("PRAGMA table_info(users)", (err, columns) => {
+    if (err) {
+      console.error('Error checking users table structure:', err);
+      return;
+    }
+    
+    const hasLanguageColumn = columns.some(col => col.name === 'language');
+    if (!hasLanguageColumn) {
+      db.run(`ALTER TABLE users ADD COLUMN language TEXT DEFAULT 'en'`, (err) => {
+        if (err) {
+          console.error('Error adding language column:', err);
+        } else {
+          console.log('Added language column to users table');
+        }
+      });
+    }
+  });
 
   // Servers table
   db.run(`

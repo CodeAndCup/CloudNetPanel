@@ -7,6 +7,9 @@ import deTranslations from '../locales/de.json';
 import esTranslations from '../locales/es.json';
 import itTranslations from '../locales/it.json';
 
+// Import AuthContext (this must be imported here since AuthProvider wraps I18nProvider)
+import { useAuth } from './AuthContext';
+
 type TranslationKey = string;
 type TranslationValue = string | { [key: string]: any };
 type Translations = { [key: string]: TranslationValue };
@@ -16,6 +19,7 @@ interface I18nContextType {
   setLanguage: (lang: string) => void;
   t: (key: TranslationKey, params?: { [key: string]: string | number }) => string;
   languages: { code: string; name: string }[];
+  updateUserLanguage: (lang: string) => Promise<boolean>;
 }
 
 const translations: { [key: string]: Translations } = {
@@ -41,11 +45,26 @@ interface I18nProviderProps {
 }
 
 export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
-  // Get initial language from localStorage or default to 'en'
+  const { user, updateUserLanguage } = useAuth();
+  
+  // Get initial language from user profile, localStorage, or default to 'en'
   const [language, setLanguageState] = useState<string>(() => {
     const savedLanguage = localStorage.getItem('cloudnet-panel-language');
     return savedLanguage && translations[savedLanguage] ? savedLanguage : 'en';
   });
+
+  // Update language when user changes (login/logout)
+  useEffect(() => {
+    if (user && user.language && translations[user.language]) {
+      setLanguageState(user.language);
+    } else if (!user) {
+      // When logged out, use localStorage
+      const savedLanguage = localStorage.getItem('cloudnet-panel-language');
+      if (savedLanguage && translations[savedLanguage]) {
+        setLanguageState(savedLanguage);
+      }
+    }
+  }, [user]);
 
   // Save language to localStorage when it changes
   useEffect(() => {
@@ -56,6 +75,22 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
     if (translations[lang]) {
       setLanguageState(lang);
     }
+  };
+
+  const updateLanguagePreference = async (lang: string): Promise<boolean> => {
+    if (!translations[lang]) {
+      return false;
+    }
+
+    setLanguageState(lang);
+
+    // If user is authenticated, save to database
+    if (user) {
+      return await updateUserLanguage(lang);
+    }
+
+    // If not authenticated, just save to localStorage (already done by useEffect above)
+    return true;
   };
 
   // Translation function with dot notation support
@@ -101,6 +136,7 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
     setLanguage,
     t,
     languages,
+    updateUserLanguage: updateLanguagePreference,
   };
 
   return (
