@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
+import { useI18n } from '../contexts/I18nContext';
 import {
   Cloud,
   LayoutDashboard,
@@ -23,6 +24,7 @@ import {
 import clsx from 'clsx';
 import Footer from './Footer';
 import UpdateNotification from './UpdateNotification';
+import LanguageSwitcher from './LanguageSwitcher';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -31,6 +33,7 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { t } = useI18n();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -51,14 +54,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }, []);
 
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Servers', href: '/servers', icon: Server },
-    { name: 'Nodes', href: '/nodes', icon: Network },
-    { name: 'Templates', href: '/templates', icon: FileText },
-    { name: 'Backups', href: '/backups', icon: Archive },
-    { name: 'Tasks', href: '/tasks', icon: Settings },
-    { name: 'Activities', href: '/activities', icon: Activity },
-    { name: 'Administration', href: '/admin', icon: Settings },
+    { name: t('navigation.dashboard'), href: '/dashboard', icon: LayoutDashboard },
+    { name: t('navigation.servers'), href: '/servers', icon: Server },
+    { name: t('navigation.nodes'), href: '/nodes', icon: Network },
+    { name: t('navigation.templates'), href: '/templates', icon: FileText },
+    { name: t('navigation.backups'), href: '/backups', icon: Archive },
+    { name: t('navigation.tasks'), href: '/tasks', icon: Settings },
+    { name: t('navigation.activities'), href: '/activities', icon: Activity },
+    { name: t('navigation.admin'), href: '/admin', icon: Settings },
   ];
 
   const isActive = (href: string) => {
@@ -188,6 +191,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                       )}
                     </button>
 
+                    {/* Language switcher */}
+                    <LanguageSwitcher />
+
                     {/* Profile dropdown */}
                     <div className="relative" ref={profileRef}>
                       <button
@@ -210,7 +216,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                               onClick={() => setProfileOpen(false)}
                             >
                               <User className="h-4 w-4 mr-3" />
-                              Profile Settings
+                              {t('navigation.profile')}
                             </Link>
                             <button
                               onClick={() => {
@@ -220,7 +226,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                               className="flex items-center w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                             >
                               <LogOut className="h-4 w-4 mr-3" />
-                              Sign Out
+                              {t('navigation.logout')}
                             </button>
                           </div>
                         </div>

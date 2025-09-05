@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
 import { Save, Key, Globe } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useI18n } from '../../contexts/I18nContext';
 
 const AccountTab: React.FC = () => {
   const { user } = useAuth();
+  const { language, setLanguage, languages, t } = useI18n();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [language, setLanguage] = useState('en');
 
   const handlePasswordChange = (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: Implement password change API call
     if (newPassword !== confirmPassword) {
-      alert('New passwords do not match');
+      alert(t('errors.validationError'));
       return;
     }
     console.log('Changing password...');
@@ -21,8 +22,9 @@ const AccountTab: React.FC = () => {
 
   const handleLanguageChange = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement language change
-    console.log('Changing language to:', language);
+    // The language change is already handled by the setLanguage function
+    // which automatically updates localStorage and the UI
+    console.log('Language changed to:', language);
   };
 
   return (
@@ -31,14 +33,14 @@ const AccountTab: React.FC = () => {
       <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
           <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-            Account Information
+            {t('profile.accountInformation')}
           </h3>
         </div>
         <div className="px-6 py-4">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Username
+                {t('profile.username')}
               </label>
               <input
                 type="text"
@@ -49,7 +51,7 @@ const AccountTab: React.FC = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Email
+                {t('profile.email')}
               </label>
               <input
                 type="email"
@@ -60,7 +62,7 @@ const AccountTab: React.FC = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Role
+                {t('profile.role')}
               </label>
               <input
                 type="text"
@@ -78,14 +80,14 @@ const AccountTab: React.FC = () => {
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
           <h3 className="text-lg font-medium text-gray-900 dark:text-white flex items-center">
             <Key className="h-5 w-5 mr-2 text-blue-600" />
-            Change Password
+            {t('profile.changePassword')}
           </h3>
         </div>
         <form onSubmit={handlePasswordChange} className="px-6 py-4">
           <div className="grid grid-cols-1 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Current Password
+                {t('profile.currentPassword')}
               </label>
               <input
                 type="password"
@@ -97,7 +99,7 @@ const AccountTab: React.FC = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                New Password
+                {t('profile.newPassword')}
               </label>
               <input
                 type="password"
@@ -109,7 +111,7 @@ const AccountTab: React.FC = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                Confirm New Password
+                {t('profile.confirmNewPassword')}
               </label>
               <input
                 type="password"
@@ -126,7 +128,7 @@ const AccountTab: React.FC = () => {
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               <Save className="h-4 w-4 mr-2" />
-              Change Password
+              {t('profile.changePassword')}
             </button>
           </div>
         </form>
@@ -137,24 +139,24 @@ const AccountTab: React.FC = () => {
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
           <h3 className="text-lg font-medium text-gray-900 dark:text-white flex items-center">
             <Globe className="h-5 w-5 mr-2 text-blue-600" />
-            Language Settings
+            {t('profile.languageSettings')}
           </h3>
         </div>
         <form onSubmit={handleLanguageChange} className="px-6 py-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Display Language
+              {t('profile.displayLanguage')}
             </label>
             <select
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
             >
-              <option value="en">English</option>
-              <option value="fr">Français</option>
-              <option value="de">Deutsch</option>
-              <option value="es">Español</option>
-              <option value="it">Italiano</option>
+              {languages.map((lang) => (
+                <option key={lang.code} value={lang.code}>
+                  {lang.name}
+                </option>
+              ))}
             </select>
           </div>
           <div className="mt-6">
@@ -163,7 +165,7 @@ const AccountTab: React.FC = () => {
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               <Save className="h-4 w-4 mr-2" />
-              Save Language
+              {t('profile.saveLanguage')}
             </button>
           </div>
         </form>

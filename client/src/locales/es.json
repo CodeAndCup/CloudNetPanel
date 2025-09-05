@@ -1,0 +1,140 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "add": "Añadir",
+    "create": "Crear",
+    "update": "Actualizar",
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "yes": "Sí",
+    "no": "No",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "name": "Nombre",
+    "description": "Descripción",
+    "actions": "Acciones",
+    "status": "Estado",
+    "created": "Creado",
+    "lastLogin": "Último acceso"
+  },
+  "navigation": {
+    "dashboard": "Panel de control",
+    "servers": "Servidores",
+    "nodes": "Nodos",
+    "users": "Usuarios",
+    "groups": "Grupos",
+    "templates": "Plantillas",
+    "tasks": "Tareas",
+    "backups": "Copias de seguridad",
+    "activities": "Actividades",
+    "admin": "Administración",
+    "profile": "Perfil",
+    "logout": "Cerrar sesión"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "username": "Nombre de usuario",
+    "password": "Contraseña",
+    "email": "Correo electrónico",
+    "loginButton": "Iniciar sesión",
+    "loginError": "Credenciales inválidas",
+    "loginRequired": "Por favor, inicie sesión para acceder a esta página"
+  },
+  "users": {
+    "title": "Gestión de usuarios",
+    "addUser": "Añadir usuario",
+    "editUser": "Editar usuario",
+    "deleteUser": "Eliminar usuario",
+    "createUser": "Crear usuario",
+    "updateUser": "Actualizar usuario",
+    "username": "Nombre de usuario",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "role": "Rol",
+    "confirmDelete": "¿Está seguro de que desea eliminar este usuario?",
+    "passwordHint": "(dejar en blanco para mantener el actual)",
+    "roles": {
+      "Users": "Usuario",
+      "Developers": "Desarrollador", 
+      "Moderators": "Moderador",
+      "Administrators": "Administrador"
+    }
+  },
+  "groups": {
+    "title": "Gestión de grupos",
+    "addGroup": "Crear grupo",
+    "editGroup": "Editar grupo",
+    "deleteGroup": "Eliminar grupo",
+    "createGroup": "Crear grupo",
+    "updateGroup": "Actualizar grupo",
+    "name": "Nombre",
+    "description": "Descripción",
+    "userCount": "Usuarios",
+    "confirmDelete": "¿Está seguro de que desea eliminar este grupo?"
+  },
+  "webhooks": {
+    "title": "Gestión de webhooks",
+    "addWebhook": "Añadir webhook",
+    "editWebhook": "Editar webhook",
+    "deleteWebhook": "Eliminar webhook",
+    "createWebhook": "Crear webhook",
+    "updateWebhook": "Actualizar webhook",
+    "name": "Nombre",
+    "url": "URL",
+    "events": "Eventos",
+    "eventsToSubscribe": "Eventos a suscribir",
+    "lastTriggered": "Último activado",
+    "confirmDelete": "¿Está seguro de que desea eliminar este webhook?",
+    "never": "Nunca",
+    "enable": "Activar",
+    "disable": "Desactivar"
+  },
+  "templates": {
+    "title": "Gestión de plantillas",
+    "permissions": "Gestionar permisos",
+    "addPermission": "Añadir permiso",
+    "currentPermissions": "Permisos actuales",
+    "noPermissions": "No se han establecido permisos específicos.",
+    "adminAccess": "Los administradores tienen acceso completo por defecto.",
+    "permissionTypes": {
+      "read": "Lectura",
+      "write": "Escritura",
+      "delete": "Eliminación"
+    },
+    "targetTypes": {
+      "group": "Grupo",
+      "user": "Usuario"
+    },
+    "remove": "Eliminar"
+  },
+  "profile": {
+    "accountInformation": "Información de la cuenta",
+    "username": "Nombre de usuario",
+    "email": "Correo electrónico",
+    "role": "Rol",
+    "changePassword": "Cambiar contraseña",
+    "currentPassword": "Contraseña actual",
+    "newPassword": "Nueva contraseña",
+    "confirmNewPassword": "Confirmar nueva contraseña",
+    "languageSettings": "Configuración de idioma",
+    "displayLanguage": "Idioma de visualización",
+    "saveLanguage": "Guardar idioma"
+  },
+  "errors": {
+    "generic": "Ha ocurrido un error. Por favor, inténtelo de nuevo.",
+    "networkError": "Error de red. Por favor, verifique su conexión.",
+    "unauthorized": "No está autorizado para realizar esta acción.",
+    "notFound": "El recurso solicitado no fue encontrado.",
+    "validationError": "Por favor, verifique su entrada e inténtelo de nuevo."
+  },
+  "success": {
+    "saved": "Cambios guardados exitosamente",
+    "created": "Creado exitosamente",
+    "updated": "Actualizado exitosamente",
+    "deleted": "Eliminado exitosamente"
+  }
+}
