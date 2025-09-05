@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Shield, User, Users } from 'lucide-react';
-import axios from 'axios';
+import axios from '../services/axiosConfig';
 
 interface Permission {
   id: number;

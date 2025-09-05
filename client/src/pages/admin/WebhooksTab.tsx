@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Webhook, ExternalLink, Activity, X } from 'lucide-react';
-import axios from 'axios';
+import axios from '../../services/axiosConfig';
 
 interface WebhookData {
   id: number;

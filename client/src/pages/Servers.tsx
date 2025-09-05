@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, Square, RotateCcw, Plus, Trash2, Edit, Terminal, Eye, X } from 'lucide-react';
-import axios from 'axios';
+import axios from '../services/axiosConfig';
 import clsx from 'clsx';
 import { useAuth } from '../contexts/AuthContext';
 import { getWebSocketUrl } from '../config/api';

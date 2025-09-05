@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Activity, Filter, Calendar, User, Server, FileText } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
-import axios from 'axios';
+import axios from '../../services/axiosConfig';
 
 interface ActivityItem {
   id: number;

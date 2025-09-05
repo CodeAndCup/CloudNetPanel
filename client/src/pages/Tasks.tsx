@@ -10,7 +10,7 @@ import {
   XCircle,
   AlertCircle
 } from 'lucide-react';
-import axios from 'axios';
+import axios from '../services/axiosConfig';
 import clsx from 'clsx';
 
 interface Task {

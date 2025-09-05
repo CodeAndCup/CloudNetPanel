@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import axios from 'axios';
+import axios from '../services/axiosConfig';
 import { API_BASE_URL } from '../config/api';
 
 interface User {
@@ -42,7 +42,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } else {
       setLoading(false);
     }
+
+    // Set up periodic session validation (every 5 minutes)
+    const sessionCheckInterval = setInterval(() => {
+      if (localStorage.getItem('token')) {
+        validateSession();
+      }
+    }, 5 * 60 * 1000); // 5 minutes
+
+    return () => {
+      clearInterval(sessionCheckInterval);
+    };
   }, []);
+
+  const validateSession = async () => {
+    try {
+      await axios.get('/api/auth/me');
+    } catch (error) {
+      // Session validation will be handled by axios interceptor
+      console.log('Session validation failed');
+    }
+  };
 
   const fetchUser = async () => {
     try {
