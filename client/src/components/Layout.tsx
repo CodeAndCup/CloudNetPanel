@@ -24,7 +24,6 @@ import {
 import clsx from 'clsx';
 import Footer from './Footer';
 import UpdateNotification from './UpdateNotification';
-import LanguageSwitcher from './LanguageSwitcher';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -190,9 +189,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         <Sun className="h-5 w-5" />
                       )}
                     </button>
-
-                    {/* Language switcher */}
-                    <LanguageSwitcher />
 
                     {/* Profile dropdown */}
                     <div className="relative" ref={profileRef}>

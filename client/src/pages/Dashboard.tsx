@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from '../contexts/I18nContext';
 import { Server, Network, Users, Activity, TrendingUp, TrendingDown } from 'lucide-react';
 import axios from '../services/axiosConfig';
 
@@ -19,6 +20,7 @@ interface DashboardStats {
 }
 
 const Dashboard: React.FC = () => {
+  const { t } = useTranslation();
   const [stats, setStats] = useState<DashboardStats>({
     totalServers: 0,
     onlineServers: 0,
@@ -82,33 +84,33 @@ const Dashboard: React.FC = () => {
 
   const statCards = [
     {
-      name: 'Total Servers',
+      name: t('dashboard.totalServers'),
       value: stats.totalServers,
-      subValue: `${stats.onlineServers} online`,
+      subValue: `${stats.onlineServers} ${t('servers.statuses.running')}`,
       icon: Server,
       color: 'bg-blue-500',
       trend: stats.onlineServers > 0 ? 'up' : 'down'
     },
     {
-      name: 'Nodes',
+      name: t('dashboard.nodes'),
       value: stats.totalNodes,
-      subValue: `${stats.onlineNodes} online`,
+      subValue: `${stats.onlineNodes} ${t('servers.statuses.running')}`,
       icon: Network,
       color: 'bg-green-500',
       trend: stats.onlineNodes > 0 ? 'up' : 'down'
     },
     {
-      name: 'Players',
+      name: t('dashboard.players') || 'Players',
       value: stats.onlinePlayers,
-      subValue: `${stats.maxOnlinePlayers} slots`,
+      subValue: `${stats.maxOnlinePlayers} ${t('dashboard.slots') || 'slots'}`,
       icon: Users,
       color: 'bg-purple-500',
       trend: stats.activeUsers > 0 ? 'up' : 'down'
     },
     {
-      name: 'Uptime',
+      name: t('dashboard.uptime') || 'Uptime',
       value: 'XX.X%',
-      subValue: 'Last 30 days',
+      subValue: t('dashboard.last30days') || 'Last 30 days',
       icon: Activity,
       color: 'bg-yellow-500',
       trend: 'up'
@@ -161,7 +163,7 @@ const Dashboard: React.FC = () => {
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
           <div className="px-4 py-5 sm:p-6">
             <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">
-              Server Status
+              {t('dashboard.serverStatus.title') || 'Server Status'}
             </h3>
             <div className="space-y-3">
               {servers.slice(0, 5).map((server) => (
@@ -176,7 +178,7 @@ const Dashboard: React.FC = () => {
                     </span>
                   </div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">
-                    {server.players}/{server.maxPlayers} players
+                    {server.players}/{server.maxPlayers} {t('dashboard.serverStatus.players') || 'players'}
                   </div>
                 </div>
               ))}
@@ -188,7 +190,7 @@ const Dashboard: React.FC = () => {
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
           <div className="px-4 py-5 sm:p-6">
             <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">
-              Node Status
+              {t('dashboard.nodesStatus.title') || 'Node Status'}
             </h3>
             <div className="space-y-3">
               {nodes.map((node) => (
@@ -201,7 +203,7 @@ const Dashboard: React.FC = () => {
                     </span>
                   </div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">
-                    {node.servers}/{node.maxServers} servers
+                    {node.servers}/{node.maxServers} {t('dashboard.nodesStatus.servers') || 'servers'}
                   </div>
                 </div>
               ))}
@@ -214,11 +216,11 @@ const Dashboard: React.FC = () => {
       <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
         <div className="px-4 py-5 sm:p-6">
           <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">
-            System Overview
+            {t('dashboard.systemOverview.title') || 'System Overview'}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Average CPU Usage</div>
+              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">{t('dashboard.systemOverview.cpuUsage') || 'Average CPU Usage'}</div>
               <div className="flex items-center">
                 <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-3">
                   <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${(stats.cpuUsage / stats.cpuMaxUsage * 100).toFixed(2)}%` }}></div>
@@ -227,7 +229,7 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
             <div>
-              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Memory Usage</div>
+              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">{t('dashboard.systemOverview.memoryUsage') || 'Memory Usage'}</div>
               <div className="flex items-center">
                 <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-3">
                   <div className="bg-green-500 h-2 rounded-full" style={{ width: `${(stats.memoryUsage / stats.memoryMaxUsage * 100).toFixed(2)}%` }}></div>
@@ -236,7 +238,7 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
             <div>
-              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Disk Usage</div>
+              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">{t('dashboard.systemOverview.diskUsage') || 'Disk Usage'}</div>
               <div className="flex items-center">
                 <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-3">
                   <div className="bg-yellow-500 h-2 rounded-full" style={{ width: `${stats.diskUsage}%` }}></div>

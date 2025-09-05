@@ -35,6 +35,76 @@
     "profile": "Profilo",
     "logout": "Disconnetti"
   },
+  "dashboard": {
+    "totalServers": "Server totali",
+    "nodes": "Nodi",
+    "players": "Giocatori online",
+    "slots": "slot",
+    "uptime": "Tempo di attività",
+    "last30days": "Ultimi 30 giorni",
+    "serverStatus": {
+      "title": "Stato server",
+      "players": "giocatori"
+    },
+    "nodesStatus": {
+      "title": "Stato nodi",
+      "servers": "server"
+    },
+    "systemOverview": {
+      "title": "Panoramica sistema",
+      "cpuUsage": "Utilizzo CPU",
+      "memoryUsage": "Utilizzo memoria",
+      "diskUsage": "Utilizzo disco"
+    }
+  },
+  "servers": {
+    "title": "Gestione server",
+    "addServer": "Aggiungi server",
+    "editServer": "Modifica server",
+    "deleteServer": "Elimina server",
+    "createServer": "Crea server",
+    "updateServer": "Aggiorna server",
+    "name": "Nome",
+    "node": "Nodo",
+    "template": "Modello",
+    "status": "Stato",
+    "ipAddress": "Indirizzo IP",
+    "port": "Porta",
+    "memory": "Memoria (MB)",
+    "cpuCores": "Core CPU",
+    "diskSpace": "Spazio su disco (MB)",
+    "confirmDelete": "Sei sicuro di voler eliminare questo server?",
+    "actions": {
+      "start": "Avvia",
+      "stop": "Ferma",
+      "restart": "Riavvia",
+      "viewConsole": "Visualizza console",
+      "viewLogs": "Visualizza log",
+      "sendCommand": "Invia comando"
+    },
+    "statuses": {
+      "running": "In esecuzione",
+      "stopped": "Fermato",
+      "starting": "Avvio",
+      "stopping": "Arresto",
+      "error": "Errore"
+    }
+  },
+  "nodes": {
+    "title": "Gestione nodi",
+    "ipAddress": "Indirizzo IP",
+    "location": "Posizione",
+    "ServerCount": "Server",
+    "cpuUsage": "Utilizzo CPU",
+    "memoryUsage": "Utilizzo memoria",
+    "diskUsage": "Utilizzo disco",
+    "uptime": "Tempo di attività",
+    "actions": {
+      "create": "Aggiungi nodo",
+      "edit": "Modifica nodo",
+      "delete": "Elimina nodo"
+    }
+  },
   "auth": {
     "login": "Accedi",
     "username": "Nome utente",
@@ -59,7 +129,7 @@
     "passwordHint": "(lascia vuoto per mantenere quello attuale)",
     "roles": {
       "Users": "Utente",
-      "Developers": "Sviluppatore", 
+      "Developers": "Sviluppatore",
       "Moderators": "Moderatore",
       "Administrators": "Amministratore"
     }
@@ -94,22 +164,30 @@
     "disable": "Disabilita"
   },
   "templates": {
-    "title": "Gestione modelli",
-    "permissions": "Gestisci permessi",
-    "addPermission": "Aggiungi permesso",
-    "currentPermissions": "Permessi attuali",
-    "noPermissions": "Nessun permesso specifico impostato.",
-    "adminAccess": "Gli amministratori hanno accesso completo per impostazione predefinita.",
-    "permissionTypes": {
-      "read": "Lettura",
-      "write": "Scrittura",
-      "delete": "Eliminazione"
+    "title": "Modelli",
+    "description": "Gestisci modelli di server e file di configurazione.",
+    "filesManager": {
+      "name": "Nome file",
+      "size": "Dimensione",
+      "modified": "Ultima modifica"
     },
-    "targetTypes": {
-      "group": "Gruppo",
-      "user": "Utente"
+    "actions": {
+      "newFolder": "Nuova cartella",
+      "newFile": "Nuovo file",
+      "uploadFile": "Carica file"
     },
-    "remove": "Rimuovi"
+    "createFolder": {
+      "title": "Crea nuova cartella",
+      "folderName": "Nome cartella...",
+      "cancel": "Annulla",
+      "create": "Crea"
+    },
+    "createFile": {
+      "title": "Crea nuovo file",
+      "fileName": "Nome file...",
+      "cancel": "Annulla",
+      "create": "Crea"
+    }
   },
   "profile": {
     "accountInformation": "Informazioni account",

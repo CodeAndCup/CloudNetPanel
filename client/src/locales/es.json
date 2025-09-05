@@ -35,6 +35,76 @@
     "profile": "Perfil",
     "logout": "Cerrar sesión"
   },
+  "dashboard": {
+    "totalServers": "Servidores totales",
+    "nodes": "Nodos",
+    "players": "Jugadores en línea",
+    "slots": "plazas",
+    "uptime": "Tiempo de actividad",
+    "last30days": "Últimos 30 días",
+    "serverStatus": {
+      "title": "Estado del servidor",
+      "players": "jugadores"
+    },
+    "nodesStatus": {
+      "title": "Estado de los nodos",
+      "servers": "servidores"
+    },
+    "systemOverview": {
+      "title": "Resumen del sistema",
+      "cpuUsage": "Uso de CPU",
+      "memoryUsage": "Uso de memoria",
+      "diskUsage": "Uso de disco"
+    }
+  },
+  "servers": {
+    "title": "Gestión de servidores",
+    "addServer": "Añadir servidor",
+    "editServer": "Editar servidor",
+    "deleteServer": "Eliminar servidor",
+    "createServer": "Crear servidor",
+    "updateServer": "Actualizar servidor",
+    "name": "Nombre",
+    "node": "Nodo",
+    "template": "Plantilla",
+    "status": "Estado",
+    "ipAddress": "Dirección IP",
+    "port": "Puerto",
+    "memory": "Memoria (MB)",
+    "cpuCores": "Núcleos de CPU",
+    "diskSpace": "Espacio en disco (MB)",
+    "confirmDelete": "¿Está seguro de que desea eliminar este servidor?",
+    "actions": {
+      "start": "Iniciar",
+      "stop": "Detener",
+      "restart": "Reiniciar",
+      "viewConsole": "Ver consola",
+      "viewLogs": "Ver registros",
+      "sendCommand": "Enviar comando"
+    },
+    "statuses": {
+      "running": "En ejecución",
+      "stopped": "Detenido",
+      "starting": "Iniciando",
+      "stopping": "Deteniendo",
+      "error": "Error"
+    }
+  },
+  "nodes": {
+    "title": "Gestión de nodos",
+    "ipAddress": "Dirección IP",
+    "location": "Ubicación",
+    "ServerCount": "Servidores",
+    "cpuUsage": "Uso de CPU",
+    "memoryUsage": "Uso de memoria",
+    "diskUsage": "Uso de disco",
+    "uptime": "Tiempo de actividad",
+    "actions": {
+      "create": "Añadir nodo",
+      "edit": "Editar nodo",
+      "delete": "Eliminar nodo"
+    }
+  },
   "auth": {
     "login": "Iniciar sesión",
     "username": "Nombre de usuario",
@@ -59,7 +129,7 @@
     "passwordHint": "(dejar en blanco para mantener el actual)",
     "roles": {
       "Users": "Usuario",
-      "Developers": "Desarrollador", 
+      "Developers": "Desarrollador",
       "Moderators": "Moderador",
       "Administrators": "Administrador"
     }
@@ -95,21 +165,29 @@
   },
   "templates": {
     "title": "Gestión de plantillas",
-    "permissions": "Gestionar permisos",
-    "addPermission": "Añadir permiso",
-    "currentPermissions": "Permisos actuales",
-    "noPermissions": "No se han establecido permisos específicos.",
-    "adminAccess": "Los administradores tienen acceso completo por defecto.",
-    "permissionTypes": {
-      "read": "Lectura",
-      "write": "Escritura",
-      "delete": "Eliminación"
+    "description": "Administra las plantillas de servidor y archivos de configuración.",
+    "filesManager": {
+      "name": "Nombre de archivo",
+      "size": "Tamaño",
+      "modified": "Última modificación"
     },
-    "targetTypes": {
-      "group": "Grupo",
-      "user": "Usuario"
+    "actions": {
+      "newFolder": "Nueva carpeta",
+      "newFile": "Nuevo archivo",
+      "uploadFile": "Subir archivos"
     },
-    "remove": "Eliminar"
+    "createFolder": {
+      "title": "Crear nueva carpeta",
+      "folderName": "Nombre de la carpeta...",
+      "cancel": "Cancelar",
+      "create": "Crear"
+    },
+    "createFile": {
+      "title": "Crear nuevo archivo",
+      "fileName": "Nombre del archivo...",
+      "cancel": "Cancelar",
+      "create": "Crear"
+    }
   },
   "profile": {
     "accountInformation": "Información de la cuenta",

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from '../contexts/I18nContext';
 import { Plus, Edit, Trash2 } from 'lucide-react';
 import axios from '../services/axiosConfig';
 import clsx from 'clsx';
@@ -20,6 +21,7 @@ interface Node {
 const Nodes: React.FC = () => {
   const [nodes, setNodes] = useState<Node[]>([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     fetchNodes();
@@ -68,6 +70,7 @@ const Nodes: React.FC = () => {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <span className="ml-4 text-gray-700 dark:text-gray-200">{t('common.loading')}</span>
       </div>
     );
   }
@@ -75,14 +78,14 @@ const Nodes: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Nodes</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('nodes.title')}</h1>
         <button
           disabled
           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-400 cursor-not-allowed"
-          title="Node creation is currently disabled"
+          title={t('nodes.actions.create') + ' ' + t('common.inactive')}
         >
           <Plus className="h-4 w-4 mr-2" />
-          Add Node
+          {t('nodes.actions.create')}
         </button>
       </div>
 
@@ -106,21 +109,21 @@ const Nodes: React.FC = () => {
               <div className="space-y-3">
                 <div>
                   <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-1">
-                    <span>IP Address</span>
+                    <span>{t('nodes.ipAddress')}</span>
                     <span>{node.ip}</span>
                   </div>
                 </div>
 
                 <div>
                   <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-1">
-                    <span>Location</span>
+                    <span>{t('nodes.location')}</span>
                     <span>{node.location}</span>
                   </div>
                 </div>
 
                 <div>
                   <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-1">
-                    <span>Servers</span>
+                    <span>{t('nodes.ServerCount')}</span>
                     <span>{node.servers}/{node.maxServers}</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
@@ -133,7 +136,7 @@ const Nodes: React.FC = () => {
 
                 <div>
                   <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-1">
-                    <span>CPU Usage</span>
+                    <span>{t('nodes.cpuUsage')}</span>
                     <span>{node.cpu}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
@@ -146,7 +149,7 @@ const Nodes: React.FC = () => {
 
                 <div>
                   <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-1">
-                    <span>Memory Usage</span>
+                    <span>{t('nodes.memoryUsage')}</span>
                     <span>{node.ram}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
@@ -159,7 +162,7 @@ const Nodes: React.FC = () => {
 
                 <div>
                   <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-1">
-                    <span>Disk Usage</span>
+                    <span>{t('nodes.diskUsage')}</span>
                     <span>{/*node.disk*/}?? %</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
@@ -172,19 +175,19 @@ const Nodes: React.FC = () => {
 
                 <div>
                   <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
-                    <span>Uptime</span>
+                    <span>{t('nodes.uptime')}</span>
                     <span>{node.uptime}</span>
                   </div>
                 </div>
               </div>
 
               <div className="flex justify-end space-x-2 mt-4 pt-4 border-t border-gray-200">
-                <button className="inline-flex items-center p-2 border border-transparent rounded-full text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                {/*<button className="inline-flex items-center p-2 border border-transparent rounded-full text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                   <Edit className="h-4 w-4" />
                 </button>
                 <button className="inline-flex items-center p-2 border border-transparent rounded-full text-red-600 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                   <Trash2 className="h-4 w-4" />
-                </button>
+                </button>*/}
               </div>
             </div>
           </div>

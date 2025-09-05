@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from '../contexts/I18nContext';
 import { Play, Square, RotateCcw, Plus, Trash2, Edit, Terminal, Eye, X } from 'lucide-react';
 import axios from '../services/axiosConfig';
 import clsx from 'clsx';
@@ -31,6 +32,7 @@ interface NewServer {
 
 const Servers: React.FC = () => {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [servers, setServers] = useState<Server[]>([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<{ [key: number]: string }>({});
@@ -249,6 +251,7 @@ const Servers: React.FC = () => {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <span className="ml-4 text-gray-700 dark:text-gray-200">{t('common.loading')}</span>
       </div>
     );
   }
@@ -256,13 +259,13 @@ const Servers: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Servers</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('servers.title')}</h1>
         <button
           onClick={() => setShowCreateModal(true)}
           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
           <Plus className="h-4 w-4 mr-2" />
-          Create Server
+          {t('servers.createServer')}
         </button>
       </div>
 
@@ -284,19 +287,19 @@ const Servers: React.FC = () => {
                 <div className="flex items-center space-x-6">
                   <div className="text-right">
                     <p className="text-sm font-medium text-gray-900 dark:text-white">
-                      {server.players}/{server.maxPlayers} players
+                      {server.players}/{server.maxPlayers} {t('servers.players', { count: server.maxPlayers })}
                     </p>
                     <span className={clsx(
                       'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
                       getStatusColor(server.status)
                     )}>
-                      {server.status}
+                      {t('servers.statuses.' + (server.status === 'online' ? 'running' : server.status === 'offline' ? 'stopped' : server.status))}
                     </span>
                   </div>
 
                   <div className="text-right text-sm text-gray-500 dark:text-gray-400">
-                    <p>CPU: {(server.cpu * 100).toFixed(2)}%</p>
-                    <p>RAM: {(server.ram).toFixed(2)} MB</p>
+                    <p>{t('servers.cpuCores')}: {(server.cpu * 100).toFixed(2)}%</p>
+                    <p>{t('servers.memory')}: {(server.ram).toFixed(2)} MB</p>
                     <p>{server.uptime}</p>
                   </div>
 
@@ -342,7 +345,7 @@ const Servers: React.FC = () => {
                     <button
                       onClick={() => openServerConsole(server)}
                       className="inline-flex items-center p-2 border border-transparent rounded-full text-blue-600 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                      title="View logs and console"
+                      title={t('servers.actions.viewConsole')}
                     >
                       <Terminal className="h-4 w-4" />
                     </button>
@@ -368,7 +371,7 @@ const Servers: React.FC = () => {
           <div className="relative top-[4rem] mx-auto p-5 border w-11/12 max-w-[76rem] shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-700">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                {selectedServer.name} - Console | <span className="font-mono bg-gray-100 dark:bg-gray-700 rounded p-1">{selectedServer.id}</span> | <span className="font-mono bg-gray-100 dark:bg-gray-700 rounded p-1">{selectedServer.ip}:{selectedServer.port}</span>
+                {selectedServer.name} - {t('servers.actions.viewConsole')} | <span className="font-mono bg-gray-100 dark:bg-gray-700 rounded p-1">{selectedServer.id}</span> | <span className="font-mono bg-gray-100 dark:bg-gray-700 rounded p-1">{selectedServer.ip}:{selectedServer.port}</span>
               </h3>
               <button
                 onClick={closeServerConsole}
@@ -395,7 +398,7 @@ const Servers: React.FC = () => {
                 value={command}
                 onChange={(e) => setCommand(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && sendCommand()}
-                placeholder="Enter command..."
+                placeholder={t('servers.actions.viewConsole') + '...'}
                 className="flex-1 p-2 border border-gray-300 dark:border-gray-600 rounded-md font-mono bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               />
               <button
@@ -403,7 +406,7 @@ const Servers: React.FC = () => {
                 disabled={!command.trim()}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
               >
-                Send
+                {t('servers.actions.sendCommand') || 'Send'}
               </button>
             </div>
           </div>
@@ -416,13 +419,13 @@ const Servers: React.FC = () => {
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800 dark:border-gray-700">
             <div className="mt-3">
               <h3 className="text-lg font-medium text-gray-900 dark:text-white text-center mb-4">
-                Create Server
+                {t('servers.createServer')}
               </h3>
 
               <form onSubmit={handleCreateServer} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Server Name
+                    {t('servers.name')}
                   </label>
                   <input
                     type="text"
@@ -430,13 +433,13 @@ const Servers: React.FC = () => {
                     value={newServer.name}
                     onChange={(e) => setNewServer({ ...newServer, name: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                    placeholder="MyServer"
+                    placeholder={t('servers.name')}
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    RAM (MB)
+                    {t('servers.memory')}
                   </label>
                   <input
                     type="number"
@@ -451,7 +454,7 @@ const Servers: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Server Type
+                    {t('servers.serverType') || 'Server Type'}
                   </label>
                   <select
                     value={newServer.serverType}
@@ -469,7 +472,7 @@ const Servers: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Version
+                    {t('servers.version') || 'Version'}
                   </label>
                   <select
                     value={newServer.version}
@@ -487,7 +490,7 @@ const Servers: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                    Minimum Started Servers
+                    {t('servers.minimumStarted') || 'Minimum Started Servers'}
                   </label>
                   <input
                     type="number"
@@ -506,14 +509,14 @@ const Servers: React.FC = () => {
                     onClick={() => setShowCreateModal(false)}
                     className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-300 hover:bg-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500"
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </button>
                   <button
                     type="submit"
                     disabled={creating}
                     className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                   >
-                    {creating ? 'Creating...' : 'Create Server'}
+                    {creating ? t('common.loading') : t('servers.createServer')}
                   </button>
                 </div>
               </form>

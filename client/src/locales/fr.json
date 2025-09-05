@@ -27,13 +27,83 @@
     "nodes": "Nœuds",
     "users": "Utilisateurs",
     "groups": "Groupes",
-    "templates": "Modèles",
+    "templates": "Fichiers",
     "tasks": "Tâches",
     "backups": "Sauvegardes",
     "activities": "Activités",
     "admin": "Administration",
     "profile": "Profil",
     "logout": "Déconnexion"
+  },
+  "dashboard": {
+    "totalServers": "Serveurs totaux",
+    "nodes": "Nodes",
+    "players": "Joueurs en ligne",
+    "slots": "slots",
+    "uptime": "Temps de fonctionnement",
+    "last30days": "30 derniers jours",
+    "serverStatus": {
+      "title": "Statut du serveur",
+      "players": "joueurs"
+    },
+    "nodesStatus": {
+      "title": "Statut des nodes",
+      "servers": "serveurs"
+    },
+    "systemOverview": {
+      "title": "Aperçu du système",
+      "cpuUsage": "Utilisation CPU",
+      "memoryUsage": "Utilisation de la mémoire",
+      "diskUsage": "Utilisation du disque"
+    }
+  },
+  "servers": {
+    "title": "Gestion des serveurs",
+    "addServer": "Ajouter un serveur",
+    "editServer": "Modifier le serveur",
+    "deleteServer": "Supprimer le serveur",
+    "createServer": "Créer un serveur",
+    "updateServer": "Mettre à jour le serveur",
+    "name": "Nom",
+    "node": "Nœud",
+    "template": "Modèle",
+    "status": "Statut",
+    "ipAddress": "Adresse IP",
+    "port": "Port",
+    "memory": "Mémoire (Mo)",
+    "cpuCores": "Cœurs CPU",
+    "diskSpace": "Espace disque (Mo)",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce serveur ?",
+    "actions": {
+      "start": "Démarrer",
+      "stop": "Arrêter",
+      "restart": "Redémarrer",
+      "viewConsole": "Voir la console",
+      "viewLogs": "Voir les journaux",
+      "sendCommand": "Envoyer la commande"
+    },
+    "statuses": {
+      "running": "En cours d'exécution",
+      "stopped": "Arrêté",
+      "starting": "Démarrage",
+      "stopping": "Arrêt en cours",
+      "error": "Erreur"
+    }
+  },
+  "nodes": {
+    "title": "Gestion des nodes",
+    "ipAddress": "Adresse IP",
+    "location": "Emplacement",
+    "ServerCount": "Serveurs",
+    "cpuUsage": "Utilisation CPU",
+    "memoryUsage": "Utilisation de la mémoire",
+    "diskUsage": "Utilisation du disque",
+    "uptime": "Temps de fonctionnement",
+    "actions": {
+      "create": "Ajouter un node",
+      "edit": "Modifier le node",
+      "delete": "Supprimer le node"
+    }
   },
   "auth": {
     "login": "Connexion",
@@ -94,22 +164,30 @@
     "disable": "Désactiver"
   },
   "templates": {
-    "title": "Gestion des modèles",
-    "permissions": "Gérer les permissions",
-    "addPermission": "Ajouter une permission",
-    "currentPermissions": "Permissions actuelles",
-    "noPermissions": "Aucune permission spécifique définie.",
-    "adminAccess": "Les administrateurs ont un accès complet par défaut.",
-    "permissionTypes": {
-      "read": "Lecture",
-      "write": "Écriture",
-      "delete": "Suppression"
+    "title": "Fichiers",
+    "description": "Gérer les fichiers de serveur et les fichiers de configuration.",
+    "filesManager": {
+      "name": "Nom du fichier",
+      "size": "Taille",
+      "modified": "Dernière modification"
     },
-    "targetTypes": {
-      "group": "Groupe",
-      "user": "Utilisateur"
+    "actions": {
+      "newFolder": "Nouveau dossier",
+      "newFile": "Nouveau fichier",
+      "uploadFile": "Téléverser des fichiers"
     },
-    "remove": "Supprimer"
+    "createFolder": {
+      "title": "Créer un nouveau dossier",
+      "folderName": "Nom du dossier...",
+      "cancel": "Annuler",
+      "create": "Créer"
+    },
+    "createFile": {
+      "title": "Créer un nouveau fichier",
+      "fileName": "Nom du fichier...",
+      "cancel": "Annuler",
+      "create": "Créer"
+    }
   },
   "profile": {
     "accountInformation": "Informations du compte",

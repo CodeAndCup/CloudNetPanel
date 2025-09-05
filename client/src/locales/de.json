@@ -35,6 +35,76 @@
     "profile": "Profil",
     "logout": "Abmelden"
   },
+  "dashboard": {
+    "totalServers": "Gesamtanzahl Server",
+    "nodes": "Knoten",
+    "players": "Spieler online",
+    "slots": "Slots",
+    "uptime": "Betriebszeit",
+    "last30days": "Letzte 30 Tage",
+    "serverStatus": {
+      "title": "Serverstatus",
+      "players": "Spieler"
+    },
+    "nodesStatus": {
+      "title": "Knotenstatus",
+      "servers": "Server"
+    },
+    "systemOverview": {
+      "title": "Systemübersicht",
+      "cpuUsage": "CPU-Auslastung",
+      "memoryUsage": "Speicherauslastung",
+      "diskUsage": "Festplattenauslastung"
+    }
+  },
+  "servers": {
+    "title": "Serververwaltung",
+    "addServer": "Server hinzufügen",
+    "editServer": "Server bearbeiten",
+    "deleteServer": "Server löschen",
+    "createServer": "Server erstellen",
+    "updateServer": "Server aktualisieren",
+    "name": "Name",
+    "node": "Knoten",
+    "template": "Vorlage",
+    "status": "Status",
+    "ipAddress": "IP-Adresse",
+    "port": "Port",
+    "memory": "Speicher (MB)",
+    "cpuCores": "CPU-Kerne",
+    "diskSpace": "Festplattenspeicher (MB)",
+    "confirmDelete": "Sind Sie sicher, dass Sie diesen Server löschen möchten?",
+    "actions": {
+      "start": "Starten",
+      "stop": "Stoppen",
+      "restart": "Neustarten",
+      "viewConsole": "Konsole anzeigen",
+      "viewLogs": "Logs anzeigen",
+      "sendCommand": "Befehl senden"
+    },
+    "statuses": {
+      "running": "Läuft",
+      "stopped": "Gestoppt",
+      "starting": "Startet",
+      "stopping": "Stoppt",
+      "error": "Fehler"
+    }
+  },
+  "nodes": {
+    "title": "Knotenverwaltung",
+    "ipAddress": "IP-Adresse",
+    "location": "Standort",
+    "ServerCount": "Server",
+    "cpuUsage": "CPU-Auslastung",
+    "memoryUsage": "Speicherauslastung",
+    "diskUsage": "Festplattenauslastung",
+    "uptime": "Betriebszeit",
+    "actions": {
+      "create": "Knoten hinzufügen",
+      "edit": "Knoten bearbeiten",
+      "delete": "Knoten löschen"
+    }
+  },
   "auth": {
     "login": "Anmelden",
     "username": "Benutzername",
@@ -59,7 +129,7 @@
     "passwordHint": "(leer lassen, um das aktuelle beizubehalten)",
     "roles": {
       "Users": "Benutzer",
-      "Developers": "Entwickler", 
+      "Developers": "Entwickler",
       "Moderators": "Moderator",
       "Administrators": "Administrator"
     }
@@ -94,22 +164,30 @@
     "disable": "Deaktivieren"
   },
   "templates": {
-    "title": "Vorlagenverwaltung",
-    "permissions": "Berechtigungen verwalten",
-    "addPermission": "Berechtigung hinzufügen",
-    "currentPermissions": "Aktuelle Berechtigungen",
-    "noPermissions": "Keine spezifischen Berechtigungen festgelegt.",
-    "adminAccess": "Administratoren haben standardmäßig vollen Zugriff.",
-    "permissionTypes": {
-      "read": "Lesen",
-      "write": "Schreiben",
-      "delete": "Löschen"
+    "title": "Vorlagen",
+    "description": "Servervorlagen und Konfigurationsdateien verwalten.",
+    "filesManager": {
+      "name": "Dateiname",
+      "size": "Größe",
+      "modified": "Zuletzt geändert"
     },
-    "targetTypes": {
-      "group": "Gruppe",
-      "user": "Benutzer"
+    "actions": {
+      "newFolder": "Neuer Ordner",
+      "newFile": "Neue Datei",
+      "uploadFile": "Dateien hochladen"
     },
-    "remove": "Entfernen"
+    "createFolder": {
+      "title": "Neuen Ordner erstellen",
+      "folderName": "Ordnername...",
+      "cancel": "Abbrechen",
+      "create": "Erstellen"
+    },
+    "createFile": {
+      "title": "Neue Datei erstellen",
+      "fileName": "Dateiname...",
+      "cancel": "Abbrechen",
+      "create": "Erstellen"
+    }
   },
   "profile": {
     "accountInformation": "Kontoinformationen",

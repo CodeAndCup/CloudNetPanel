@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from '../contexts/I18nContext';
 import {
   Folder,
   File,
@@ -38,6 +39,7 @@ interface FileContent {
 }
 
 const Templates: React.FC = () => {
+  const { t } = useTranslation();
   const [currentPath, setCurrentPath] = useState('');
   const [files, setFiles] = useState<FileItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -290,9 +292,9 @@ const Templates: React.FC = () => {
     <div className="space-y-6">
       <div className="sm:flex sm:items-center">
         <div className="sm:flex-auto">
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Templates</h1>
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">{t('templates.title')}</h1>
           <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
-            Manage server templates and configuration files
+            {t('templates.description')}
           </p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none space-x-2">
@@ -301,14 +303,14 @@ const Templates: React.FC = () => {
             className="inline-flex items-center justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             <Plus className="h-4 w-4 mr-2" />
-            New Folder
+            {t('templates.actions.newFolder')}
           </button>
           <button
             onClick={() => setShowNewFileDialog(true)}
             className="inline-flex items-center justify-center rounded-md border border-transparent bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
           >
             <Plus className="h-4 w-4 mr-2" />
-            New File
+            {t('templates.actions.newFile')}
           </button>
           <button
             onClick={triggerFileUpload}
@@ -316,7 +318,7 @@ const Templates: React.FC = () => {
             className="inline-flex items-center justify-center rounded-md border border-transparent bg-purple-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 disabled:opacity-50"
           >
             <Upload className="h-4 w-4 mr-2" />
-            Upload Files
+            {t('templates.actions.uploadFiles')}
           </button>
           <input
             ref={fileInputRef}
@@ -359,7 +361,7 @@ const Templates: React.FC = () => {
           <div className="relative top-20 mx-auto p-5 border w-11/12 shadow-lg rounded-md bg-white dark:bg-gray-800">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-                Editing: {editingFile.path}
+                {t('templates.editFile.title')} {editingFile.path}
               </h3>
               <div className="flex space-x-2">
                 <button
@@ -367,14 +369,14 @@ const Templates: React.FC = () => {
                   className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                   <Save className="h-4 w-4 mr-2" />
-                  Save
+                  {t('templates.editFile.save')}
                 </button>
                 <button
                   onClick={() => setEditingFile(null)}
                   className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                   <X className="h-4 w-4 mr-2" />
-                  Close
+                  {t('templates.editFile.close')}
                 </button>
               </div>
             </div>
@@ -392,12 +394,12 @@ const Templates: React.FC = () => {
       {showNewFileDialog && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Create New File</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">{t('templates.createFile.title')}</h3>
             <input
               type="text"
               value={newFileName}
               onChange={(e) => setNewFileName(e.target.value)}
-              placeholder="File name..."
+              placeholder={t('templates.createFile.fileName')}
               className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               onKeyDown={(e) => e.key === 'Enter' && createFile()}
             />
@@ -406,13 +408,13 @@ const Templates: React.FC = () => {
                 onClick={() => setShowNewFileDialog(false)}
                 className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700"
               >
-                Cancel
+                {t('templates.createFile.cancel')}
               </button>
               <button
                 onClick={createFile}
                 className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
               >
-                Create
+                {t('templates.createFile.create')}
               </button>
             </div>
           </div>
@@ -423,12 +425,12 @@ const Templates: React.FC = () => {
       {showNewFolderDialog && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Create New Folder</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">{t('templates.createFolder.title')}</h3>
             <input
               type="text"
               value={newFolderName}
               onChange={(e) => setNewFolderName(e.target.value)}
-              placeholder="Folder name..."
+              placeholder={t('templates.createFolder.folderName')}
               className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               onKeyDown={(e) => e.key === 'Enter' && createFolder()}
             />
@@ -437,13 +439,13 @@ const Templates: React.FC = () => {
                 onClick={() => setShowNewFolderDialog(false)}
                 className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 dark:bg-gray-700"
               >
-                Cancel
+                {t('templates.createFolder.cancel')}
               </button>
               <button
                 onClick={createFolder}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
               >
-                Create
+                {t('templates.createFolder.create')}
               </button>
             </div>
           </div>
@@ -467,7 +469,7 @@ const Templates: React.FC = () => {
             <div className="mb-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-md p-3">
               <div className="flex items-center">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-3"></div>
-                <span className="text-sm text-blue-700 dark:text-blue-300">Uploading files...</span>
+                <span className="text-sm text-blue-700 dark:text-blue-300">{t('templates.actions.uploadFile')}</span>
               </div>
             </div>
           )}
@@ -507,13 +509,13 @@ const Templates: React.FC = () => {
                 <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Name
+                      {t('templates.filesManager.name')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Size
+                      {t('templates.filesManager.size')}
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                      Modified
+                      {t('templates.filesManager.modified')}
                     </th>
                     <th className="relative px-6 py-3">
                       <span className="sr-only">Actions</span>

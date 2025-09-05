@@ -44,7 +44,7 @@ app.use(cors({
 
 // Rate limiting - More permissive for navigation and authenticated users
 const generalLimiter = rateLimit({
-  windowMs: 5 * 60 * 1000, // 5 minutes (shorter window)
+  windowMs: 60 * 1000, // 1 minute (shorter window)
   max: 300, // Higher limit for general requests
   message: { error: 'Too many requests, please try again later' }
 });
