@@ -111,6 +111,19 @@
     },
     "remove": "Remove"
   },
+  "profile": {
+    "accountInformation": "Account Information",
+    "username": "Username",
+    "email": "Email",
+    "role": "Role",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "languageSettings": "Language Settings",
+    "displayLanguage": "Display Language",
+    "saveLanguage": "Save Language"
+  },
   "errors": {
     "generic": "An error occurred. Please try again.",
     "networkError": "Network error. Please check your connection.",

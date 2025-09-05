@@ -3,6 +3,9 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 // Import translations
 import enTranslations from '../locales/en.json';
 import frTranslations from '../locales/fr.json';
+import deTranslations from '../locales/de.json';
+import esTranslations from '../locales/es.json';
+import itTranslations from '../locales/it.json';
 
 type TranslationKey = string;
 type TranslationValue = string | { [key: string]: any };
@@ -18,11 +21,17 @@ interface I18nContextType {
 const translations: { [key: string]: Translations } = {
   en: enTranslations,
   fr: frTranslations,
+  de: deTranslations,
+  es: esTranslations,
+  it: itTranslations,
 };
 
 const languages = [
   { code: 'en', name: 'English' },
   { code: 'fr', name: 'Français' },
+  { code: 'de', name: 'Deutsch' },
+  { code: 'es', name: 'Español' },
+  { code: 'it', name: 'Italiano' },
 ];
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined);

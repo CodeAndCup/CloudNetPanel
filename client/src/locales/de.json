@@ -1,0 +1,140 @@
+{
+  "common": {
+    "loading": "Wird geladen...",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "create": "Erstellen",
+    "update": "Aktualisieren",
+    "close": "Schließen",
+    "confirm": "Bestätigen",
+    "yes": "Ja",
+    "no": "Nein",
+    "active": "Aktiv",
+    "inactive": "Inaktiv",
+    "name": "Name",
+    "description": "Beschreibung",
+    "actions": "Aktionen",
+    "status": "Status",
+    "created": "Erstellt",
+    "lastLogin": "Letzte Anmeldung"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "servers": "Server",
+    "nodes": "Knoten",
+    "users": "Benutzer",
+    "groups": "Gruppen",
+    "templates": "Vorlagen",
+    "tasks": "Aufgaben",
+    "backups": "Backups",
+    "activities": "Aktivitäten",
+    "admin": "Verwaltung",
+    "profile": "Profil",
+    "logout": "Abmelden"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "username": "Benutzername",
+    "password": "Passwort",
+    "email": "E-Mail",
+    "loginButton": "Anmelden",
+    "loginError": "Ungültige Anmeldedaten",
+    "loginRequired": "Bitte melden Sie sich an, um auf diese Seite zuzugreifen"
+  },
+  "users": {
+    "title": "Benutzerverwaltung",
+    "addUser": "Benutzer hinzufügen",
+    "editUser": "Benutzer bearbeiten",
+    "deleteUser": "Benutzer löschen",
+    "createUser": "Benutzer erstellen",
+    "updateUser": "Benutzer aktualisieren",
+    "username": "Benutzername",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "role": "Rolle",
+    "confirmDelete": "Sind Sie sicher, dass Sie diesen Benutzer löschen möchten?",
+    "passwordHint": "(leer lassen, um das aktuelle beizubehalten)",
+    "roles": {
+      "Users": "Benutzer",
+      "Developers": "Entwickler", 
+      "Moderators": "Moderator",
+      "Administrators": "Administrator"
+    }
+  },
+  "groups": {
+    "title": "Gruppenverwaltung",
+    "addGroup": "Gruppe erstellen",
+    "editGroup": "Gruppe bearbeiten",
+    "deleteGroup": "Gruppe löschen",
+    "createGroup": "Gruppe erstellen",
+    "updateGroup": "Gruppe aktualisieren",
+    "name": "Name",
+    "description": "Beschreibung",
+    "userCount": "Benutzer",
+    "confirmDelete": "Sind Sie sicher, dass Sie diese Gruppe löschen möchten?"
+  },
+  "webhooks": {
+    "title": "Webhook-Verwaltung",
+    "addWebhook": "Webhook hinzufügen",
+    "editWebhook": "Webhook bearbeiten",
+    "deleteWebhook": "Webhook löschen",
+    "createWebhook": "Webhook erstellen",
+    "updateWebhook": "Webhook aktualisieren",
+    "name": "Name",
+    "url": "URL",
+    "events": "Ereignisse",
+    "eventsToSubscribe": "Ereignisse abonnieren",
+    "lastTriggered": "Zuletzt ausgelöst",
+    "confirmDelete": "Sind Sie sicher, dass Sie diesen Webhook löschen möchten?",
+    "never": "Nie",
+    "enable": "Aktivieren",
+    "disable": "Deaktivieren"
+  },
+  "templates": {
+    "title": "Vorlagenverwaltung",
+    "permissions": "Berechtigungen verwalten",
+    "addPermission": "Berechtigung hinzufügen",
+    "currentPermissions": "Aktuelle Berechtigungen",
+    "noPermissions": "Keine spezifischen Berechtigungen festgelegt.",
+    "adminAccess": "Administratoren haben standardmäßig vollen Zugriff.",
+    "permissionTypes": {
+      "read": "Lesen",
+      "write": "Schreiben",
+      "delete": "Löschen"
+    },
+    "targetTypes": {
+      "group": "Gruppe",
+      "user": "Benutzer"
+    },
+    "remove": "Entfernen"
+  },
+  "profile": {
+    "accountInformation": "Kontoinformationen",
+    "username": "Benutzername",
+    "email": "E-Mail",
+    "role": "Rolle",
+    "changePassword": "Passwort ändern",
+    "currentPassword": "Aktuelles Passwort",
+    "newPassword": "Neues Passwort",
+    "confirmNewPassword": "Neues Passwort bestätigen",
+    "languageSettings": "Spracheinstellungen",
+    "displayLanguage": "Anzeigesprache",
+    "saveLanguage": "Sprache speichern"
+  },
+  "errors": {
+    "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    "networkError": "Netzwerkfehler. Bitte überprüfen Sie Ihre Verbindung.",
+    "unauthorized": "Sie sind nicht berechtigt, diese Aktion auszuführen.",
+    "notFound": "Die angeforderte Ressource wurde nicht gefunden.",
+    "validationError": "Bitte überprüfen Sie Ihre Eingabe und versuchen Sie es erneut."
+  },
+  "success": {
+    "saved": "Änderungen erfolgreich gespeichert",
+    "created": "Erfolgreich erstellt",
+    "updated": "Erfolgreich aktualisiert",
+    "deleted": "Erfolgreich gelöscht"
+  }
+}

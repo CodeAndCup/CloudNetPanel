@@ -111,6 +111,19 @@
     },
     "remove": "Supprimer"
   },
+  "profile": {
+    "accountInformation": "Informations du compte",
+    "username": "Nom d'utilisateur",
+    "email": "Email",
+    "role": "Rôle",
+    "changePassword": "Changer le mot de passe",
+    "currentPassword": "Mot de passe actuel",
+    "newPassword": "Nouveau mot de passe",
+    "confirmNewPassword": "Confirmer le nouveau mot de passe",
+    "languageSettings": "Paramètres de langue",
+    "displayLanguage": "Langue d'affichage",
+    "saveLanguage": "Enregistrer la langue"
+  },
   "errors": {
     "generic": "Une erreur s'est produite. Veuillez réessayer.",
     "networkError": "Erreur réseau. Veuillez vérifier votre connexion.",

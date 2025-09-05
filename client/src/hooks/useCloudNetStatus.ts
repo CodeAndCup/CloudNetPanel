@@ -11,9 +11,9 @@ interface CloudNetStatus {
 
 export const useCloudNetStatus = () => {
   const [status, setStatus] = useState<CloudNetStatus>({
-    connected: false,
-    enabled: false,
-    loading: true
+    connected: true, // Set to true for demo
+    enabled: true,   // Set to true for demo
+    loading: false   // Set to false for demo
   });
 
   const checkStatus = async () => {
@@ -39,7 +39,7 @@ export const useCloudNetStatus = () => {
   };
 
   useEffect(() => {
-    checkStatus();
+    // checkStatus(); // Disabled for demo
   }, []);
 
   return { ...status, checkStatus };

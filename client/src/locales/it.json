@@ -1,0 +1,140 @@
+{
+  "common": {
+    "loading": "Caricamento...",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "add": "Aggiungi",
+    "create": "Crea",
+    "update": "Aggiorna",
+    "close": "Chiudi",
+    "confirm": "Conferma",
+    "yes": "Sì",
+    "no": "No",
+    "active": "Attivo",
+    "inactive": "Inattivo",
+    "name": "Nome",
+    "description": "Descrizione",
+    "actions": "Azioni",
+    "status": "Stato",
+    "created": "Creato",
+    "lastLogin": "Ultimo accesso"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "servers": "Server",
+    "nodes": "Nodi",
+    "users": "Utenti",
+    "groups": "Gruppi",
+    "templates": "Modelli",
+    "tasks": "Attività",
+    "backups": "Backup",
+    "activities": "Attività",
+    "admin": "Amministrazione",
+    "profile": "Profilo",
+    "logout": "Disconnetti"
+  },
+  "auth": {
+    "login": "Accedi",
+    "username": "Nome utente",
+    "password": "Password",
+    "email": "Email",
+    "loginButton": "Accedi",
+    "loginError": "Credenziali non valide",
+    "loginRequired": "Effettua l'accesso per accedere a questa pagina"
+  },
+  "users": {
+    "title": "Gestione utenti",
+    "addUser": "Aggiungi utente",
+    "editUser": "Modifica utente",
+    "deleteUser": "Elimina utente",
+    "createUser": "Crea utente",
+    "updateUser": "Aggiorna utente",
+    "username": "Nome utente",
+    "email": "Email",
+    "password": "Password",
+    "role": "Ruolo",
+    "confirmDelete": "Sei sicuro di voler eliminare questo utente?",
+    "passwordHint": "(lascia vuoto per mantenere quello attuale)",
+    "roles": {
+      "Users": "Utente",
+      "Developers": "Sviluppatore", 
+      "Moderators": "Moderatore",
+      "Administrators": "Amministratore"
+    }
+  },
+  "groups": {
+    "title": "Gestione gruppi",
+    "addGroup": "Crea gruppo",
+    "editGroup": "Modifica gruppo",
+    "deleteGroup": "Elimina gruppo",
+    "createGroup": "Crea gruppo",
+    "updateGroup": "Aggiorna gruppo",
+    "name": "Nome",
+    "description": "Descrizione",
+    "userCount": "Utenti",
+    "confirmDelete": "Sei sicuro di voler eliminare questo gruppo?"
+  },
+  "webhooks": {
+    "title": "Gestione webhook",
+    "addWebhook": "Aggiungi webhook",
+    "editWebhook": "Modifica webhook",
+    "deleteWebhook": "Elimina webhook",
+    "createWebhook": "Crea webhook",
+    "updateWebhook": "Aggiorna webhook",
+    "name": "Nome",
+    "url": "URL",
+    "events": "Eventi",
+    "eventsToSubscribe": "Eventi da sottoscrivere",
+    "lastTriggered": "Ultimo attivato",
+    "confirmDelete": "Sei sicuro di voler eliminare questo webhook?",
+    "never": "Mai",
+    "enable": "Abilita",
+    "disable": "Disabilita"
+  },
+  "templates": {
+    "title": "Gestione modelli",
+    "permissions": "Gestisci permessi",
+    "addPermission": "Aggiungi permesso",
+    "currentPermissions": "Permessi attuali",
+    "noPermissions": "Nessun permesso specifico impostato.",
+    "adminAccess": "Gli amministratori hanno accesso completo per impostazione predefinita.",
+    "permissionTypes": {
+      "read": "Lettura",
+      "write": "Scrittura",
+      "delete": "Eliminazione"
+    },
+    "targetTypes": {
+      "group": "Gruppo",
+      "user": "Utente"
+    },
+    "remove": "Rimuovi"
+  },
+  "profile": {
+    "accountInformation": "Informazioni account",
+    "username": "Nome utente",
+    "email": "Email",
+    "role": "Ruolo",
+    "changePassword": "Cambia password",
+    "currentPassword": "Password attuale",
+    "newPassword": "Nuova password",
+    "confirmNewPassword": "Conferma nuova password",
+    "languageSettings": "Impostazioni lingua",
+    "displayLanguage": "Lingua di visualizzazione",
+    "saveLanguage": "Salva lingua"
+  },
+  "errors": {
+    "generic": "Si è verificato un errore. Riprova.",
+    "networkError": "Errore di rete. Controlla la tua connessione.",
+    "unauthorized": "Non sei autorizzato a eseguire questa azione.",
+    "notFound": "La risorsa richiesta non è stata trovata.",
+    "validationError": "Controlla il tuo input e riprova."
+  },
+  "success": {
+    "saved": "Modifiche salvate con successo",
+    "created": "Creato con successo",
+    "updated": "Aggiornato con successo",
+    "deleted": "Eliminato con successo"
+  }
+}

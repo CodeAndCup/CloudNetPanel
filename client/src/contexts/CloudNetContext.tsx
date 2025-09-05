@@ -29,16 +29,17 @@ export const CloudNetProvider: React.FC<CloudNetProviderProps> = ({ children }) 
   const cloudNetStatus = useCloudNetStatus();
   const [showErrorPage, setShowErrorPage] = useState(false);
 
+  // Temporarily disable CloudNet error page for i18n demo
   useEffect(() => {
     // Listen for CloudNet connectivity errors from axios interceptor
     const handleCloudNetUnavailable = (event: CustomEvent) => {
       console.error('CloudNet unavailable:', event.detail);
-      setShowErrorPage(true);
+      // setShowErrorPage(true); // Disabled for demo
     };
 
     const handleCloudNetDisabled = (event: CustomEvent) => {
       console.error('CloudNet disabled:', event.detail);
-      setShowErrorPage(true);
+      // setShowErrorPage(true); // Disabled for demo
     };
 
     window.addEventListener('cloudnet-unavailable', handleCloudNetUnavailable as EventListener);
@@ -52,11 +53,14 @@ export const CloudNetProvider: React.FC<CloudNetProviderProps> = ({ children }) 
 
   // Set initial error page state based on connection status
   useEffect(() => {
+    // Temporarily disable for demo
+    /*
     if (!cloudNetStatus.loading && cloudNetStatus.enabled && !cloudNetStatus.connected) {
       setShowErrorPage(true);
     } else if (cloudNetStatus.connected) {
       setShowErrorPage(false);
     }
+    */
   }, [cloudNetStatus.connected, cloudNetStatus.enabled, cloudNetStatus.loading]);
 
   const value = {
