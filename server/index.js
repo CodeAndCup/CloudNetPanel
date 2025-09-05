@@ -22,7 +22,7 @@ const webhookRoutes = require('./routes/webhooks');
 const updatesRoutes = require('./routes/updates');
 const cloudnetRoutes = require('./routes/cloudnet');
 const { initializeDefaultData } = require('./database/init');
-const { logActivity } = require('./middleware/activity');
+const { logActivity, logActivityDirect } = require('./middleware/activity');
 const { JWT_SECRET } = require('./middleware/auth');
 const { requireCloudNetConnection } = require('./middleware/cloudnetStatus');
 const jwt = require('jsonwebtoken');
@@ -332,6 +332,22 @@ wss.on('connection', async (ws, req) => {
 
               // For CloudNet, we can try to send commands via the REST API
               const response = await cloudnetApi.sendCommand(data.serverId, data.command);
+
+              // Log the command activity
+              if (ws.user && ws.user.id) {
+                logActivityDirect(
+                  ws.user.id,
+                  'server_command',
+                  'server',
+                  data.serverId,
+                  {
+                    command: data.command,
+                    method: 'WebSocket',
+                    response: response.message || 'Command sent to server'
+                  },
+                  req.connection.remoteAddress || req.socket.remoteAddress || 'WebSocket'
+                );
+              }
 
               ws.send(JSON.stringify({
                 type: 'command_sent',
