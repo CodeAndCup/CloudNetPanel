@@ -1,5 +1,6 @@
 import React from 'react';
 import { Cloud, AlertTriangle, RefreshCw } from 'lucide-react';
+import { useTranslation } from '../contexts/I18nContext';
 
 interface CloudNetErrorPageProps {
   onRetry?: () => void;
@@ -7,6 +8,8 @@ interface CloudNetErrorPageProps {
 }
 
 const CloudNetErrorPage: React.FC<CloudNetErrorPageProps> = ({ onRetry, error }) => {
+  const { t } = useTranslation();
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-orange-100 dark:from-gray-900 dark:to-gray-800">
       <div className="max-w-md w-full space-y-8 p-8 text-center">
@@ -19,10 +22,10 @@ const CloudNetErrorPage: React.FC<CloudNetErrorPageProps> = ({ onRetry, error })
         
         <div>
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900 dark:text-white">
-            CloudNet Not Connected
+            {t('cloudnet.notConnected')}
           </h2>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-            Unable to connect to CloudNet REST API
+            {t('cloudnet.unableToConnect')}
           </p>
         </div>
 
@@ -31,10 +34,10 @@ const CloudNetErrorPage: React.FC<CloudNetErrorPageProps> = ({ onRetry, error })
             <AlertTriangle className="h-5 w-5 text-red-400 mt-0.5 mr-3 flex-shrink-0" />
             <div className="text-left">
               <h3 className="text-sm font-medium text-red-800 dark:text-red-200">
-                Connection Failed
+                {t('cloudnet.connectionFailed')}
               </h3>
               <p className="mt-1 text-sm text-red-700 dark:text-red-300">
-                {error || 'The CloudNet Panel requires a connection to the CloudNet REST API to function. Please ensure CloudNet is running and the API is accessible.'}
+                {error || t('cloudnet.connectionErrorMessage')}
               </p>
             </div>
           </div>
@@ -42,12 +45,12 @@ const CloudNetErrorPage: React.FC<CloudNetErrorPageProps> = ({ onRetry, error })
 
         <div className="space-y-4">
           <div className="text-left text-sm text-gray-600 dark:text-gray-300">
-            <h4 className="font-medium mb-2">Please check:</h4>
+            <h4 className="font-medium mb-2">{t('cloudnet.pleaseCheck')}</h4>
             <ul className="list-disc list-inside space-y-1">
-              <li>CloudNet server is running</li>
-              <li>CloudNet REST API module is loaded</li>
-              <li>API URL and credentials are correct</li>
-              <li>Network connectivity to CloudNet server</li>
+              <li>{t('cloudnet.checkItems.serverRunning')}</li>
+              <li>{t('cloudnet.checkItems.apiLoaded')}</li>
+              <li>{t('cloudnet.checkItems.credentialsCorrect')}</li>
+              <li>{t('cloudnet.checkItems.networkConnectivity')}</li>
             </ul>
           </div>
 
@@ -57,14 +60,14 @@ const CloudNetErrorPage: React.FC<CloudNetErrorPageProps> = ({ onRetry, error })
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               <RefreshCw className="h-4 w-4 mr-2" />
-              Try Again
+              {t('cloudnet.tryAgain')}
             </button>
           )}
         </div>
 
         <div className="text-center">
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            Made with <span className="text-red-500">♥</span> by Perrier
+            {t('footer.madeWith')} <span className="text-red-500">♥</span> {t('footer.by')}
           </p>
         </div>
       </div>

@@ -127,10 +127,12 @@
   },
   "auth": {
     "login": "Login",
+    "signInToAccount": "Sign in to your account",
     "username": "Username",
     "password": "Password",
     "email": "Email",
-    "loginButton": "Sign In",
+    "loginButton": "Sign in",
+    "signingIn": "Signing in...",
     "loginError": "Invalid credentials",
     "loginRequired": "Please log in to access this page"
   },
@@ -252,6 +254,9 @@
   },
   "activities": {
     "title": "Activity Log",
+    "allActivities": "All Activities", 
+    "fileOperations": "File Operations",
+    "serverActions": "Server Actions",
     "filters": {
       "type": "Type",
       "action": "Action",
@@ -293,6 +298,8 @@
   },
   "backups": {
     "title": "Backup Management",
+    "createManualBackup": "Create Manual Backup",
+    "scheduleBackup": "Schedule Backup",
     "status": {
       "completed": "Completed",
       "failed": "Failed",
@@ -313,7 +320,9 @@
     }
   },
   "tasks": {
-    "title": "Task Management"
+    "title": "Task Management",
+    "createTask": "Create Task",
+    "editTask": "Edit Task"
   },
   "updateNotification": {
     "checking": "Checking for updates...",
@@ -331,6 +340,25 @@
   },
   "permissions": {
     "read": "Read",
-    "write": "Write"
+    "write": "Write",
+    "addPermission": "Add Permission"
+  },
+  "cloudnet": {
+    "notConnected": "CloudNet Not Connected",
+    "unableToConnect": "Unable to connect to CloudNet REST API",
+    "connectionFailed": "Connection Failed",
+    "connectionErrorMessage": "The CloudNet Panel requires a connection to the CloudNet REST API to function. Please ensure CloudNet is running and the API is accessible.",
+    "pleaseCheck": "Please check:",
+    "checkItems": {
+      "serverRunning": "CloudNet server is running",
+      "apiLoaded": "CloudNet REST API module is loaded",
+      "credentialsCorrect": "API URL and credentials are correct",
+      "networkConnectivity": "Network connectivity to CloudNet server"
+    },
+    "tryAgain": "Try Again"
+  },
+  "footer": {
+    "madeWith": "Made with",
+    "by": "by Perrier"
   }
 }
