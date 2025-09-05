@@ -22,7 +22,7 @@ const webhookRoutes = require('./routes/webhooks');
 const updatesRoutes = require('./routes/updates');
 const cloudnetRoutes = require('./routes/cloudnet');
 const { initializeDefaultData } = require('./database/init');
-const { logActivity } = require('./middleware/activity');
+const { logActivity, logActivityDirect } = require('./middleware/activity');
 const { JWT_SECRET } = require('./middleware/auth');
 const { requireCloudNetConnection } = require('./middleware/cloudnetStatus');
 const jwt = require('jsonwebtoken');
@@ -83,19 +83,19 @@ app.use(generalLimiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
-// API routes with appropriate rate limiting and activity logging
+// API routes with appropriate rate limiting (activity logging removed from route level)
 app.use('/api/auth', authLimiter, authRoutes);
-app.use('/api/servers', navigationLimiter, requireCloudNetConnection, logActivity('server_action', 'server'), serverRoutes);
-app.use('/api/nodes', navigationLimiter, requireCloudNetConnection, logActivity('node_action', 'node'), nodeRoutes);
-app.use('/api/users', navigationLimiter, logActivity('user_action', 'user'), userRoutes);
-app.use('/api/groups', navigationLimiter, logActivity('group_action', 'group'), groupRoutes);
-app.use('/api/templates', navigationLimiter, logActivity('template_action', 'file'), templateRoutes);
-app.use('/api/backups', logActivity('backup_action', 'backup'), backupRoutes);
-app.use('/api/tasks', logActivity('task_action', 'task'), taskRoutes);
+app.use('/api/servers', navigationLimiter, requireCloudNetConnection, serverRoutes);
+app.use('/api/nodes', navigationLimiter, requireCloudNetConnection, nodeRoutes);
+app.use('/api/users', navigationLimiter, userRoutes);
+app.use('/api/groups', navigationLimiter, groupRoutes);
+app.use('/api/templates', navigationLimiter, templateRoutes);
+app.use('/api/backups', backupRoutes);
+app.use('/api/tasks', taskRoutes);
 app.use('/api/system-info', navigationLimiter, requireCloudNetConnection, systemRoutes);
 app.use('/api/activities', navigationLimiter, activitiesRoutes);
-app.use('/api/webhooks', navigationLimiter, logActivity('webhook_action', 'webhook'), webhookRoutes);
-app.use('/api/updates', navigationLimiter, logActivity('update_action', 'system'), updatesRoutes);
+app.use('/api/webhooks', navigationLimiter, webhookRoutes);
+app.use('/api/updates', navigationLimiter, updatesRoutes);
 app.use('/api/cloudnet', navigationLimiter, cloudnetRoutes);
 
 // Health check endpoint
@@ -332,6 +332,22 @@ wss.on('connection', async (ws, req) => {
 
               // For CloudNet, we can try to send commands via the REST API
               const response = await cloudnetApi.sendCommand(data.serverId, data.command);
+
+              // Log the command activity
+              if (ws.user && ws.user.id) {
+                logActivityDirect(
+                  ws.user.id,
+                  'server_command',
+                  'server',
+                  data.serverId,
+                  {
+                    command: data.command,
+                    method: 'WebSocket',
+                    response: response.message || 'Command sent to server'
+                  },
+                  req.connection.remoteAddress || req.socket.remoteAddress || 'WebSocket'
+                );
+              }
 
               ws.send(JSON.stringify({
                 type: 'command_sent',

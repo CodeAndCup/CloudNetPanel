@@ -119,6 +119,28 @@ const Activities: React.FC = () => {
 
   const formatAction = (action: string, resourceType: string) => {
     const actionMap: { [key: string]: string } = {
+      // Server actions
+      'server_start': 'Start Server',
+      'server_stop': 'Stop Server',  
+      'server_restart': 'Restart Server',
+      'server_create': 'Create Server',
+      'server_command': 'Send Command',
+      // User actions
+      'user_create': 'Create User',
+      'user_update': 'Update User',
+      'user_delete': 'Delete User',
+      // Group actions
+      'group_create': 'Create Group',
+      'group_update': 'Update Group',
+      'group_delete': 'Delete Group',
+      'group_add_user': 'Add User to Group',
+      'group_remove_user': 'Remove User from Group',
+      // File actions
+      'file_upload': 'Upload File',
+      'file_update': 'Modify File',
+      'file_delete': 'Delete File',
+      'directory_create': 'Create Directory',
+      // Legacy fallbacks
       'server_action': 'Server Management',
       'user_action': 'User Management',
       'group_action': 'Group Management',

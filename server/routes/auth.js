@@ -26,15 +26,18 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Username and password required' });
     }
 
-    // First check CloudNet API connectivity
-    try {
-      await cloudnetApi.healthCheck();
-    } catch (error) {
-      return res.status(503).json({ 
-        error: 'CloudNet API not available',
-        message: error.message,
-        type: 'cloudnet_unavailable'
-      });
+    // First check CloudNet API connectivity (skip in development if CloudNet is disabled)
+    const config = require('../config/cloudnet');
+    if (config.cloudnet.enabled) {
+      try {
+        await cloudnetApi.healthCheck();
+      } catch (error) {
+        return res.status(503).json({ 
+          error: 'CloudNet API not available',
+          message: error.message,
+          type: 'cloudnet_unavailable'
+        });
+      }
     }
 
     let user = null;

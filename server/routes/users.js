@@ -1,5 +1,6 @@
 const express = require('express');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
+const { logActivity } = require('../middleware/activity');
 const db = require('../database/sqlite');
 
 const router = express.Router();
@@ -44,7 +45,7 @@ router.get('/:id', authenticateToken, (req, res) => {
 });
 
 // Create new user (admin only)
-router.post('/', authenticateToken, requireAdmin, async (req, res) => {
+router.post('/', authenticateToken, requireAdmin, logActivity('user_create', 'user', { resourceIdField: 'username' }), async (req, res) => {
   const { username, email, role, password, group } = req.body;
 
   if (!username || !email || !role || !password) {
@@ -123,7 +124,7 @@ router.post('/', authenticateToken, requireAdmin, async (req, res) => {
 });
 
 // Update user
-router.put('/:id', authenticateToken, async (req, res) => {
+router.put('/:id', authenticateToken, logActivity('user_update', 'user'), async (req, res) => {
   const userId = parseInt(req.params.id);
 
   // Users can only update their own profile unless they're admin
@@ -192,7 +193,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
 });
 
 // Delete user (admin only)
-router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
+router.delete('/:id', authenticateToken, requireAdmin, logActivity('user_delete', 'user'), async (req, res) => {
   const userId = parseInt(req.params.id);
 
   // Prevent admin from deleting themselves
