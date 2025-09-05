@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useCloudNetStatus } from '../hooks/useCloudNetStatus';
 import { Cloud, Lock, User } from 'lucide-react';
+import CloudNetErrorPage from '../components/CloudNetErrorPage';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -8,6 +11,22 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { login } = useAuth();
+  const cloudNetStatus = useCloudNetStatus();
+
+  // Show loading while checking CloudNet status
+  if (cloudNetStatus.loading) {
+    return <LoadingSpinner />;
+  }
+
+  // Show CloudNet error page if not connected
+  if (!cloudNetStatus.connected) {
+    return (
+      <CloudNetErrorPage 
+        onRetry={cloudNetStatus.checkStatus}
+        error={cloudNetStatus.error}
+      />
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -66,7 +66,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(user);
       
       return true;
-    } catch (error) {
+    } catch (error: any) {
+      // Handle CloudNet unavailable error specially
+      if (error.response?.data?.type === 'cloudnet_unavailable') {
+        console.error('CloudNet API unavailable:', error.response.data.message);
+        // Don't store this error in the auth context, let the login page handle it
+      }
       return false;
     }
   };
