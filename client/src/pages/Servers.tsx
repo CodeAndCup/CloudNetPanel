@@ -115,7 +115,6 @@ const Servers: React.FC = () => {
           setLogs(prev => [...prev, `${data.message}`]);
           break;
         case 'command_sent':
-          setLogs(prev => [...prev, `[${new Date().toISOString()}] Command executed: ${data.command}`]);
           break;
         case 'connected':
           setLogs(prev => [...prev, `[${new Date().toISOString()}] Connected to server logs`]);
@@ -169,7 +168,7 @@ const Servers: React.FC = () => {
       command: command.trim()
     }));
 
-    setLogs(prev => [...prev, `[${new Date().toISOString()}] > ${command.trim()}`]);
+    //setLogs(prev => [...prev, `[${new Date().toISOString()}] > ${command.trim()}`]);
     setCommand('');
   };
 
@@ -296,8 +295,8 @@ const Servers: React.FC = () => {
                   </div>
 
                   <div className="text-right text-sm text-gray-500 dark:text-gray-400">
-                    <p>CPU: {server.cpu * 100}%</p>
-                    <p>RAM: {server.ram} MB</p>
+                    <p>CPU: {(server.cpu * 100).toFixed(2)}%</p>
+                    <p>RAM: {(server.ram).toFixed(2)} MB</p>
                     <p>{server.uptime}</p>
                   </div>
 

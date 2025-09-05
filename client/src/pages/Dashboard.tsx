@@ -3,6 +3,7 @@ import { Server, Network, Users, Activity, TrendingUp, TrendingDown } from 'luci
 import axios from 'axios';
 import os from 'node:os';
 import { cpuUsage } from 'process';
+import { config } from 'dotenv';
 
 interface DashboardStats {
   totalServers: number;
@@ -16,6 +17,8 @@ interface DashboardStats {
   memoryUsage: number;
   memoryMaxUsage: number,
   diskUsage: number;
+  onlinePlayers: number;
+  maxOnlinePlayers: number;
 }
 
 const Dashboard: React.FC = () => {
@@ -31,6 +34,8 @@ const Dashboard: React.FC = () => {
     memoryUsage: 0,
     memoryMaxUsage: 0,
     diskUsage: 0,
+    onlinePlayers: 0,
+    maxOnlinePlayers: 0
   });
 
   const [servers, setServers] = useState<any[]>([]);
@@ -42,11 +47,12 @@ const Dashboard: React.FC = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const [serversRes, nodesRes, usersRes, systemRes] = await Promise.all([
+      const [serversRes, nodesRes, usersRes, systemRes, networkRes] = await Promise.all([
         axios.get('/api/servers'),
         axios.get('/api/nodes'),
         axios.get('/api/users'),
-        axios.get('/api/system-info')
+        axios.get('/api/system-info'),
+        axios.get('/api/system-info/proxyPlayers') // New API call for total connected players
       ]);
 
       const serverData = serversRes.data;
@@ -69,6 +75,8 @@ const Dashboard: React.FC = () => {
         memoryUsage: (serverData.reduce((sum: any, item: any) => sum + item.ram, 0)),
         memoryMaxUsage: systemData.totalMemMB,
         diskUsage: 0,
+        onlinePlayers: networkRes.data.totalPlayers,
+        maxOnlinePlayers: networkRes.data.maxTotalPlayers
       });
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
@@ -93,9 +101,9 @@ const Dashboard: React.FC = () => {
       trend: stats.onlineNodes > 0 ? 'up' : 'down'
     },
     {
-      name: 'Users',
-      value: stats.activeUsers,
-      subValue: `${stats.totalUsers} slots`,
+      name: 'Players',
+      value: stats.onlinePlayers,
+      subValue: `${stats.maxOnlinePlayers} slots`,
       icon: Users,
       color: 'bg-purple-500',
       trend: stats.activeUsers > 0 ? 'up' : 'down'
@@ -216,7 +224,7 @@ const Dashboard: React.FC = () => {
               <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Average CPU Usage</div>
               <div className="flex items-center">
                 <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-3">
-                  <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${(stats.cpuUsage/stats.cpuMaxUsage*100).toFixed(2)}%` }}></div>
+                  <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${(stats.cpuUsage / stats.cpuMaxUsage * 100).toFixed(2)}%` }}></div>
                 </div>
                 <span className="text-sm text-gray-900 dark:text-white">{(stats.cpuUsage).toFixed(2)}% / {stats.cpuMaxUsage}%</span>
               </div>
@@ -236,7 +244,7 @@ const Dashboard: React.FC = () => {
                 <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-3">
                   <div className="bg-yellow-500 h-2 rounded-full" style={{ width: `${stats.diskUsage}%` }}></div>
                 </div>
-                <span className="text-sm text-gray-900 dark:text-white">{stats.diskUsage}%</span>
+                <span className="text-sm text-gray-900 dark:text-white">{/*stats.diskUsage*/}?? %</span>
               </div>
             </div>
           </div>

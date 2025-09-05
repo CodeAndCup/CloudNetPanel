@@ -12,49 +12,56 @@ const initializeDefaultData = () => {
     { name: 'Users', description: 'Basic access to assigned resources' }
   ];
 
-  defaultGroups.forEach(group => {
-    db.run(`
-      INSERT OR IGNORE INTO groups (name, description)
-      VALUES (?, ?)
-    `, [group.name, group.description], function(err) {
-      if (err) {
-        console.error(`Error creating group ${group.name}:`, err);
-      } else if (this.changes > 0) {
-        console.log(`Created group: ${group.name}`);
-        
-        // Add default permissions for each group
-        if (group.name === 'Administrators') {
-          // Admins get full access to everything
-          const adminPermissions = [
-            { path: '', permission_type: 'read' },
-            { path: '', permission_type: 'write' },
-            { path: '', permission_type: 'delete' }
-          ];
-          
-          adminPermissions.forEach(perm => {
-            db.run(`
-              INSERT OR IGNORE INTO file_permissions (path, group_id, permission_type)
-              VALUES (?, ?, ?)
-            `, [perm.path, this.lastID, perm.permission_type]);
-          });
-        } else if (group.name === 'Developers') {
-          // Developers get template access
-          const devPermissions = [
-            { path: '', permission_type: 'read' },
-            { path: 'spigot', permission_type: 'write' },
-            { path: 'paper', permission_type: 'write' }
-          ];
-          
-          devPermissions.forEach(perm => {
-            db.run(`
-              INSERT OR IGNORE INTO file_permissions (path, group_id, permission_type)
-              VALUES (?, ?, ?)
-            `, [perm.path, this.lastID, perm.permission_type]);
-          });
-        }
-      }
-    });
+  db.get('SELECT 1 FROM groups LIMIT 1', function (err, row) {
+    if (err) {
+      console.error('Error checking if table is empty:', err);
+    } else if (!row) {
+      defaultGroups.forEach(group => {
+        db.run(`
+          INSERT OR IGNORE INTO groups (name, description)
+          VALUES (?, ?)
+        `, [group.name, group.description], function (err) {
+          if (err) {
+            console.error(`Error creating group ${group.name}:`, err);
+          } else if (this.changes > 0) {
+            console.log(`Created group: ${group.name}`);
+
+            // Add default permissions for each group
+            if (group.name === 'Administrators') {
+              // Admins get full access to everything
+              const adminPermissions = [
+                { path: '', permission_type: 'read' },
+                { path: '', permission_type: 'write' },
+                { path: '', permission_type: 'delete' }
+              ];
+
+              adminPermissions.forEach(perm => {
+                db.run(`
+                  INSERT OR IGNORE INTO file_permissions (path, group_id, permission_type)
+                  VALUES (?, ?, ?)
+                `, [perm.path, this.lastID, perm.permission_type]);
+              });
+            } else if (group.name === 'Developers') {
+              // Developers get template access
+              const devPermissions = [
+                { path: '', permission_type: 'read' },
+                { path: 'spigot', permission_type: 'write' },
+                { path: 'paper', permission_type: 'write' }
+              ];
+
+              devPermissions.forEach(perm => {
+                db.run(`
+                  INSERT OR IGNORE INTO file_permissions (path, group_id, permission_type)
+                  VALUES (?, ?, ?)
+                `, [perm.path, this.lastID, perm.permission_type]);
+              });
+            }
+          }
+        });
+      });
+    }
   });
+  console.log('Default groups and permissions initialization completed');
 
   // Create some default tasks
   const defaultTasks = [
@@ -74,20 +81,26 @@ const initializeDefaultData = () => {
     }
   ];
 
-  defaultTasks.forEach(task => {
-    db.run(`
-      INSERT OR IGNORE INTO tasks (name, description, type, schedule, command, created_by, status)
-      VALUES (?, ?, ?, ?, ?, 1, 'inactive')
-    `, [task.name, task.description, task.type, task.schedule, task.command], function(err) {
-      if (err) {
-        console.error(`Error creating task ${task.name}:`, err);
-      } else if (this.changes > 0) {
-        console.log(`Created task: ${task.name}`);
-      }
-    });
+  db.get('SELECT 1 FROM tasks LIMIT 1', function (err, row) {
+    if (err) {
+      console.error('Error checking if table is empty:', err);
+    } else if (!row) {
+      // Table is empty, insert data
+      defaultTasks.forEach(task => {
+        db.run(`
+          INSERT INTO tasks (name, description, type, schedule, command, created_by, status)
+          VALUES (?, ?, ?, ?, ?, 1, 'inactive')
+        `, [task.name, task.description, task.type, task.schedule, task.command], function (err) {
+          if (err) {
+            console.error(`Error creating task ${task.name}:`, err);
+          } else {
+            console.log(`Created task: ${task.name}`);
+          }
+        });
+      });
+    }
   });
-
-  console.log('Default data initialization completed');
+  console.log('Default tasks initialization completed');
 
   const defaultUsers = [
     {
@@ -98,17 +111,23 @@ const initializeDefaultData = () => {
     }
   ];
 
-  defaultUsers.forEach(user => {
-    db.run(`
-      INSERT OR IGNORE INTO users (username, email, password, role, last_login) VALUES (?, ?, ?, ?, ?)
-      `, [user.name, user.mail, user.password, user.role, 0], function(err) {
-        if(err) {
-          console.error(`Error creating user ${user.name}:`, err);
-        } else if (this.changes > 0) {
-          console.log(`Creating user: ${user.name}`);
-        }
+  db.get('SELECT 1 FROM users LIMIT 1', function (err, row) {
+    if (err) {
+      console.error('Error checking if table is empty:', err);
+    } else if (!row) {
+      defaultUsers.forEach(user => {
+        db.run(`
+          INSERT OR IGNORE INTO users (username, email, password, role, last_login) VALUES (?, ?, ?, ?, ?)
+          `, [user.name, user.mail, user.password, user.role, 0], function (err) {
+          if (err) {
+            console.error(`Error creating user ${user.name}:`, err);
+          } else if (this.changes > 0) {
+            console.log(`Creating user: ${user.name}`);
+          }
+        });
       });
+    }
   });
+  console.log('Default users initialization completed');
 };
-
 module.exports = { initializeDefaultData };

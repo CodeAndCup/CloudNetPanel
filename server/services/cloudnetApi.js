@@ -276,6 +276,21 @@ class CloudNetApiService {
     throw new Error('Node deletion via REST API is not supported by CloudNet');
   }
 
+  async getTotalConnectedPlayers() {
+    const servers = await this.getServers();
+    return servers.filter(server => server.configuration.groups.includes(config.cloudnet.proxyGroup)).reduce((total, server) => {
+      return total + (server.properties?.["Online-Count"] || 0);
+    }, 0);
+  }
+
+  async getMaxTotalConnectedPlayers() {
+    const servers = await this.getServers();
+    console.log(servers);
+    return servers.filter(server => server.configuration.groups.includes(config.cloudnet.proxyGroup)).reduce((total, server) => {
+      return total + (server.properties?.["Max-Players"] || 0);
+    }, 0);
+  }
+
   // Transform CloudNet API data to our expected format
   transformServerData(cloudnetServer) {
     return {
@@ -307,7 +322,7 @@ class CloudNetApiService {
       ip: networkNode?.listeners?.[0]?.host || 'Unknown',
       cpu: Math.round((nodeInfo?.processSnapshot?.cpuUsage || 0) * 100) / 100,
       ram: Math.round((nodeInfo?.processSnapshot?.heapUsageMemory || 0) / (1024 * 1024 * 1024) * 100) / 100,
-      disk: Math.round(Math.random() * 100 * 100) / 100, // CloudNet doesn't provide disk usage
+      disk: 0, //Math.round(Math.random() * 100 * 100) / 100, // CloudNet doesn't provide disk usage
       servers: nodeInfo?.currentServicesCount || 0,
       maxServers: nodeInfo?.maxMemory ? Math.floor(nodeInfo.maxMemory / 512) : 10, // Estimate based on memory
       uptime: this.formatUptime(Date.now() - (nodeInfo?.startupTime || Date.now())),

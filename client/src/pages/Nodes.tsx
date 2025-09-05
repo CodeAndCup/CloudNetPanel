@@ -76,8 +76,8 @@ const Nodes: React.FC = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Nodes</h1>
-        <button 
-          disabled 
+        <button
+          disabled
           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-400 cursor-not-allowed"
           title="Node creation is currently disabled"
         >
@@ -124,8 +124,8 @@ const Nodes: React.FC = () => {
                     <span>{node.servers}/{node.maxServers}</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-blue-500 h-2 rounded-full" 
+                    <div
+                      className="bg-blue-500 h-2 rounded-full"
                       style={{ width: `${(node.servers / node.maxServers) * 100}%` }}
                     ></div>
                   </div>
@@ -137,7 +137,7 @@ const Nodes: React.FC = () => {
                     <span>{node.cpu}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
+                    <div
                       className={`h-2 rounded-full ${getUsageColor(node.cpu)}`}
                       style={{ width: `${node.cpu}%` }}
                     ></div>
@@ -150,7 +150,7 @@ const Nodes: React.FC = () => {
                     <span>{node.ram}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
+                    <div
                       className={`h-2 rounded-full ${getUsageColor(node.ram)}`}
                       style={{ width: `${node.ram}%` }}
                     ></div>
@@ -160,10 +160,10 @@ const Nodes: React.FC = () => {
                 <div>
                   <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-1">
                     <span>Disk Usage</span>
-                    <span>{node.disk}%</span>
+                    <span>{/*node.disk*/}?? %</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
+                    <div
                       className={`h-2 rounded-full ${getUsageColor(node.disk)}`}
                       style={{ width: `${node.disk}%` }}
                     ></div>
