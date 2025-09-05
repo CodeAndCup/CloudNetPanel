@@ -1,7 +1,7 @@
 // This component will be moved from the main Users.tsx page
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, User, X } from 'lucide-react';
-import axios from 'axios';
+import axios from '../../services/axiosConfig';
 
 interface UserData {
   id: number;

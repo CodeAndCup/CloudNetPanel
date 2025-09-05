@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Activity, User, Server, File, Users, Filter, RefreshCw, Trash2 } from 'lucide-react';
-import axios from 'axios';
+import axios from '../services/axiosConfig';
 import clsx from 'clsx';
 
 interface Activity {

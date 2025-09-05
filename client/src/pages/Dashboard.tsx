@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Server, Network, Users, Activity, TrendingUp, TrendingDown } from 'lucide-react';
-import axios from 'axios';
+import axios from '../services/axiosConfig';
 import os from 'node:os';
 import { cpuUsage } from 'process';
 import { config } from 'dotenv';

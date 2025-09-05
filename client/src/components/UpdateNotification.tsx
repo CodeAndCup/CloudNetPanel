@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Download, X, ExternalLink, AlertCircle, CheckCircle, Loader } from 'lucide-react';
-import axios from 'axios';
+import axios from '../services/axiosConfig';
 
 interface UpdateInfo {
   upToDate: boolean;

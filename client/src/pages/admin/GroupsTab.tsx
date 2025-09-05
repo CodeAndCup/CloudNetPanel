@@ -1,7 +1,7 @@
 // This component will be moved from the main Groups.tsx page
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Users, UserCheck, X } from 'lucide-react';
-import axios from 'axios';
+import axios from '../../services/axiosConfig';
 
 interface GroupData {
   id: number;
