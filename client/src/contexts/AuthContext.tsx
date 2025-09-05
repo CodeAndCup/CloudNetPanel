@@ -7,6 +7,7 @@ interface User {
   username: string;
   email: string;
   role: string;
+  language?: string;
 }
 
 interface AuthContextType {
@@ -14,6 +15,7 @@ interface AuthContextType {
   login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
   loading: boolean;
+  updateUserLanguage: (language: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -96,6 +98,19 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const updateUserLanguage = async (language: string): Promise<boolean> => {
+    if (!user) return false;
+    
+    try {
+      const response = await axios.patch(`/api/users/${user.id}/language`, { language });
+      setUser({ ...user, language: response.data.language });
+      return true;
+    } catch (error) {
+      console.error('Failed to update user language:', error);
+      return false;
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     delete axios.defaults.headers.common['Authorization'];
@@ -106,7 +121,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     user,
     login,
     logout,
-    loading
+    loading,
+    updateUserLanguage
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -75,7 +75,8 @@ router.post('/login', async (req, res) => {
         id: user.id || 1,
         username: user.username,
         email: user.email,
-        role: user.role
+        role: user.role,
+        language: user.language || 'en'
       },
       JWT_SECRET,
       { expiresIn: '24h' }
@@ -87,7 +88,8 @@ router.post('/login', async (req, res) => {
         id: user.id || 1,
         username: user.username,
         email: user.email,
-        role: user.role
+        role: user.role,
+        language: user.language || 'en'
       }
     });
   } catch (error) {
@@ -103,7 +105,8 @@ router.get('/me', authenticateToken, (req, res) => {
       id: req.user.id,
       username: req.user.username,
       email: req.user.email,
-      role: req.user.role
+      role: req.user.role,
+      language: req.user.language || 'en'
     }
   });
 });

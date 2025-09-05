@@ -80,19 +80,19 @@ const AppRoutes: React.FC = () => {
 
 const App: React.FC = () => {
   return (
-    <I18nProvider>
-      <ThemeProvider>
-        <CloudNetProvider>
-          <AuthProvider>
+    <ThemeProvider>
+      <CloudNetProvider>
+        <AuthProvider>
+          <I18nProvider>
             <Router>
               <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
                 <AppRoutes />
               </div>
             </Router>
-          </AuthProvider>
-        </CloudNetProvider>
-      </ThemeProvider>
-    </I18nProvider>
+          </I18nProvider>
+        </AuthProvider>
+      </CloudNetProvider>
+    </ThemeProvider>
   );
 };
 
