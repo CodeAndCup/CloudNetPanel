@@ -37,7 +37,6 @@ const AppRoutes: React.FC = () => {
   }
 
   // Show CloudNet error page if there's a connectivity issue
-  /*
   if (showErrorPage) {
     return (
       <CloudNetErrorPage
@@ -49,7 +48,6 @@ const AppRoutes: React.FC = () => {
       />
     );
   }
-  */
 
   if (!user) {
     return (
