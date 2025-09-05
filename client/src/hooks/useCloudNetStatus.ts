@@ -18,7 +18,7 @@ export const useCloudNetStatus = () => {
 
   const checkStatus = async () => {
     setStatus(prev => ({ ...prev, loading: true }));
-    
+
     try {
       const response = await axios.get('/api/cloudnet/health');
       setStatus({

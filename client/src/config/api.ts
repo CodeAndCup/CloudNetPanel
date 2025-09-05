@@ -3,8 +3,8 @@
 const isDevelopment = (import.meta as any).env?.DEV || process.env.NODE_ENV === 'development';
 
 // API Base URL
-export const API_BASE_URL = isDevelopment 
-  ? 'http://localhost:5000/api' 
+export const API_BASE_URL = isDevelopment
+  ? 'http://localhost:5000'
   : '/api';
 
 // WebSocket URL
