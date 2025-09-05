@@ -208,24 +208,24 @@ const Templates: React.FC = () => {
 
   const uploadFiles = async (fileList: FileList) => {
     setUploading(true);
-    
+
     try {
       const formData = new FormData();
-      
+
       // Add all files to FormData
       for (let i = 0; i < fileList.length; i++) {
         formData.append('files', fileList[i]);
       }
-      
+
       // Add current path to FormData
       formData.append('path', currentPath);
-      
+
       await axios.post('/api/templates/files/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      
+
       // Refresh files list after successful upload
       fetchFiles(currentPath);
     } catch (error) {
@@ -256,7 +256,7 @@ const Templates: React.FC = () => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragOver(false);
-    
+
     const files = e.dataTransfer.files;
     if (files.length > 0) {
       uploadFiles(files);
@@ -339,9 +339,9 @@ const Templates: React.FC = () => {
               templates
             </button>
           </li>
-          {currentPath.split('/').filter(p => p).map((part, index, array) => (
+          {currentPath.split(/[/\\]/).filter(p => p).map((part, index, array) => (
             <li key={index} className="flex items-center">
-              <span className="text-gray-400 mx-2">\</span>
+              <span className="text-gray-400 mx-2">/</span>
               <button
                 onClick={() => navigateToPath(array.slice(0, index + 1).join('/'))}
                 className="text-blue-600 hover:text-blue-800"
@@ -451,7 +451,7 @@ const Templates: React.FC = () => {
       )}
 
       {/* File List */}
-      <div 
+      <div
         className={clsx(
           "bg-white dark:bg-gray-800 shadow overflow-hidden sm:rounded-md transition-colors",
           isDragOver && "border-2 border-dashed border-blue-500 bg-blue-50 dark:bg-blue-900/20"
