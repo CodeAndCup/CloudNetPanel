@@ -8,7 +8,7 @@ A modern web-based management panel for CloudNet servers, designed with a user-f
 - 🔐 **Authentication System**: Secure login with JWT tokens
 - 📊 **Dashboard**: Real-time overview of servers, nodes, and system metrics
 - 🖥️ **Server Management**: Start, stop, restart servers with real-time status updates
-- 🌐 **Node Management**: Monitor node resources (CPU, RAM, disk usage)
+- 🌐 **Node Management**: Monitor node resources (CPU, RAM, *[soon: disk usage]*)
 - 👥 **User Management**: Manage users with different permission levels
 - 👥 **Group Management**: Create and manage user groups with granular permissions
 - 📁 **Template Management**: File browser for server templates with permission-based access
@@ -74,10 +74,13 @@ The panel supports integration with CloudNet REST API for real-time server manag
 
 ### Quick Configuration
 
-1. Copy `server/.env.example` to `server/.env`
-2. Set `CLOUDNET_API_ENABLED=true` to enable API integration
-3. Configure `CLOUDNET_API_URL` to point to your CloudNet instance
-4. Restart the application
+1. Go to your CloudNet Console and install CloudNet-Rest module.
+2. Copy `server/.env.example` to `server/.env`
+3. Set `CLOUDNET_API_ENABLED=true` to enable API integration
+4. Configure `CLOUDNET_API_URL` to point to your CloudNet instance
+5. Enter you Rest API identifient in `CLOUDNET_API_USERNAME` & `CLOUDNET_API_PASSWORD`. 
+(You can create them by using the command inside cloudnet console `rest user create [username] [password]` and add it admin scope `rest user [username] add scope global:admin`)
+6. Start the application
 
 **Default Mode**: The panel runs in mock mode by default, making it perfect for testing and development without requiring a CloudNet instance.
 
@@ -162,16 +165,6 @@ The panel supports integration with CloudNet REST API for real-time server manag
 - `POST /api/tasks/:id/execute` - Execute task manually
 - `DELETE /api/tasks/:id` - Delete task
 - `POST /api/tasks/:id/permissions` - Grant task permission (admin only)
-
-## Environment Variables
-
-Create a `.env` file in the server directory:
-
-```env
-PORT=5000
-JWT_SECRET=your-secret-key-here
-NODE_ENV=production
-```
 
 ## Contributing
 
