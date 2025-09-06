@@ -24,6 +24,7 @@ router.get('/health', async (req, res) => {
       ...healthStatus
     });
   } catch (error) {
+    console.error('CloudNet health check error:', error);
     res.status(503).json({
       connected: false,
       enabled: cloudnetApi.config.enabled,

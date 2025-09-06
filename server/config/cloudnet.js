@@ -5,7 +5,7 @@ const config = {
     enabled: process.env.CLOUDNET_API_ENABLED === 'true' || false,
 
     // CloudNet REST API base URL
-    baseUrl: process.env.CLOUDNET_API_URL || 'http://localhost:8080/api/v3',
+    baseUrl: process.env.CLOUDNET_API_URL || 'http://localhost:2812/api/v3',
 
     // Authentication settings (if required)
     auth: {
