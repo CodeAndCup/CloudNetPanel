@@ -63,7 +63,7 @@ npm run build
 
 ### Start the production server
 ```bash
-npm start
+npm run start
 ```
 
 The application will serve the built frontend and API from port 5000.
