@@ -23,9 +23,6 @@ CLOUDNET_API_URL=http://localhost:8080/api/v3
 CLOUDNET_API_USERNAME=your_username
 CLOUDNET_API_PASSWORD=your_password
 
-# Optional: API key if using token authentication instead
-CLOUDNET_API_KEY=your_api_key
-
 # Optional: Request timeout and retry settings
 CLOUDNET_API_TIMEOUT=5000
 CLOUDNET_API_RETRIES=3
