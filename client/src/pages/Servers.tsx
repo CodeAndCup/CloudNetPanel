@@ -287,7 +287,7 @@ const Servers: React.FC = () => {
                 <div className="flex items-center space-x-6">
                   <div className="text-right">
                     <p className="text-sm font-medium text-gray-900 dark:text-white">
-                      {server.players}/{server.maxPlayers} {t('servers.players', { count: server.maxPlayers })}
+                      {server.players}/{server.maxPlayers} {t('dashboard.serverStatus.players', { count: server.maxPlayers })}
                     </p>
                     <span className={clsx(
                       'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
