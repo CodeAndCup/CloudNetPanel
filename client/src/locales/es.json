@@ -25,14 +25,14 @@
     "by": "por",
     "type": "Tipo",
     "size": "Tamaño",
-    "source": "Origen",
+    "source": "Fuente",
     "download": "Descargar",
     "read": "Leer",
     "write": "Escribir",
     "upload": "Subir",
     "view": "Ver",
     "send": "Enviar",
-    "checking": "Verificando",
+    "checking": "Comprobando",
     "failed": "Fallido",
     "successful": "Exitoso",
     "completed": "Completado",
@@ -43,12 +43,16 @@
     "user": "Usuario",
     "schedule": "Horario",
     "lastRun": "Última ejecución",
+    "refresh": "Actualizar",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "pageOf": "Página {{current}} de {{total}}",
     "placeholders": {
       "enterGroupName": "Ingrese el nombre del grupo",
       "enterGroupDescription": "Ingrese la descripción del grupo",
       "enterWebhookName": "Ingrese el nombre del webhook",
       "enterUsername": "Ingrese el nombre de usuario",
-      "enterEmail": "Ingrese el email",
+      "enterEmail": "Ingrese el correo electrónico",
       "enterPassword": "Ingrese la contraseña",
       "fileContent": "Contenido del archivo...",
       "httpsUrl": "https://..."
@@ -73,7 +77,7 @@
     }
   },
   "navigation": {
-    "dashboard": "Panel de control",
+    "dashboard": "Panel",
     "servers": "Servidores",
     "nodes": "Nodos",
     "users": "Usuarios",
@@ -87,18 +91,19 @@
     "logout": "Cerrar sesión"
   },
   "dashboard": {
-    "totalServers": "Servidores totales",
+    "totalServers": "Total de servidores",
     "nodes": "Nodos",
     "players": "Jugadores en línea",
     "slots": "plazas",
-    "uptime": "Tiempo de actividad",
+    "players_single": "Jugadores",
+    "uptime": "Tiempo activo",
     "last30days": "Últimos 30 días",
     "serverStatus": {
       "title": "Estado del servidor",
       "players": "jugadores"
     },
     "nodesStatus": {
-      "title": "Estado de los nodos",
+      "title": "Estado del nodo",
       "servers": "servidores"
     },
     "systemOverview": {
@@ -110,7 +115,7 @@
   },
   "servers": {
     "title": "Gestión de servidores",
-    "addServer": "Añadir servidor",
+    "addServer": "Agregar servidor",
     "editServer": "Editar servidor",
     "deleteServer": "Eliminar servidor",
     "createServer": "Crear servidor",
@@ -149,9 +154,9 @@
     "cpuUsage": "Uso de CPU",
     "memoryUsage": "Uso de memoria",
     "diskUsage": "Uso de disco",
-    "uptime": "Tiempo de actividad",
+    "uptime": "Tiempo activo",
     "actions": {
-      "create": "Añadir nodo",
+      "create": "Agregar nodo",
       "edit": "Editar nodo",
       "delete": "Eliminar nodo"
     }
@@ -162,14 +167,14 @@
     "username": "Nombre de usuario",
     "password": "Contraseña",
     "email": "Correo electrónico",
-    "loginButton": "Iniciar sesión",
+    "loginButton": "Entrar",
     "signingIn": "Iniciando sesión...",
-    "loginError": "Nombre de usuario o contraseña inválidos",
+    "loginError": "Usuario o contraseña inválidos",
     "loginRequired": "Por favor, inicie sesión para acceder a esta página"
   },
   "users": {
     "title": "Gestión de usuarios",
-    "addUser": "Añadir usuario",
+    "addUser": "Agregar usuario",
     "editUser": "Editar usuario",
     "deleteUser": "Eliminar usuario",
     "createUser": "Crear usuario",
@@ -179,7 +184,7 @@
     "password": "Contraseña",
     "role": "Rol",
     "confirmDelete": "¿Está seguro de que desea eliminar este usuario?",
-    "passwordHint": "(dejar en blanco para mantener el actual)",
+    "passwordHint": "(deje en blanco para mantener la actual)",
     "roles": {
       "Users": "Usuario",
       "Developers": "Desarrollador",
@@ -189,6 +194,7 @@
   },
   "groups": {
     "title": "Gestión de grupos",
+    "subtitle": "Gestiona grupos de usuarios y permisos",
     "addGroup": "Crear grupo",
     "editGroup": "Editar grupo",
     "deleteGroup": "Eliminar grupo",
@@ -201,7 +207,7 @@
   },
   "webhooks": {
     "title": "Gestión de webhooks",
-    "addWebhook": "Añadir webhook",
+    "addWebhook": "Agregar webhook",
     "editWebhook": "Editar webhook",
     "deleteWebhook": "Eliminar webhook",
     "createWebhook": "Crear webhook",
@@ -210,15 +216,15 @@
     "url": "URL",
     "events": "Eventos",
     "eventsToSubscribe": "Eventos a suscribir",
-    "lastTriggered": "Último activado",
+    "lastTriggered": "Última activación",
     "confirmDelete": "¿Está seguro de que desea eliminar este webhook?",
     "never": "Nunca",
-    "enable": "Activar",
-    "disable": "Desactivar"
+    "enable": "Habilitar",
+    "disable": "Deshabilitar"
   },
   "templates": {
-    "title": "Gestión de plantillas",
-    "subtitle": "Administra las plantillas de servidor y archivos de configuración.",
+    "title": "Plantillas",
+    "subtitle": "Gestiona plantillas de servidor y archivos de configuración.",
     "filesManager": {
       "name": "Nombre de archivo",
       "size": "Tamaño",
@@ -227,7 +233,8 @@
     "actions": {
       "newFolder": "Nueva carpeta",
       "newFile": "Nuevo archivo",
-      "uploadFile": "Subir archivos"
+      "uploadFiles": "Subir archivos",
+      "uploadFile": "Subiendo..."
     },
     "createFolder": {
       "title": "Crear nueva carpeta",
@@ -240,10 +247,27 @@
       "fileName": "Nombre del archivo...",
       "cancel": "Cancelar",
       "create": "Crear"
+    },
+    "editFile": {
+      "title": "Editando: ",
+      "save": "Guardar",
+      "close": "Cerrar"
+    },
+    "dropZone": {
+      "dropFiles": "Arrastra archivos aquí para subir",
+      "toDirectory": "a {{directory}}",
+      "rootDirectory": "directorio raíz"
+    },
+    "emptyState": {
+      "noFiles": "Sin archivos",
+      "getStarted": "Comience creando un nuevo archivo o carpeta, o arrastre archivos aquí para subirlos."
     }
   },
   "profile": {
+    "title": "Configuración de perfil",
+    "subtitle": "Gestiona la información de tu cuenta y el idioma.",
     "accountInformation": "Información de la cuenta",
+    "activity": "Actividad",
     "username": "Nombre de usuario",
     "email": "Correo electrónico",
     "role": "Rol",
@@ -256,7 +280,7 @@
     "saveLanguage": "Guardar idioma"
   },
   "errors": {
-    "generic": "Ha ocurrido un error. Por favor, inténtelo de nuevo.",
+    "generic": "Ocurrió un error. Por favor, inténtelo de nuevo.",
     "networkError": "Error de red. Por favor, verifique su conexión.",
     "unauthorized": "No está autorizado para realizar esta acción.",
     "notFound": "El recurso solicitado no fue encontrado.",
@@ -267,6 +291,132 @@
     "created": "Creado exitosamente",
     "updated": "Actualizado exitosamente",
     "deleted": "Eliminado exitosamente"
+  },
+  "activities": {
+    "title": "Registro de actividad",
+    "subtitle": "Rastrea todas las acciones de usuario y eventos del sistema",
+    "noActivities": "No se encontraron actividades",
+    "noActivitiesSubtitle": "No hay actividades que coincidan con sus filtros actuales.",
+    "allActivities": "Todas las actividades",
+    "fileOperations": "Operaciones de archivos",
+    "serverActions": "Acciones de servidor",
+    "filters": {
+      "type": "Tipo",
+      "action": "Acción",
+      "allTypes": "Todos los tipos",
+      "allActions": "Todas las acciones",
+      "clear": "Limpiar filtros"
+    },
+    "types": {
+      "server": "Servidores"
+    },
+    "actions": {
+      "server_start": "Iniciar servidor",
+      "server_stop": "Detener servidor",
+      "server_restart": "Reiniciar servidor",
+      "server_create": "Crear servidor",
+      "server_command": "Enviar comando",
+      "user_create": "Crear usuario",
+      "user_update": "Actualizar usuario",
+      "user_delete": "Eliminar usuario",
+      "group_create": "Crear grupo",
+      "group_update": "Actualizar grupo",
+      "group_delete": "Eliminar grupo",
+      "group_add_user": "Agregar usuario al grupo",
+      "group_remove_user": "Eliminar usuario del grupo",
+      "file_upload": "Subir archivo",
+      "file_update": "Modificar archivo",
+      "file_delete": "Eliminar archivo",
+      "directory_create": "Crear directorio",
+      "server_action": "Gestión de servidores",
+      "user_action": "Gestión de usuarios",
+      "group_action": "Gestión de grupos",
+      "template_action": "Gestión de plantillas",
+      "file_action": "Gestión de archivos",
+      "task_action": "Gestión de tareas",
+      "backup_action": "Gestión de copias de seguridad"
+    },
+    "categories": {
+      "server_action": "Acciones de servidor"
+    }
+  },
+  "backups": {
+    "title": "Gestión de copias de seguridad",
+    "subtitle": "Gestiona copias de seguridad de plantillas y horarios.",
+    "noBackups": "No se encontraron copias de seguridad.",
+    "noBackupsSubtitle": "Comience creando su primera copia de seguridad.",
+    "createManualBackup": "Crear copia de seguridad manual",
+    "scheduleBackup": "Programar copia de seguridad",
+    "status": {
+      "completed": "Completado",
+      "failed": "Fallido",
+      "running": "En ejecución"
+    },
+    "actions": {
+      "create": "Crear copia de seguridad",
+      "restore": "Restaurar",
+      "download": "Descargar"
+    },
+    "fields": {
+      "name": "Nombre",
+      "type": "Tipo",
+      "source": "Fuente",
+      "status": "Estado",
+      "size": "Tamaño",
+      "created": "Creado"
+    }
+  },
+  "tasks": {
+    "title": "Gestión de tareas",
+    "subtitle": "Gestiona tareas programadas y automatizaciones.",
+    "noTasks": "No se encontraron tareas.",
+    "noTasksSubtitle": "Cree una tarea para verla aquí.",
+    "createTask": "Crear tarea",
+    "editTask": "Editar tarea",
+    "types": {
+      "command": "Comando",
+      "backup": "Copia de seguridad",
+      "custom": "Personalizado"
+    },
+    "placeholders": {
+      "cronSchedule": "Horario cron (opcional, ej.: 0 2 * * *)"
+    }
+  },
+  "administration": {
+    "subtitle": "Gestiona la configuración y ajustes del sistema."
+  },
+  "updateNotification": {
+    "checking": "Buscando actualizaciones...",
+    "checkFailed": "Fallo al buscar actualizaciones",
+    "upToDate": "Actualizado",
+    "updateAvailable": "Actualización disponible",
+    "versionInfo": "La versión {{current}} es la última versión",
+    "newVersionAvailable": "Hay una nueva versión de CloudNet Panel disponible.",
+    "releasedOn": "Lanzado el {{date}}.",
+    "releaseNotes": "Notas de la versión:",
+    "viewRelease": "Ver versión",
+    "showDetails": "Mostrar detalles",
+    "hideDetails": "Ocultar detalles",
+    "checkAgain": "Buscar de nuevo"
+  },
+  "permissions": {
+    "read": "Leer",
+    "write": "Escribir",
+    "addPermission": "Agregar permiso"
+  },
+  "cloudnet": {
+    "notConnected": "CloudNet no conectado",
+    "unableToConnect": "No se puede conectar a la API REST de CloudNet",
+    "connectionFailed": "Conexión fallida",
+    "connectionErrorMessage": "CloudNet Panel requiere una conexión a la API REST de CloudNet para funcionar. Por favor, asegúrese de que CloudNet esté ejecutándose y que la API sea accesible.",
+    "pleaseCheck": "Por favor, verifique:",
+    "checkItems": {
+      "serverRunning": "El servidor CloudNet está en ejecución",
+      "apiLoaded": "El módulo CloudNet REST API está cargado",
+      "credentialsCorrect": "La URL y credenciales de la API son correctas",
+      "networkConnectivity": "Conectividad de red al servidor CloudNet"
+    },
+    "tryAgain": "Intentar de nuevo"
   },
   "footer": {
     "madeWith": "Hecho con",

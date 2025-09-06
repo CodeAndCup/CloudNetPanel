@@ -1,6 +1,6 @@
 {
   "common": {
-    "loading": "Wird geladen...",
+    "loading": "Lädt...",
     "save": "Speichern",
     "cancel": "Abbrechen",
     "delete": "Löschen",
@@ -42,28 +42,32 @@
     "never": "Nie",
     "user": "Benutzer",
     "schedule": "Zeitplan",
-    "lastRun": "Letzte Ausführung",
+    "lastRun": "Letzter Lauf",
+    "refresh": "Aktualisieren",
+    "previous": "Vorherige",
+    "next": "Nächste",
+    "pageOf": "Seite {{current}} von {{total}}",
     "placeholders": {
-      "enterGroupName": "Gruppennamen eingeben",
+      "enterGroupName": "Gruppenname eingeben",
       "enterGroupDescription": "Gruppenbeschreibung eingeben",
-      "enterWebhookName": "Webhook-Namen eingeben",
-      "enterUsername": "Benutzernamen eingeben",
+      "enterWebhookName": "Webhook-Name eingeben",
+      "enterUsername": "Benutzername eingeben",
       "enterEmail": "E-Mail eingeben",
       "enterPassword": "Passwort eingeben",
       "fileContent": "Dateiinhalt...",
       "httpsUrl": "https://..."
     },
     "confirmations": {
-      "deleteUser": "Sind Sie sicher, dass Sie diesen Benutzer löschen möchten?",
-      "deleteGroup": "Sind Sie sicher, dass Sie diese Gruppe löschen möchten?",
-      "deleteWebhook": "Sind Sie sicher, dass Sie diesen Webhook löschen möchten?",
-      "deleteServer": "Sind Sie sicher, dass Sie diesen Server löschen möchten?",
-      "deleteFile": "Sind Sie sicher, dass Sie diese Datei löschen möchten?",
-      "deleteFolder": "Sind Sie sicher, dass Sie diesen Ordner löschen möchten?"
+      "deleteUser": "Möchten Sie diesen Benutzer wirklich löschen?",
+      "deleteGroup": "Möchten Sie diese Gruppe wirklich löschen?",
+      "deleteWebhook": "Möchten Sie diesen Webhook wirklich löschen?",
+      "deleteServer": "Möchten Sie diesen Server wirklich löschen?",
+      "deleteFile": "Möchten Sie diese Datei wirklich löschen?",
+      "deleteFolder": "Möchten Sie diesen Ordner wirklich löschen?"
     },
     "tooltips": {
-      "switchToDarkMode": "Zu dunklem Modus wechseln",
-      "switchToLightMode": "Zu hellem Modus wechseln",
+      "switchToDarkMode": "In dunklen Modus wechseln",
+      "switchToLightMode": "In hellen Modus wechseln",
       "managePermissions": "Berechtigungen verwalten",
       "executeTask": "Aufgabe ausführen",
       "editTask": "Aufgabe bearbeiten",
@@ -75,22 +79,23 @@
   "navigation": {
     "dashboard": "Dashboard",
     "servers": "Server",
-    "nodes": "Knoten",
+    "nodes": "Nodes",
     "users": "Benutzer",
     "groups": "Gruppen",
     "templates": "Vorlagen",
     "tasks": "Aufgaben",
     "backups": "Backups",
     "activities": "Aktivitäten",
-    "admin": "Verwaltung",
+    "admin": "Administration",
     "profile": "Profil",
     "logout": "Abmelden"
   },
   "dashboard": {
-    "totalServers": "Gesamtanzahl Server",
-    "nodes": "Knoten",
+    "totalServers": "Gesamtserver",
+    "nodes": "Nodes",
     "players": "Spieler online",
     "slots": "Slots",
+    "players_single": "Spieler",
     "uptime": "Betriebszeit",
     "last30days": "Letzte 30 Tage",
     "serverStatus": {
@@ -98,7 +103,7 @@
       "players": "Spieler"
     },
     "nodesStatus": {
-      "title": "Knotenstatus",
+      "title": "Node-Status",
       "servers": "Server"
     },
     "systemOverview": {
@@ -116,21 +121,21 @@
     "createServer": "Server erstellen",
     "updateServer": "Server aktualisieren",
     "name": "Name",
-    "node": "Knoten",
+    "node": "Node",
     "template": "Vorlage",
     "status": "Status",
     "ipAddress": "IP-Adresse",
     "port": "Port",
-    "memory": "Speicher (MB)",
+    "memory": "Arbeitsspeicher (MB)",
     "cpuCores": "CPU-Kerne",
     "diskSpace": "Festplattenspeicher (MB)",
-    "confirmDelete": "Sind Sie sicher, dass Sie diesen Server löschen möchten?",
+    "confirmDelete": "Möchten Sie diesen Server wirklich löschen?",
     "actions": {
       "start": "Starten",
       "stop": "Stoppen",
       "restart": "Neustarten",
       "viewConsole": "Konsole anzeigen",
-      "viewLogs": "Logs anzeigen",
+      "viewLogs": "Protokolle anzeigen",
       "sendCommand": "Befehl senden"
     },
     "statuses": {
@@ -142,7 +147,7 @@
     }
   },
   "nodes": {
-    "title": "Knotenverwaltung",
+    "title": "Nodeverwaltung",
     "ipAddress": "IP-Adresse",
     "location": "Standort",
     "ServerCount": "Server",
@@ -151,18 +156,20 @@
     "diskUsage": "Festplattenauslastung",
     "uptime": "Betriebszeit",
     "actions": {
-      "create": "Knoten hinzufügen",
-      "edit": "Knoten bearbeiten",
-      "delete": "Knoten löschen"
+      "create": "Node hinzufügen",
+      "edit": "Node bearbeiten",
+      "delete": "Node löschen"
     }
   },
   "auth": {
     "login": "Anmelden",
+    "signInToAccount": "Melden Sie sich bei Ihrem Konto an",
     "username": "Benutzername",
     "password": "Passwort",
     "email": "E-Mail",
     "loginButton": "Anmelden",
-    "loginError": "Ungültige Anmeldedaten",
+    "signingIn": "Anmelden...",
+    "loginError": "Ungültiger Benutzername oder Passwort",
     "loginRequired": "Bitte melden Sie sich an, um auf diese Seite zuzugreifen"
   },
   "users": {
@@ -176,8 +183,8 @@
     "email": "E-Mail",
     "password": "Passwort",
     "role": "Rolle",
-    "confirmDelete": "Sind Sie sicher, dass Sie diesen Benutzer löschen möchten?",
-    "passwordHint": "(leer lassen, um das aktuelle beizubehalten)",
+    "confirmDelete": "Möchten Sie diesen Benutzer wirklich löschen?",
+    "passwordHint": "(leer lassen, um das aktuelle zu behalten)",
     "roles": {
       "Users": "Benutzer",
       "Developers": "Entwickler",
@@ -187,6 +194,7 @@
   },
   "groups": {
     "title": "Gruppenverwaltung",
+    "subtitle": "Benutzergruppen und Berechtigungen verwalten",
     "addGroup": "Gruppe erstellen",
     "editGroup": "Gruppe bearbeiten",
     "deleteGroup": "Gruppe löschen",
@@ -195,7 +203,7 @@
     "name": "Name",
     "description": "Beschreibung",
     "userCount": "Benutzer",
-    "confirmDelete": "Sind Sie sicher, dass Sie diese Gruppe löschen möchten?"
+    "confirmDelete": "Möchten Sie diese Gruppe wirklich löschen?"
   },
   "webhooks": {
     "title": "Webhook-Verwaltung",
@@ -207,9 +215,9 @@
     "name": "Name",
     "url": "URL",
     "events": "Ereignisse",
-    "eventsToSubscribe": "Ereignisse abonnieren",
-    "lastTriggered": "Zuletzt ausgelöst",
-    "confirmDelete": "Sind Sie sicher, dass Sie diesen Webhook löschen möchten?",
+    "eventsToSubscribe": "Zu abonnierende Ereignisse",
+    "lastTriggered": "Letztes ausgelöst",
+    "confirmDelete": "Möchten Sie diesen Webhook wirklich löschen?",
     "never": "Nie",
     "enable": "Aktivieren",
     "disable": "Deaktivieren"
@@ -225,7 +233,8 @@
     "actions": {
       "newFolder": "Neuer Ordner",
       "newFile": "Neue Datei",
-      "uploadFile": "Dateien hochladen"
+      "uploadFiles": "Dateien hochladen",
+      "uploadFile": "Wird hochgeladen..."
     },
     "createFolder": {
       "title": "Neuen Ordner erstellen",
@@ -238,10 +247,27 @@
       "fileName": "Dateiname...",
       "cancel": "Abbrechen",
       "create": "Erstellen"
+    },
+    "editFile": {
+      "title": "Bearbeiten: ",
+      "save": "Speichern",
+      "close": "Schließen"
+    },
+    "dropZone": {
+      "dropFiles": "Dateien hierher ziehen, um hochzuladen",
+      "toDirectory": "in {{directory}}",
+      "rootDirectory": "Stammverzeichnis"
+    },
+    "emptyState": {
+      "noFiles": "Keine Dateien",
+      "getStarted": "Beginnen Sie, indem Sie eine neue Datei oder einen Ordner erstellen oder ziehen Sie Dateien hierher, um sie hochzuladen."
     }
   },
   "profile": {
+    "title": "Profileinstellungen",
+    "subtitle": "Kontoinformationen und Spracheinstellungen verwalten.",
     "accountInformation": "Kontoinformationen",
+    "activity": "Aktivität",
     "username": "Benutzername",
     "email": "E-Mail",
     "role": "Rolle",
@@ -258,12 +284,143 @@
     "networkError": "Netzwerkfehler. Bitte überprüfen Sie Ihre Verbindung.",
     "unauthorized": "Sie sind nicht berechtigt, diese Aktion auszuführen.",
     "notFound": "Die angeforderte Ressource wurde nicht gefunden.",
-    "validationError": "Bitte überprüfen Sie Ihre Eingabe und versuchen Sie es erneut."
+    "validationError": "Bitte überprüfen Sie Ihre Eingaben und versuchen Sie es erneut."
   },
   "success": {
     "saved": "Änderungen erfolgreich gespeichert",
     "created": "Erfolgreich erstellt",
     "updated": "Erfolgreich aktualisiert",
     "deleted": "Erfolgreich gelöscht"
+  },
+  "activities": {
+    "title": "Aktivitätsprotokoll",
+    "subtitle": "Alle Benutzeraktionen und Systemereignisse verfolgen",
+    "noActivities": "Keine Aktivitäten gefunden",
+    "noActivitiesSubtitle": "Keine Aktivitäten entsprechen Ihren aktuellen Filtern.",
+    "allActivities": "Alle Aktivitäten",
+    "fileOperations": "Dateioperationen",
+    "serverActions": "Serveraktionen",
+    "filters": {
+      "type": "Typ",
+      "action": "Aktion",
+      "allTypes": "Alle Typen",
+      "allActions": "Alle Aktionen",
+      "clear": "Filter löschen"
+    },
+    "types": {
+      "server": "Server"
+    },
+    "actions": {
+      "server_start": "Server starten",
+      "server_stop": "Server stoppen",
+      "server_restart": "Server neu starten",
+      "server_create": "Server erstellen",
+      "server_command": "Befehl senden",
+      "user_create": "Benutzer erstellen",
+      "user_update": "Benutzer aktualisieren",
+      "user_delete": "Benutzer löschen",
+      "group_create": "Gruppe erstellen",
+      "group_update": "Gruppe aktualisieren",
+      "group_delete": "Gruppe löschen",
+      "group_add_user": "Benutzer zur Gruppe hinzufügen",
+      "group_remove_user": "Benutzer aus Gruppe entfernen",
+      "file_upload": "Datei hochladen",
+      "file_update": "Datei bearbeiten",
+      "file_delete": "Datei löschen",
+      "directory_create": "Verzeichnis erstellen",
+      "server_action": "Serververwaltung",
+      "user_action": "Benutzerverwaltung",
+      "group_action": "Gruppenverwaltung",
+      "template_action": "Vorlagenverwaltung",
+      "file_action": "Dateiverwaltung",
+      "task_action": "Aufgabenverwaltung",
+      "backup_action": "Backup-Verwaltung"
+    },
+    "categories": {
+      "server_action": "Serveraktionen"
+    }
+  },
+  "backups": {
+    "title": "Backup-Verwaltung",
+    "subtitle": "Vorlagen-Backups und Zeitpläne verwalten.",
+    "noBackups": "Keine Backups gefunden.",
+    "noBackupsSubtitle": "Beginnen Sie mit der Erstellung Ihres ersten Backups.",
+    "createManualBackup": "Manuelles Backup erstellen",
+    "scheduleBackup": "Backup planen",
+    "status": {
+      "completed": "Abgeschlossen",
+      "failed": "Fehlgeschlagen",
+      "running": "Wird ausgeführt"
+    },
+    "actions": {
+      "create": "Backup erstellen",
+      "restore": "Wiederherstellen",
+      "download": "Herunterladen"
+    },
+    "fields": {
+      "name": "Name",
+      "type": "Typ",
+      "source": "Quelle",
+      "status": "Status",
+      "size": "Größe",
+      "created": "Erstellt"
+    }
+  },
+  "tasks": {
+    "title": "Aufgabenverwaltung",
+    "subtitle": "Geplante Aufgaben und Automatisierungen verwalten.",
+    "noTasks": "Keine Aufgaben gefunden.",
+    "noTasksSubtitle": "Erstellen Sie eine Aufgabe, um sie hier aufzulisten.",
+    "createTask": "Aufgabe erstellen",
+    "editTask": "Aufgabe bearbeiten",
+    "types": {
+      "command": "Befehl",
+      "backup": "Backup",
+      "custom": "Benutzerdefiniert"
+    },
+    "placeholders": {
+      "cronSchedule": "Cron-Zeitplan (optional, z. B. 0 2 * * *)"
+    }
+  },
+  "administration": {
+    "subtitle": "Systemeinstellungen und Konfigurationen verwalten."
+  },
+  "updateNotification": {
+    "checking": "Nach Updates suchen...",
+    "checkFailed": "Updateprüfung fehlgeschlagen",
+    "upToDate": "Aktuell",
+    "updateAvailable": "Update verfügbar",
+    "versionInfo": "Version {{current}} ist die neueste Version",
+    "newVersionAvailable": "Eine neue Version des CloudNet Panels ist verfügbar.",
+    "releasedOn": "Veröffentlicht am {{date}}.",
+    "releaseNotes": "Release Notes:",
+    "viewRelease": "Release anzeigen",
+    "showDetails": "Details anzeigen",
+    "hideDetails": "Details verbergen",
+    "checkAgain": "Erneut prüfen"
+  },
+  "permissions": {
+    "read": "Lesen",
+    "write": "Schreiben",
+    "addPermission": "Berechtigung hinzufügen"
+  },
+  "cloudnet": {
+    "notConnected": "CloudNet nicht verbunden",
+    "unableToConnect": "Verbindung zur CloudNet REST API nicht möglich",
+    "connectionFailed": "Verbindung fehlgeschlagen",
+    "connectionErrorMessage": "Das CloudNet Panel benötigt eine Verbindung zur CloudNet REST API. Bitte stellen Sie sicher, dass CloudNet läuft und die API erreichbar ist.",
+    "pleaseCheck": "Bitte überprüfen Sie:",
+    "checkItems": {
+      "serverRunning": "CloudNet-Server läuft",
+      "apiLoaded": "CloudNet REST API-Modul ist geladen",
+      "credentialsCorrect": "API-URL und Zugangsdaten sind korrekt",
+      "networkConnectivity": "Netzwerkverbindung zum CloudNet-Server"
+    },
+    "tryAgain": "Erneut versuchen"
+  },
+  "footer": {
+    "madeWith": "Gemacht mit",
+    "by": "von Perrier",
+    "madeWithLove": "Gemacht mit ♥ von Perrier"
   }
 }

@@ -25,7 +25,7 @@
     "by": "da",
     "type": "Tipo",
     "size": "Dimensione",
-    "source": "Origine",
+    "source": "Fonte",
     "download": "Scarica",
     "read": "Leggi",
     "write": "Scrivi",
@@ -38,19 +38,23 @@
     "completed": "Completato",
     "pending": "In attesa",
     "manual": "Manuale",
-    "scheduled": "Programmato",
+    "scheduled": "Pianificato",
     "never": "Mai",
     "user": "Utente",
-    "schedule": "Pianificazione",
+    "schedule": "Programma",
     "lastRun": "Ultima esecuzione",
+    "refresh": "Aggiorna",
+    "previous": "Precedente",
+    "next": "Successivo",
+    "pageOf": "Pagina {{current}} di {{total}}",
     "placeholders": {
-      "enterGroupName": "Inserisci il nome del gruppo",
-      "enterGroupDescription": "Inserisci la descrizione del gruppo",
-      "enterWebhookName": "Inserisci il nome del webhook",
-      "enterUsername": "Inserisci il nome utente",
-      "enterEmail": "Inserisci l'email",
-      "enterPassword": "Inserisci la password",
-      "fileContent": "Contenuto del file...",
+      "enterGroupName": "Inserisci nome gruppo",
+      "enterGroupDescription": "Inserisci descrizione gruppo",
+      "enterWebhookName": "Inserisci nome webhook",
+      "enterUsername": "Inserisci nome utente",
+      "enterEmail": "Inserisci email",
+      "enterPassword": "Inserisci password",
+      "fileContent": "Contenuto file...",
       "httpsUrl": "https://..."
     },
     "confirmations": {
@@ -65,9 +69,9 @@
       "switchToDarkMode": "Passa alla modalità scura",
       "switchToLightMode": "Passa alla modalità chiara",
       "managePermissions": "Gestisci permessi",
-      "executeTask": "Esegui compito",
-      "editTask": "Modifica compito",
-      "deleteTask": "Elimina compito",
+      "executeTask": "Esegui attività",
+      "editTask": "Modifica attività",
+      "deleteTask": "Elimina attività",
       "editGroup": "Modifica gruppo",
       "deleteGroup": "Elimina gruppo"
     }
@@ -78,8 +82,8 @@
     "nodes": "Nodi",
     "users": "Utenti",
     "groups": "Gruppi",
-    "templates": "Modelli",
-    "tasks": "Compiti",
+    "templates": "Template",
+    "tasks": "Attività",
     "backups": "Backup",
     "activities": "Attività",
     "admin": "Amministrazione",
@@ -91,14 +95,15 @@
     "nodes": "Nodi",
     "players": "Giocatori online",
     "slots": "slot",
+    "players_single": "Giocatori",
     "uptime": "Tempo di attività",
     "last30days": "Ultimi 30 giorni",
     "serverStatus": {
-      "title": "Stato server",
+      "title": "Stato del server",
       "players": "giocatori"
     },
     "nodesStatus": {
-      "title": "Stato nodi",
+      "title": "Stato dei nodi",
       "servers": "server"
     },
     "systemOverview": {
@@ -117,13 +122,13 @@
     "updateServer": "Aggiorna server",
     "name": "Nome",
     "node": "Nodo",
-    "template": "Modello",
+    "template": "Template",
     "status": "Stato",
     "ipAddress": "Indirizzo IP",
     "port": "Porta",
     "memory": "Memoria (MB)",
     "cpuCores": "Core CPU",
-    "diskSpace": "Spazio su disco (MB)",
+    "diskSpace": "Spazio disco (MB)",
     "confirmDelete": "Sei sicuro di voler eliminare questo server?",
     "actions": {
       "start": "Avvia",
@@ -144,7 +149,7 @@
   "nodes": {
     "title": "Gestione nodi",
     "ipAddress": "Indirizzo IP",
-    "location": "Posizione",
+    "location": "Località",
     "ServerCount": "Server",
     "cpuUsage": "Utilizzo CPU",
     "memoryUsage": "Utilizzo memoria",
@@ -163,9 +168,9 @@
     "password": "Password",
     "email": "Email",
     "loginButton": "Accedi",
-    "signingIn": "Accesso in corso...",
+    "signingIn": "Accesso...",
     "loginError": "Nome utente o password non validi",
-    "loginRequired": "Effettua l'accesso per accedere a questa pagina"
+    "loginRequired": "Accedi per accedere a questa pagina"
   },
   "users": {
     "title": "Gestione utenti",
@@ -189,6 +194,7 @@
   },
   "groups": {
     "title": "Gestione gruppi",
+    "subtitle": "Gestisci gruppi utente e permessi",
     "addGroup": "Crea gruppo",
     "editGroup": "Modifica gruppo",
     "deleteGroup": "Elimina gruppo",
@@ -210,15 +216,15 @@
     "url": "URL",
     "events": "Eventi",
     "eventsToSubscribe": "Eventi da sottoscrivere",
-    "lastTriggered": "Ultimo attivato",
+    "lastTriggered": "Ultima attivazione",
     "confirmDelete": "Sei sicuro di voler eliminare questo webhook?",
     "never": "Mai",
     "enable": "Abilita",
     "disable": "Disabilita"
   },
   "templates": {
-    "title": "Modelli",
-    "subtitle": "Gestisci modelli di server e file di configurazione.",
+    "title": "Template",
+    "subtitle": "Gestisci template server e file di configurazione.",
     "filesManager": {
       "name": "Nome file",
       "size": "Dimensione",
@@ -227,7 +233,8 @@
     "actions": {
       "newFolder": "Nuova cartella",
       "newFile": "Nuovo file",
-      "uploadFile": "Carica file"
+      "uploadFiles": "Carica file",
+      "uploadFile": "Caricamento..."
     },
     "createFolder": {
       "title": "Crea nuova cartella",
@@ -240,10 +247,27 @@
       "fileName": "Nome file...",
       "cancel": "Annulla",
       "create": "Crea"
+    },
+    "editFile": {
+      "title": "Modifica: ",
+      "save": "Salva",
+      "close": "Chiudi"
+    },
+    "dropZone": {
+      "dropFiles": "Trascina qui i file da caricare",
+      "toDirectory": "nella cartella {{directory}}",
+      "rootDirectory": "directory principale"
+    },
+    "emptyState": {
+      "noFiles": "Nessun file",
+      "getStarted": "Inizia creando un nuovo file o cartella, oppure trascina qui i file da caricare."
     }
   },
   "profile": {
+    "title": "Impostazioni profilo",
+    "subtitle": "Gestisci informazioni account e lingua.",
     "accountInformation": "Informazioni account",
+    "activity": "Attività",
     "username": "Nome utente",
     "email": "Email",
     "role": "Ruolo",
@@ -257,10 +281,10 @@
   },
   "errors": {
     "generic": "Si è verificato un errore. Riprova.",
-    "networkError": "Errore di rete. Controlla la tua connessione.",
+    "networkError": "Errore di rete. Controlla la connessione.",
     "unauthorized": "Non sei autorizzato a eseguire questa azione.",
-    "notFound": "La risorsa richiesta non è stata trovata.",
-    "validationError": "Controlla il tuo input e riprova."
+    "notFound": "Risorsa richiesta non trovata.",
+    "validationError": "Controlla i dati inseriti e riprova."
   },
   "success": {
     "saved": "Modifiche salvate con successo",
@@ -268,9 +292,135 @@
     "updated": "Aggiornato con successo",
     "deleted": "Eliminato con successo"
   },
+  "activities": {
+    "title": "Registro attività",
+    "subtitle": "Traccia tutte le azioni utente e gli eventi di sistema",
+    "noActivities": "Nessuna attività trovata",
+    "noActivitiesSubtitle": "Nessuna attività corrisponde ai filtri attuali.",
+    "allActivities": "Tutte le attività",
+    "fileOperations": "Operazioni file",
+    "serverActions": "Azioni server",
+    "filters": {
+      "type": "Tipo",
+      "action": "Azione",
+      "allTypes": "Tutti i tipi",
+      "allActions": "Tutte le azioni",
+      "clear": "Cancella filtri"
+    },
+    "types": {
+      "server": "Server"
+    },
+    "actions": {
+      "server_start": "Avvia server",
+      "server_stop": "Ferma server",
+      "server_restart": "Riavvia server",
+      "server_create": "Crea server",
+      "server_command": "Invia comando",
+      "user_create": "Crea utente",
+      "user_update": "Aggiorna utente",
+      "user_delete": "Elimina utente",
+      "group_create": "Crea gruppo",
+      "group_update": "Aggiorna gruppo",
+      "group_delete": "Elimina gruppo",
+      "group_add_user": "Aggiungi utente al gruppo",
+      "group_remove_user": "Rimuovi utente dal gruppo",
+      "file_upload": "Carica file",
+      "file_update": "Modifica file",
+      "file_delete": "Elimina file",
+      "directory_create": "Crea directory",
+      "server_action": "Gestione server",
+      "user_action": "Gestione utenti",
+      "group_action": "Gestione gruppi",
+      "template_action": "Gestione template",
+      "file_action": "Gestione file",
+      "task_action": "Gestione attività",
+      "backup_action": "Gestione backup"
+    },
+    "categories": {
+      "server_action": "Azioni server"
+    }
+  },
+  "backups": {
+    "title": "Gestione backup",
+    "subtitle": "Gestisci backup dei template e le pianificazioni.",
+    "noBackups": "Nessun backup trovato.",
+    "noBackupsSubtitle": "Inizia creando il primo backup.",
+    "createManualBackup": "Crea backup manuale",
+    "scheduleBackup": "Pianifica backup",
+    "status": {
+      "completed": "Completato",
+      "failed": "Fallito",
+      "running": "In esecuzione"
+    },
+    "actions": {
+      "create": "Crea backup",
+      "restore": "Ripristina",
+      "download": "Scarica"
+    },
+    "fields": {
+      "name": "Nome",
+      "type": "Tipo",
+      "source": "Fonte",
+      "status": "Stato",
+      "size": "Dimensione",
+      "created": "Creato"
+    }
+  },
+  "tasks": {
+    "title": "Gestione attività",
+    "subtitle": "Gestisci attività pianificate e automazioni.",
+    "noTasks": "Nessuna attività trovata.",
+    "noTasksSubtitle": "Crea un'attività per vederla elencata qui.",
+    "createTask": "Crea attività",
+    "editTask": "Modifica attività",
+    "types": {
+      "command": "Comando",
+      "backup": "Backup",
+      "custom": "Personalizzato"
+    },
+    "placeholders": {
+      "cronSchedule": "Programma cron (opzionale, es: 0 2 * * *)"
+    }
+  },
+  "administration": {
+    "subtitle": "Gestisci impostazioni di sistema e configurazioni."
+  },
+  "updateNotification": {
+    "checking": "Controllo aggiornamenti...",
+    "checkFailed": "Controllo aggiornamenti fallito",
+    "upToDate": "Aggiornato",
+    "updateAvailable": "Aggiornamento disponibile",
+    "versionInfo": "La versione {{current}} è la più recente",
+    "newVersionAvailable": "È disponibile una nuova versione di CloudNet Panel.",
+    "releasedOn": "Rilasciato il {{date}}.",
+    "releaseNotes": "Note di rilascio:",
+    "viewRelease": "Visualizza rilascio",
+    "showDetails": "Mostra dettagli",
+    "hideDetails": "Nascondi dettagli",
+    "checkAgain": "Controlla di nuovo"
+  },
+  "permissions": {
+    "read": "Leggi",
+    "write": "Scrivi",
+    "addPermission": "Aggiungi permesso"
+  },
+  "cloudnet": {
+    "notConnected": "CloudNet non connesso",
+    "unableToConnect": "Impossibile connettersi all'API REST di CloudNet",
+    "connectionFailed": "Connessione fallita",
+    "connectionErrorMessage": "Il pannello CloudNet richiede una connessione all'API REST di CloudNet. Assicurati che CloudNet sia in esecuzione e che l'API sia accessibile.",
+    "pleaseCheck": "Verifica:",
+    "checkItems": {
+      "serverRunning": "Server CloudNet in esecuzione",
+      "apiLoaded": "Modulo API REST CloudNet caricato",
+      "credentialsCorrect": "URL API e credenziali corrette",
+      "networkConnectivity": "Connessione di rete al server CloudNet"
+    },
+    "tryAgain": "Riprova"
+  },
   "footer": {
-    "madeWith": "Fatto con",
+    "madeWith": "Creato con",
     "by": "da Perrier",
-    "madeWithLove": "Fatto con ♥ da Perrier"
+    "madeWithLove": "Creato con ♥ da Perrier"
   }
 }
