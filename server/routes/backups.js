@@ -10,7 +10,7 @@ const router = express.Router();
 const execAsync = promisify(exec);
 
 // Base directories
-const TEMPLATES_DIR = path.join(__dirname, '../../../CloudNet-Server/local/');
+const TEMPLATES_DIR = path.join(process.env.CLOUDNET_SERVER_PATH, 'local/templates');
 const BACKUPS_DIR = path.join(__dirname, '../../backups');
 
 // Ensure backup directory exists
@@ -43,7 +43,7 @@ router.get('/', authenticateToken, (req, res) => {
 // Get backup by ID
 router.get('/:id', authenticateToken, (req, res) => {
   const backupId = parseInt(req.params.id);
-  
+
   db.get(`
     SELECT b.*, u.username as created_by_username
     FROM backups b
@@ -54,11 +54,11 @@ router.get('/:id', authenticateToken, (req, res) => {
       console.error('Error fetching backup:', err);
       return res.status(500).json({ error: 'Failed to fetch backup' });
     }
-    
+
     if (!row) {
       return res.status(404).json({ error: 'Backup not found' });
     }
-    
+
     res.json(row);
   });
 });
@@ -67,7 +67,7 @@ router.get('/:id', authenticateToken, (req, res) => {
 router.post('/manual', authenticateToken, async (req, res) => {
   try {
     const { name, sourcePath } = req.body;
-    
+
     if (!name || !sourcePath) {
       return res.status(400).json({ error: 'Backup name and source path required' });
     }
@@ -89,7 +89,7 @@ router.post('/manual', authenticateToken, async (req, res) => {
       db.run(`
         INSERT INTO backups (name, type, source_path, backup_path, status, created_by)
         VALUES (?, ?, ?, ?, ?, ?)
-      `, [name, 'manual', sourcePath, backupFileName, 'pending', req.user.id], function(err) {
+      `, [name, 'manual', sourcePath, backupFileName, 'pending', req.user.id], function (err) {
         if (err) reject(err);
         else resolve(this.lastID);
       });
@@ -100,9 +100,9 @@ router.post('/manual', authenticateToken, async (req, res) => {
       try {
         const command = `cd "${TEMPLATES_DIR}" && tar -czf "${backupPath}" "${sourcePath}"`;
         await execAsync(command);
-        
+
         const stats = await fs.stat(backupPath);
-        
+
         // Update backup status
         db.run(`
           UPDATE backups 
@@ -137,7 +137,7 @@ router.post('/manual', authenticateToken, async (req, res) => {
 router.post('/schedule', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { name, sourcePath, schedule } = req.body;
-    
+
     if (!name || !sourcePath || !schedule) {
       return res.status(400).json({ error: 'Name, source path, and schedule required' });
     }
@@ -152,7 +152,7 @@ router.post('/schedule', authenticateToken, requireAdmin, async (req, res) => {
       db.run(`
         INSERT INTO backups (name, type, source_path, backup_path, status, created_by)
         VALUES (?, ?, ?, ?, ?, ?)
-      `, [name, 'scheduled', sourcePath, schedule, 'scheduled', req.user.id], function(err) {
+      `, [name, 'scheduled', sourcePath, schedule, 'scheduled', req.user.id], function (err) {
         if (err) reject(err);
         else resolve(this.lastID);
       });
@@ -172,7 +172,7 @@ router.post('/schedule', authenticateToken, requireAdmin, async (req, res) => {
 router.get('/:id/download', authenticateToken, async (req, res) => {
   try {
     const backupId = parseInt(req.params.id);
-    
+
     const backup = await new Promise((resolve, reject) => {
       db.get(`SELECT * FROM backups WHERE id = ?`, [backupId], (err, row) => {
         if (err) reject(err);
@@ -189,7 +189,7 @@ router.get('/:id/download', authenticateToken, async (req, res) => {
     }
 
     const backupFilePath = path.join(BACKUPS_DIR, backup.backup_path);
-    
+
     try {
       await fs.access(backupFilePath);
     } catch {
@@ -207,7 +207,7 @@ router.get('/:id/download', authenticateToken, async (req, res) => {
 router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const backupId = parseInt(req.params.id);
-    
+
     const backup = await new Promise((resolve, reject) => {
       db.get(`SELECT * FROM backups WHERE id = ?`, [backupId], (err, row) => {
         if (err) reject(err);
@@ -231,7 +231,7 @@ router.delete('/:id', authenticateToken, requireAdmin, async (req, res) => {
 
     // Delete backup record from database
     await new Promise((resolve, reject) => {
-      db.run(`DELETE FROM backups WHERE id = ?`, [backupId], function(err) {
+      db.run(`DELETE FROM backups WHERE id = ?`, [backupId], function (err) {
         if (err) reject(err);
         else resolve();
       });
