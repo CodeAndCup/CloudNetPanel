@@ -294,7 +294,7 @@ const Templates: React.FC = () => {
         <div className="sm:flex-auto">
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">{t('templates.title')}</h1>
           <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
-            {t('templates.description')}
+            {t('templates.subtitle')}
           </p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none space-x-2">

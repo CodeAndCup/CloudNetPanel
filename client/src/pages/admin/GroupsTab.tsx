@@ -117,7 +117,7 @@ const GroupsTab: React.FC = () => {
             {t('groups.title')}
           </h2>
           <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {t('groups.description')}
+            {t('groups.subtitle')}
           </p>
         </div>
         <button
@@ -181,13 +181,13 @@ const GroupsTab: React.FC = () => {
                   <div className="flex items-center space-x-2">
                     {group.name !== 'Administrators' && (
                       <>
-                        <button 
+                        <button
                           onClick={() => openEditModal(group)}
                           className="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300"
                         >
                           <Edit className="h-4 w-4" />
                         </button>
-                        <button 
+                        <button
                           onClick={() => deleteGroup(group.id)}
                           className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                         >

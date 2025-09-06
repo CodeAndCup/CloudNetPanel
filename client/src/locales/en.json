@@ -190,7 +190,7 @@
   },
   "groups": {
     "title": "Group Management",
-    "description": "Manage user groups and permissions",
+    "subtitle": "Manage user groups and permissions",
     "addGroup": "Create Group",
     "editGroup": "Edit Group",
     "deleteGroup": "Delete Group",
@@ -287,7 +287,7 @@
   },
   "activities": {
     "title": "Activity Log",
-    "allActivities": "All Activities", 
+    "allActivities": "All Activities",
     "fileOperations": "File Operations",
     "serverActions": "Server Actions",
     "filters": {

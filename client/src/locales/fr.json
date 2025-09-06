@@ -190,7 +190,7 @@
   },
   "groups": {
     "title": "Gestion des groupes",
-    "description": "Gérer les groupes d'utilisateurs et les permissions",
+    "subtitle": "Gérer les groupes d'utilisateurs et les permissions",
     "addGroup": "Créer un groupe",
     "editGroup": "Modifier le groupe",
     "deleteGroup": "Supprimer le groupe",
@@ -220,7 +220,7 @@
   },
   "templates": {
     "title": "Fichiers",
-    "description": "Gérer les fichiers de serveur et les fichiers de configuration.",
+    "subtitle": "Gérer les fichiers de serveur et les fichiers de configuration.",
     "filesManager": {
       "name": "Nom du fichier",
       "size": "Taille",
@@ -272,7 +272,7 @@
   },
   "activities": {
     "title": "Journal d'activité",
-    "allActivities": "Toutes les activités", 
+    "allActivities": "Toutes les activités",
     "fileOperations": "Opérations de fichiers",
     "serverActions": "Actions de serveur",
     "filters": {

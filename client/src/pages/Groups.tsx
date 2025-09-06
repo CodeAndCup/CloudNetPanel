@@ -103,9 +103,9 @@ const Groups: React.FC = () => {
 
   const handleDeleteGroup = async () => {
     if (!deletingGroup) return;
-    
+
     setDeleting(true);
-    
+
     try {
       await axios.delete(`/api/groups/${deletingGroup.id}`);
       fetchGroups();
@@ -254,7 +254,7 @@ const Groups: React.FC = () => {
               <h3 className="text-lg font-medium text-gray-900 dark:text-white text-center mb-4">
                 {t('groups.deleteGroup')}
               </h3>
-              
+
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 text-center">
                 {t('groups.confirmDelete')}
               </p>
