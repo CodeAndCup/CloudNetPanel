@@ -182,6 +182,15 @@ This project is licensed under the MIT License.
 
 For support and questions, please open an issue on GitHub.
 
+## Special thanks
+
+Developement:
+- [PopoGH](https://github.com/PoPoGH)
+
+Traduction:
+- [XDaten](https://discord.com/users/905172645576847421)
+
+
 ---
 
 Built with ❤️ for the CloudNet community
