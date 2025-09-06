@@ -19,7 +19,58 @@
     "actions": "Azioni",
     "status": "Stato",
     "created": "Creato",
-    "lastLogin": "Ultimo accesso"
+    "lastLogin": "Ultimo accesso",
+    "back": "Indietro",
+    "welcome": "Benvenuto",
+    "by": "da",
+    "type": "Tipo",
+    "size": "Dimensione",
+    "source": "Origine",
+    "download": "Scarica",
+    "read": "Leggi",
+    "write": "Scrivi",
+    "upload": "Carica",
+    "view": "Visualizza",
+    "send": "Invia",
+    "checking": "Controllo",
+    "failed": "Fallito",
+    "successful": "Riuscito",
+    "completed": "Completato",
+    "pending": "In attesa",
+    "manual": "Manuale",
+    "scheduled": "Programmato",
+    "never": "Mai",
+    "user": "Utente",
+    "schedule": "Pianificazione",
+    "lastRun": "Ultima esecuzione",
+    "placeholders": {
+      "enterGroupName": "Inserisci il nome del gruppo",
+      "enterGroupDescription": "Inserisci la descrizione del gruppo",
+      "enterWebhookName": "Inserisci il nome del webhook",
+      "enterUsername": "Inserisci il nome utente",
+      "enterEmail": "Inserisci l'email",
+      "enterPassword": "Inserisci la password",
+      "fileContent": "Contenuto del file...",
+      "httpsUrl": "https://..."
+    },
+    "confirmations": {
+      "deleteUser": "Sei sicuro di voler eliminare questo utente?",
+      "deleteGroup": "Sei sicuro di voler eliminare questo gruppo?",
+      "deleteWebhook": "Sei sicuro di voler eliminare questo webhook?",
+      "deleteServer": "Sei sicuro di voler eliminare questo server?",
+      "deleteFile": "Sei sicuro di voler eliminare questo file?",
+      "deleteFolder": "Sei sicuro di voler eliminare questa cartella?"
+    },
+    "tooltips": {
+      "switchToDarkMode": "Passa alla modalità scura",
+      "switchToLightMode": "Passa alla modalità chiara",
+      "managePermissions": "Gestisci permessi",
+      "executeTask": "Esegui compito",
+      "editTask": "Modifica compito",
+      "deleteTask": "Elimina compito",
+      "editGroup": "Modifica gruppo",
+      "deleteGroup": "Elimina gruppo"
+    }
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -107,11 +158,13 @@
   },
   "auth": {
     "login": "Accedi",
+    "signInToAccount": "Accedi al tuo account",
     "username": "Nome utente",
     "password": "Password",
     "email": "Email",
     "loginButton": "Accedi",
-    "loginError": "Credenziali non valide",
+    "signingIn": "Accesso in corso...",
+    "loginError": "Nome utente o password non validi",
     "loginRequired": "Effettua l'accesso per accedere a questa pagina"
   },
   "users": {
@@ -214,5 +267,10 @@
     "created": "Creato con successo",
     "updated": "Aggiornato con successo",
     "deleted": "Eliminato con successo"
+  },
+  "footer": {
+    "madeWith": "Fatto con",
+    "by": "da Perrier",
+    "madeWithLove": "Fatto con ♥ da Perrier"
   }
 }
