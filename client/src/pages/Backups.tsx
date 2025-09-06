@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../contexts/I18nContext';
-import { 
-  Archive, 
-  Plus, 
-  Download, 
-  Trash2, 
+import {
+  Archive,
+  Plus,
+  Download,
+  Trash2,
   Clock,
   CheckCircle,
   XCircle,
@@ -89,7 +89,7 @@ const Backups: React.FC = () => {
       const response = await axios.get(`/api/backups/${backup.id}/download`, {
         responseType: 'blob'
       });
-      
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -174,7 +174,7 @@ const Backups: React.FC = () => {
         <div className="sm:flex-auto">
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">{t('backups.title')}</h1>
           <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
-            Manage template backups and schedules
+            {t('backups.subtitle')}
           </p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none space-x-2">
@@ -204,14 +204,14 @@ const Backups: React.FC = () => {
               <input
                 type="text"
                 value={newBackup.name}
-                onChange={(e) => setNewBackup({...newBackup, name: e.target.value})}
+                onChange={(e) => setNewBackup({ ...newBackup, name: e.target.value })}
                 placeholder={t('backups.fields.name') + '...'}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <input
                 type="text"
                 value={newBackup.sourcePath}
-                onChange={(e) => setNewBackup({...newBackup, sourcePath: e.target.value})}
+                onChange={(e) => setNewBackup({ ...newBackup, sourcePath: e.target.value })}
                 placeholder={t('common.source') + ' path (e.g., spigot/config)'}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
@@ -243,26 +243,26 @@ const Backups: React.FC = () => {
               <input
                 type="text"
                 value={newScheduledBackup.name}
-                onChange={(e) => setNewScheduledBackup({...newScheduledBackup, name: e.target.value})}
+                onChange={(e) => setNewScheduledBackup({ ...newScheduledBackup, name: e.target.value })}
                 placeholder={t('backups.fields.name') + '...'}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <input
                 type="text"
                 value={newScheduledBackup.sourcePath}
-                onChange={(e) => setNewScheduledBackup({...newScheduledBackup, sourcePath: e.target.value})}
+                onChange={(e) => setNewScheduledBackup({ ...newScheduledBackup, sourcePath: e.target.value })}
                 placeholder={t('common.source') + ' path (e.g., spigot/config)'}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <input
                 type="text"
                 value={newScheduledBackup.schedule}
-                onChange={(e) => setNewScheduledBackup({...newScheduledBackup, schedule: e.target.value})}
+                onChange={(e) => setNewScheduledBackup({ ...newScheduledBackup, schedule: e.target.value })}
                 placeholder="Cron schedule (e.g., 0 2 * * *)"
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                Cron format: minute hour day month day-of-week<br/>
+                Cron format: minute hour day month day-of-week<br />
                 Example: "0 2 * * *" = Daily at 2 AM
               </p>
             </div>
@@ -332,7 +332,7 @@ const Backups: React.FC = () => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={clsx(
                       'inline-flex px-2 text-xs font-semibold rounded-full',
-                      backup.type === 'scheduled' 
+                      backup.type === 'scheduled'
                         ? 'bg-purple-100 dark:bg-purple-900/20 text-purple-800 dark:text-purple-400'
                         : 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-400'
                     )}>
@@ -383,13 +383,13 @@ const Backups: React.FC = () => {
               ))}
             </tbody>
           </table>
-          
+
           {backups.length === 0 && (
             <div className="text-center py-12">
               <Archive className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500 dark:text-gray-400" />
-              <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No backups</h3>
+              <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">{t('backups.noBackups')}</h3>
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Get started by creating your first backup.
+                {t('backups.noBackupsSubtitle')}
               </p>
             </div>
           )}

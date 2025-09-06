@@ -43,6 +43,10 @@
     "user": "Utilisateur",
     "schedule": "Planification",
     "lastRun": "Dernière exécution",
+    "refresh": "Rafraîchir",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "pageOf": "Page {{current}} sur {{total}}",
     "placeholders": {
       "enterGroupName": "Entrez le nom du groupe",
       "enterGroupDescription": "Entrez la description du groupe",
@@ -245,7 +249,10 @@
     }
   },
   "profile": {
+    "title": "Paramètres du profil",
+    "subtitle": "Gérer les informations de votre compte et les paramètres de langue.",
     "accountInformation": "Informations du compte",
+    "activity": "Activité",
     "username": "Nom d'utilisateur",
     "email": "Email",
     "role": "Rôle",
@@ -272,6 +279,9 @@
   },
   "activities": {
     "title": "Journal d'activité",
+    "subtitle": "Suivre toutes les actions des utilisateurs et les événements système",
+    "noActivities": "Aucune activité trouvée",
+    "noActivitiesSubtitle": "Aucune activité ne correspond à vos filtres actuels.",
     "allActivities": "Toutes les activités",
     "fileOperations": "Opérations de fichiers",
     "serverActions": "Actions de serveur",
@@ -279,7 +289,8 @@
       "type": "Type",
       "action": "Action",
       "allTypes": "Tous les types",
-      "allActions": "Toutes les actions"
+      "allActions": "Toutes les actions",
+      "clear": "Effacer les filtres"
     },
     "types": {
       "server": "Serveurs"
@@ -316,6 +327,9 @@
   },
   "backups": {
     "title": "Gestion des sauvegardes",
+    "subtitle": "Gérer les sauvegardes de serveurs et les restaurations.",
+    "noBackups": "Aucune sauvegarde trouvée.",
+    "noBackupsSubtitle": "Créez une sauvegarde pour commencer à en voir ici.",
     "createManualBackup": "Créer une sauvegarde manuelle",
     "scheduleBackup": "Programmer une sauvegarde",
     "status": {
@@ -339,6 +353,9 @@
   },
   "tasks": {
     "title": "Gestion des tâches",
+    "subtitle": "Gérer les tâches planifiées et les automatisations.",
+    "noTasks": "Aucune tâche trouvée.",
+    "noTasksSubtitle": "Créez une tâche pour la voir ici.",
     "createTask": "Créer une tâche",
     "editTask": "Modifier une tâche",
     "types": {
@@ -349,6 +366,9 @@
     "placeholders": {
       "cronSchedule": "Planification cron (optionnel, ex: 0 2 * * *)"
     }
+  },
+  "administration": {
+    "subtitle": "Gérer les paramètres et configurations du système."
   },
   "updateNotification": {
     "checking": "Vérification des mises à jour...",

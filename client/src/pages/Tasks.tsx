@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../contexts/I18nContext';
-import { 
-  Settings, 
-  Plus, 
-  Edit, 
-  Trash2, 
+import {
+  Settings,
+  Plus,
+  Edit,
+  Trash2,
   Play,
   Clock,
   CheckCircle,
@@ -175,7 +175,7 @@ const Tasks: React.FC = () => {
         <div className="sm:flex-auto">
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">{t('tasks.title')}</h1>
           <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
-            Manage scheduled tasks and automation
+            {t('tasks.subtitle')}
           </p>
         </div>
         <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
@@ -198,20 +198,20 @@ const Tasks: React.FC = () => {
               <input
                 type="text"
                 value={newTask.name}
-                onChange={(e) => setNewTask({...newTask, name: e.target.value})}
+                onChange={(e) => setNewTask({ ...newTask, name: e.target.value })}
                 placeholder={t('common.name') + '...'}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <textarea
                 value={newTask.description}
-                onChange={(e) => setNewTask({...newTask, description: e.target.value})}
+                onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
                 placeholder={t('common.description') + ' (optional)...'}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 rows={2}
               />
               <select
                 value={newTask.type}
-                onChange={(e) => setNewTask({...newTask, type: e.target.value as any})}
+                onChange={(e) => setNewTask({ ...newTask, type: e.target.value as any })}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               >
                 <option value="command">{t('tasks.types.command')}</option>
@@ -221,13 +221,13 @@ const Tasks: React.FC = () => {
               <input
                 type="text"
                 value={newTask.schedule}
-                onChange={(e) => setNewTask({...newTask, schedule: e.target.value})}
+                onChange={(e) => setNewTask({ ...newTask, schedule: e.target.value })}
                 placeholder={t('tasks.placeholders.cronSchedule')}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <textarea
                 value={newTask.command}
-                onChange={(e) => setNewTask({...newTask, command: e.target.value})}
+                onChange={(e) => setNewTask({ ...newTask, command: e.target.value })}
                 placeholder="Command to execute..."
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 rows={3}
@@ -261,20 +261,20 @@ const Tasks: React.FC = () => {
               <input
                 type="text"
                 value={editingTask.name}
-                onChange={(e) => setEditingTask({...editingTask, name: e.target.value})}
+                onChange={(e) => setEditingTask({ ...editingTask, name: e.target.value })}
                 placeholder={t('common.name') + '...'}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <textarea
                 value={editingTask.description || ''}
-                onChange={(e) => setEditingTask({...editingTask, description: e.target.value})}
+                onChange={(e) => setEditingTask({ ...editingTask, description: e.target.value })}
                 placeholder={t('common.description') + ' (optional)...'}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 rows={2}
               />
               <select
                 value={editingTask.type}
-                onChange={(e) => setEditingTask({...editingTask, type: e.target.value as any})}
+                onChange={(e) => setEditingTask({ ...editingTask, type: e.target.value as any })}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               >
                 <option value="command">{t('tasks.types.command')}</option>
@@ -283,7 +283,7 @@ const Tasks: React.FC = () => {
               </select>
               <select
                 value={editingTask.status}
-                onChange={(e) => setEditingTask({...editingTask, status: e.target.value as any})}
+                onChange={(e) => setEditingTask({ ...editingTask, status: e.target.value as any })}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               >
                 <option value="inactive">{t('common.inactive')}</option>
@@ -292,13 +292,13 @@ const Tasks: React.FC = () => {
               <input
                 type="text"
                 value={editingTask.schedule || ''}
-                onChange={(e) => setEditingTask({...editingTask, schedule: e.target.value})}
+                onChange={(e) => setEditingTask({ ...editingTask, schedule: e.target.value })}
                 placeholder={t('tasks.placeholders.cronSchedule')}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <textarea
                 value={editingTask.command}
-                onChange={(e) => setEditingTask({...editingTask, command: e.target.value})}
+                onChange={(e) => setEditingTask({ ...editingTask, command: e.target.value })}
                 placeholder="Command to execute..."
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                 rows={3}
@@ -424,13 +424,13 @@ const Tasks: React.FC = () => {
               ))}
             </tbody>
           </table>
-          
+
           {tasks.length === 0 && (
             <div className="text-center py-12">
               <Settings className="mx-auto h-12 w-12 text-gray-400" />
-              <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No tasks</h3>
+              <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">{t('tasks.noTasks')}</h3>
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                Get started by creating your first task.
+                {t('tasks.noTasksSubtitle')}
               </p>
             </div>
           )}

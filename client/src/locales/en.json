@@ -43,6 +43,10 @@
     "user": "User",
     "schedule": "Schedule",
     "lastRun": "Last Run",
+    "refresh": "Refresh",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {{current}} of {{total}}",
     "placeholders": {
       "enterGroupName": "Enter group name",
       "enterGroupDescription": "Enter group description",
@@ -260,7 +264,10 @@
     }
   },
   "profile": {
+    "title": "Profile Settings",
+    "subtitle": "Manage your account information and language settings.",
     "accountInformation": "Account Information",
+    "activity": "Activity",
     "username": "Username",
     "email": "Email",
     "role": "Role",
@@ -287,6 +294,9 @@
   },
   "activities": {
     "title": "Activity Log",
+    "subtitle": "Track all user actions and system events",
+    "noActivities": "No activities found",
+    "noActivitiesSubtitle": "No activities match your current filters.",
     "allActivities": "All Activities",
     "fileOperations": "File Operations",
     "serverActions": "Server Actions",
@@ -294,7 +304,8 @@
       "type": "Type",
       "action": "Action",
       "allTypes": "All Types",
-      "allActions": "All Actions"
+      "allActions": "All Actions",
+      "clear": "Clear Filters"
     },
     "types": {
       "server": "Servers"
@@ -331,6 +342,9 @@
   },
   "backups": {
     "title": "Backup Management",
+    "subtitle": "Manage template backups and schedules.",
+    "noBackups": "No backups found.",
+    "noBackupsSubtitle": "Get started by creating your first backup.",
     "createManualBackup": "Create Manual Backup",
     "scheduleBackup": "Schedule Backup",
     "status": {
@@ -354,6 +368,9 @@
   },
   "tasks": {
     "title": "Task Management",
+    "subtitle": "Manage scheduled tasks and automations.",
+    "noTasks": "No tasks found.",
+    "noTasksSubtitle": "Create a task to see it listed here.",
     "createTask": "Create Task",
     "editTask": "Edit Task",
     "types": {
@@ -364,6 +381,9 @@
     "placeholders": {
       "cronSchedule": "Cron schedule (optional, e.g., 0 2 * * *)"
     }
+  },
+  "administration": {
+    "subtitle": "Manage system settings and configurations."
   },
   "updateNotification": {
     "checking": "Checking for updates...",

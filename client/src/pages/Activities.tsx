@@ -142,7 +142,7 @@ const Activities: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{t('activities.title')}</h1>
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Track all user actions and system events
+            {t('activities.subtitle')}
           </p>
         </div>
         <div className="flex space-x-2">
@@ -159,7 +159,7 @@ const Activities: React.FC = () => {
             className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
           >
             <RefreshCw className={clsx("h-4 w-4 mr-2", refreshing && "animate-spin")} />
-            Refresh
+            {t('common.refresh')}
           </button>
         </div>
       </div>
@@ -231,7 +231,7 @@ const Activities: React.FC = () => {
               }}
               className="w-full px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600"
             >
-              Clear Filters
+              {t('activities.filters.clear')}
             </button>
           </div>
         </div>
@@ -300,9 +300,9 @@ const Activities: React.FC = () => {
           {activities.length === 0 && (
             <div className="text-center py-12">
               <Activity className="mx-auto h-12 w-12 text-gray-400" />
-              <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">No activities</h3>
+              <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-white">{t('activities.noActivities')}</h3>
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                No activities match your current filters.
+                {t('activities.noActivitiesSubtitle')}
               </p>
             </div>
           )}
@@ -317,11 +317,11 @@ const Activities: React.FC = () => {
                 disabled={currentPage === 1}
                 className="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600"
               >
-                Previous
+                {t('common.previous')}
               </button>
 
               <span className="text-sm text-gray-700 dark:text-gray-300">
-                Page {currentPage} of {totalPages}
+                {t('common.pageOf', { current: currentPage, total: totalPages })}
               </span>
 
               <button
@@ -329,7 +329,7 @@ const Activities: React.FC = () => {
                 disabled={currentPage === totalPages}
                 className="px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600"
               >
-                Next
+                {t('common.next')}
               </button>
             </div>
           </div>
