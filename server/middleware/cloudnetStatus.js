@@ -15,6 +15,7 @@ const requireCloudNetConnection = async (req, res, next) => {
     await cloudnetApi.healthCheck();
     next();
   } catch (error) {
+    console.error('CloudNet connectivity error:', error.message);
     return res.status(503).json({
       error: 'CloudNet API not available',
       message: error.message,
