@@ -220,7 +220,7 @@
   },
   "templates": {
     "title": "Templates",
-    "description": "Manage server templates and configuration files.",
+    "subtitle": "Manage server templates and configuration files.",
     "filesManager": {
       "name": "File Name",
       "size": "Size",

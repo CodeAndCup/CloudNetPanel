@@ -216,7 +216,7 @@
   },
   "templates": {
     "title": "Vorlagen",
-    "description": "Servervorlagen und Konfigurationsdateien verwalten.",
+    "subtitle": "Servervorlagen und Konfigurationsdateien verwalten.",
     "filesManager": {
       "name": "Dateiname",
       "size": "Größe",

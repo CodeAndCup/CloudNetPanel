@@ -218,7 +218,7 @@
   },
   "templates": {
     "title": "Gestión de plantillas",
-    "description": "Administra las plantillas de servidor y archivos de configuración.",
+    "subtitle": "Administra las plantillas de servidor y archivos de configuración.",
     "filesManager": {
       "name": "Nombre de archivo",
       "size": "Tamaño",
