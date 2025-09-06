@@ -329,7 +329,7 @@ const Groups: React.FC = () => {
                         <button
                           onClick={() => setEditingGroup(group)}
                           className="text-blue-600 hover:text-blue-900"
-                          title={t('common.edit') + ' group'}
+                          title={t('common.tooltips.editGroup')}
                         >
                           <Edit className="h-4 w-4" />
                         </button>
@@ -338,7 +338,7 @@ const Groups: React.FC = () => {
                         <button
                           onClick={() => deleteGroup(group)}
                           className="text-red-600 hover:text-red-900"
-                          title={t('common.delete') + ' group'}
+                          title={t('common.tooltips.deleteGroup')}
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>

@@ -100,17 +100,17 @@ const Dashboard: React.FC = () => {
       trend: stats.onlineNodes > 0 ? 'up' : 'down'
     },
     {
-      name: t('dashboard.players') || 'Players',
+      name: t('dashboard.players_single'),
       value: stats.onlinePlayers,
-      subValue: `${stats.maxOnlinePlayers} ${t('dashboard.slots') || 'slots'}`,
+      subValue: `${stats.maxOnlinePlayers} ${t('dashboard.slots')}`,
       icon: Users,
       color: 'bg-purple-500',
       trend: stats.activeUsers > 0 ? 'up' : 'down'
     },
     {
-      name: t('dashboard.uptime') || 'Uptime',
+      name: t('dashboard.uptime'),
       value: 'XX.X%',
-      subValue: t('dashboard.last30days') || 'Last 30 days',
+      subValue: t('dashboard.last30days'),
       icon: Activity,
       color: 'bg-yellow-500',
       trend: 'up'
@@ -163,7 +163,7 @@ const Dashboard: React.FC = () => {
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
           <div className="px-4 py-5 sm:p-6">
             <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">
-              {t('dashboard.serverStatus.title') || 'Server Status'}
+              {t('dashboard.serverStatus.title')}
             </h3>
             <div className="space-y-3">
               {servers.slice(0, 5).map((server) => (
@@ -178,7 +178,7 @@ const Dashboard: React.FC = () => {
                     </span>
                   </div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">
-                    {server.players}/{server.maxPlayers} {t('dashboard.serverStatus.players') || 'players'}
+                    {server.players}/{server.maxPlayers} {t('dashboard.serverStatus.players')}
                   </div>
                 </div>
               ))}
@@ -190,7 +190,7 @@ const Dashboard: React.FC = () => {
         <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
           <div className="px-4 py-5 sm:p-6">
             <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">
-              {t('dashboard.nodesStatus.title') || 'Node Status'}
+              {t('dashboard.nodesStatus.title')}
             </h3>
             <div className="space-y-3">
               {nodes.map((node) => (
@@ -203,7 +203,7 @@ const Dashboard: React.FC = () => {
                     </span>
                   </div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">
-                    {node.servers}/{node.maxServers} {t('dashboard.nodesStatus.servers') || 'servers'}
+                    {node.servers}/{node.maxServers} {t('dashboard.nodesStatus.servers')}
                   </div>
                 </div>
               ))}
@@ -216,11 +216,11 @@ const Dashboard: React.FC = () => {
       <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
         <div className="px-4 py-5 sm:p-6">
           <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">
-            {t('dashboard.systemOverview.title') || 'System Overview'}
+            {t('dashboard.systemOverview.title')}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">{t('dashboard.systemOverview.cpuUsage') || 'Average CPU Usage'}</div>
+              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">{t('dashboard.systemOverview.cpuUsage')}</div>
               <div className="flex items-center">
                 <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-3">
                   <div className="bg-blue-500 h-2 rounded-full" style={{ width: `${(stats.cpuUsage / stats.cpuMaxUsage * 100).toFixed(2)}%` }}></div>
@@ -229,7 +229,7 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
             <div>
-              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">{t('dashboard.systemOverview.memoryUsage') || 'Memory Usage'}</div>
+              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">{t('dashboard.systemOverview.memoryUsage')}</div>
               <div className="flex items-center">
                 <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-3">
                   <div className="bg-green-500 h-2 rounded-full" style={{ width: `${(stats.memoryUsage / stats.memoryMaxUsage * 100).toFixed(2)}%` }}></div>
@@ -238,7 +238,7 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
             <div>
-              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">{t('dashboard.systemOverview.diskUsage') || 'Disk Usage'}</div>
+              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">{t('dashboard.systemOverview.diskUsage')}</div>
               <div className="flex items-center">
                 <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-3">
                   <div className="bg-yellow-500 h-2 rounded-full" style={{ width: `${stats.diskUsage}%` }}></div>

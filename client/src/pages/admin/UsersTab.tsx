@@ -56,7 +56,7 @@ const UsersTab: React.FC = () => {
   };
 
   const formatDate = (dateString: string | null) => {
-    if (!dateString || dateString === 'NULL') return 'Never';
+    if (!dateString || dateString === 'NULL') return t('common.never');
     return new Date(dateString).toLocaleDateString();
   };
 
@@ -108,7 +108,7 @@ const UsersTab: React.FC = () => {
   };
 
   const deleteUser = async (userId: number) => {
-    if (!confirm('Are you sure you want to delete this user?')) {
+    if (!confirm(t('common.confirmations.deleteUser'))) {
       return;
     }
 
@@ -150,7 +150,7 @@ const UsersTab: React.FC = () => {
           <thead className="bg-gray-50 dark:bg-gray-700">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                User
+                {t('common.user')}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                 {t('users.role')}

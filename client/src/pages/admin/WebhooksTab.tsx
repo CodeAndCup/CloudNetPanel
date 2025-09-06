@@ -66,7 +66,7 @@ const WebhooksTab: React.FC = () => {
   };
 
   const formatDate = (dateString: string | null) => {
-    if (!dateString) return 'Never';
+    if (!dateString) return t('common.never');
     return new Date(dateString).toLocaleDateString();
   };
 
@@ -82,7 +82,7 @@ const WebhooksTab: React.FC = () => {
   };
 
   const deleteWebhook = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this webhook?')) {
+    if (!confirm(t('common.confirmations.deleteWebhook'))) {
       return;
     }
 

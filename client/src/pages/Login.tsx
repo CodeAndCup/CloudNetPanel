@@ -38,7 +38,7 @@ const Login: React.FC = () => {
     const success = await login(username, password);
 
     if (!success) {
-      setError('Invalid username or password');
+      setError(t('auth.loginError'));
     }
 
     setLoading(false);
@@ -122,7 +122,7 @@ const Login: React.FC = () => {
         </form>
         <div className="text-center bottom-0">
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            Made with <span className="text-red-500">♥</span> by Perrier
+            {t('footer.madeWithLove')}
           </p>
         </div>
       </div>

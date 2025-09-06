@@ -214,15 +214,15 @@ const Tasks: React.FC = () => {
                 onChange={(e) => setNewTask({...newTask, type: e.target.value as any})}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               >
-                <option value="command">Command</option>
-                <option value="backup">Backup</option>
-                <option value="custom">Custom</option>
+                <option value="command">{t('tasks.types.command')}</option>
+                <option value="backup">{t('tasks.types.backup')}</option>
+                <option value="custom">{t('tasks.types.custom')}</option>
               </select>
               <input
                 type="text"
                 value={newTask.schedule}
                 onChange={(e) => setNewTask({...newTask, schedule: e.target.value})}
-                placeholder="Cron schedule (optional, e.g., 0 2 * * *)"
+                placeholder={t('tasks.placeholders.cronSchedule')}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <textarea
@@ -277,9 +277,9 @@ const Tasks: React.FC = () => {
                 onChange={(e) => setEditingTask({...editingTask, type: e.target.value as any})}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               >
-                <option value="command">Command</option>
-                <option value="backup">Backup</option>
-                <option value="custom">Custom</option>
+                <option value="command">{t('tasks.types.command')}</option>
+                <option value="backup">{t('tasks.types.backup')}</option>
+                <option value="custom">{t('tasks.types.custom')}</option>
               </select>
               <select
                 value={editingTask.status}
@@ -293,7 +293,7 @@ const Tasks: React.FC = () => {
                 type="text"
                 value={editingTask.schedule || ''}
                 onChange={(e) => setEditingTask({...editingTask, schedule: e.target.value})}
-                placeholder="Cron schedule (optional, e.g., 0 2 * * *)"
+                placeholder={t('tasks.placeholders.cronSchedule')}
                 className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
               />
               <textarea
@@ -339,10 +339,10 @@ const Tasks: React.FC = () => {
                   {t('common.status')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Schedule
+                  {t('common.schedule')}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Last Run
+                  {t('common.lastRun')}
                 </th>
                 <th className="relative px-6 py-3">
                   <span className="sr-only">{t('common.actions')}</span>
@@ -400,21 +400,21 @@ const Tasks: React.FC = () => {
                       <button
                         onClick={() => executeTask(task)}
                         className="text-green-600 hover:text-green-900"
-                        title="Execute task"
+                        title={t('common.tooltips.executeTask')}
                       >
                         <Play className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => setEditingTask(task)}
                         className="text-blue-600 hover:text-blue-900"
-                        title="Edit task"
+                        title={t('common.tooltips.editTask')}
                       >
                         <Edit className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => deleteTask(task)}
                         className="text-red-600 hover:text-red-900"
-                        title="Delete task"
+                        title={t('common.tooltips.deleteTask')}
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>

@@ -19,7 +19,58 @@
     "actions": "Actions",
     "status": "Statut",
     "created": "Créé",
-    "lastLogin": "Dernière connexion"
+    "lastLogin": "Dernière connexion",
+    "back": "Retour",
+    "welcome": "Bienvenue",
+    "by": "par",
+    "type": "Type",
+    "size": "Taille",
+    "source": "Source",
+    "download": "Télécharger",
+    "read": "Lecture",
+    "write": "Écriture",
+    "upload": "Téléverser",
+    "view": "Voir",
+    "send": "Envoyer",
+    "checking": "Vérification",
+    "failed": "Échec",
+    "successful": "Réussi",
+    "completed": "Terminé",
+    "pending": "En attente",
+    "manual": "Manuel",
+    "scheduled": "Programmé",
+    "never": "Jamais",
+    "user": "Utilisateur",
+    "schedule": "Planification",
+    "lastRun": "Dernière exécution",
+    "placeholders": {
+      "enterGroupName": "Entrez le nom du groupe",
+      "enterGroupDescription": "Entrez la description du groupe",
+      "enterWebhookName": "Entrez le nom du webhook",
+      "enterUsername": "Entrez le nom d'utilisateur",
+      "enterEmail": "Entrez l'email",
+      "enterPassword": "Entrez le mot de passe",
+      "fileContent": "Contenu du fichier...",
+      "httpsUrl": "https://..."
+    },
+    "confirmations": {
+      "deleteUser": "Êtes-vous sûr de vouloir supprimer cet utilisateur ?",
+      "deleteGroup": "Êtes-vous sûr de vouloir supprimer ce groupe ?",
+      "deleteWebhook": "Êtes-vous sûr de vouloir supprimer ce webhook ?",
+      "deleteServer": "Êtes-vous sûr de vouloir supprimer ce serveur ?",
+      "deleteFile": "Êtes-vous sûr de vouloir supprimer ce fichier ?",
+      "deleteFolder": "Êtes-vous sûr de vouloir supprimer ce dossier ?"
+    },
+    "tooltips": {
+      "switchToDarkMode": "Passer en mode sombre",
+      "switchToLightMode": "Passer en mode clair",
+      "managePermissions": "Gérer les permissions",
+      "executeTask": "Exécuter la tâche",
+      "editTask": "Modifier la tâche",
+      "deleteTask": "Supprimer la tâche",
+      "editGroup": "Modifier le groupe",
+      "deleteGroup": "Supprimer le groupe"
+    }
   },
   "navigation": {
     "dashboard": "Tableau de bord",
@@ -37,9 +88,10 @@
   },
   "dashboard": {
     "totalServers": "Serveurs totaux",
-    "nodes": "Nodes",
+    "nodes": "Nœuds",
     "players": "Joueurs en ligne",
     "slots": "slots",
+    "players_single": "Joueurs",
     "uptime": "Temps de fonctionnement",
     "last30days": "30 derniers jours",
     "serverStatus": {
@@ -47,7 +99,7 @@
       "players": "joueurs"
     },
     "nodesStatus": {
-      "title": "Statut des nodes",
+      "title": "Statut des nœuds",
       "servers": "serveurs"
     },
     "systemOverview": {
@@ -107,11 +159,13 @@
   },
   "auth": {
     "login": "Connexion",
+    "signInToAccount": "Connectez-vous à votre compte",
     "username": "Nom d'utilisateur",
     "password": "Mot de passe",
     "email": "Email",
     "loginButton": "Se connecter",
-    "loginError": "Identifiants invalides",
+    "signingIn": "Connexion en cours...",
+    "loginError": "Nom d'utilisateur ou mot de passe invalide",
     "loginRequired": "Veuillez vous connecter pour accéder à cette page"
   },
   "users": {
@@ -136,6 +190,7 @@
   },
   "groups": {
     "title": "Gestion des groupes",
+    "description": "Gérer les groupes d'utilisateurs et les permissions",
     "addGroup": "Créer un groupe",
     "editGroup": "Modifier le groupe",
     "deleteGroup": "Supprimer le groupe",
@@ -214,5 +269,123 @@
     "created": "Créé avec succès",
     "updated": "Mis à jour avec succès",
     "deleted": "Supprimé avec succès"
+  },
+  "activities": {
+    "title": "Journal d'activité",
+    "allActivities": "Toutes les activités", 
+    "fileOperations": "Opérations de fichiers",
+    "serverActions": "Actions de serveur",
+    "filters": {
+      "type": "Type",
+      "action": "Action",
+      "allTypes": "Tous les types",
+      "allActions": "Toutes les actions"
+    },
+    "types": {
+      "server": "Serveurs"
+    },
+    "actions": {
+      "server_start": "Démarrer le serveur",
+      "server_stop": "Arrêter le serveur",
+      "server_restart": "Redémarrer le serveur",
+      "server_create": "Créer un serveur",
+      "server_command": "Envoyer une commande",
+      "user_create": "Créer un utilisateur",
+      "user_update": "Mettre à jour un utilisateur",
+      "user_delete": "Supprimer un utilisateur",
+      "group_create": "Créer un groupe",
+      "group_update": "Mettre à jour un groupe",
+      "group_delete": "Supprimer un groupe",
+      "group_add_user": "Ajouter un utilisateur au groupe",
+      "group_remove_user": "Retirer un utilisateur du groupe",
+      "file_upload": "Téléverser un fichier",
+      "file_update": "Modifier un fichier",
+      "file_delete": "Supprimer un fichier",
+      "directory_create": "Créer un répertoire",
+      "server_action": "Gestion de serveur",
+      "user_action": "Gestion d'utilisateur",
+      "group_action": "Gestion de groupe",
+      "template_action": "Gestion de modèle",
+      "file_action": "Gestion de fichier",
+      "task_action": "Gestion de tâche",
+      "backup_action": "Gestion de sauvegarde"
+    },
+    "categories": {
+      "server_action": "Actions de serveur"
+    }
+  },
+  "backups": {
+    "title": "Gestion des sauvegardes",
+    "createManualBackup": "Créer une sauvegarde manuelle",
+    "scheduleBackup": "Programmer une sauvegarde",
+    "status": {
+      "completed": "Terminé",
+      "failed": "Échec",
+      "running": "En cours"
+    },
+    "actions": {
+      "create": "Créer une sauvegarde",
+      "restore": "Restaurer",
+      "download": "Télécharger"
+    },
+    "fields": {
+      "name": "Nom",
+      "type": "Type",
+      "source": "Source",
+      "status": "Statut",
+      "size": "Taille",
+      "created": "Créé"
+    }
+  },
+  "tasks": {
+    "title": "Gestion des tâches",
+    "createTask": "Créer une tâche",
+    "editTask": "Modifier une tâche",
+    "types": {
+      "command": "Commande",
+      "backup": "Sauvegarde",
+      "custom": "Personnalisé"
+    },
+    "placeholders": {
+      "cronSchedule": "Planification cron (optionnel, ex: 0 2 * * *)"
+    }
+  },
+  "updateNotification": {
+    "checking": "Vérification des mises à jour...",
+    "checkFailed": "Échec de la vérification des mises à jour",
+    "upToDate": "À jour",
+    "updateAvailable": "Mise à jour disponible",
+    "versionInfo": "La version {{current}} est la dernière version",
+    "newVersionAvailable": "Une nouvelle version de CloudNet Panel est disponible.",
+    "releasedOn": "Publié le {{date}}.",
+    "releaseNotes": "Notes de version :",
+    "viewRelease": "Voir la version",
+    "showDetails": "Afficher les détails",
+    "hideDetails": "Masquer les détails",
+    "checkAgain": "Vérifier à nouveau"
+  },
+  "permissions": {
+    "read": "Lecture",
+    "write": "Écriture",
+    "addPermission": "Ajouter une permission"
+  },
+  "cloudnet": {
+    "notConnected": "CloudNet non connecté",
+    "unableToConnect": "Impossible de se connecter à l'API REST CloudNet",
+    "connectionFailed": "Échec de la connexion",
+    "connectionErrorMessage": "Le panneau CloudNet nécessite une connexion à l'API REST CloudNet pour fonctionner. Assurez-vous que CloudNet est en cours d'exécution et que l'API est accessible.",
+    "pleaseCheck": "Veuillez vérifier :",
+    "checkItems": {
+      "serverRunning": "Le serveur CloudNet est en cours d'exécution",
+      "apiLoaded": "Le module API REST CloudNet est chargé",
+      "credentialsCorrect": "L'URL et les identifiants de l'API sont corrects",
+      "networkConnectivity": "La connectivité réseau au serveur CloudNet"
+    },
+    "tryAgain": "Réessayer"
+  },
+  "footer": {
+    "madeWith": "Fait avec",
+    "by": "par Perrier",
+    "madeWithLove": "Fait avec ♥ par Perrier"
   }
 }

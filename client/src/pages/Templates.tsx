@@ -384,7 +384,7 @@ const Templates: React.FC = () => {
               value={editingFile.content}
               onChange={(e) => setEditingFile({ ...editingFile, content: e.target.value })}
               className="w-full h-[42rem] p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 font-mono text-sm"
-              placeholder="File content..."
+              placeholder={t('common.placeholders.fileContent')}
             />
           </div>
         </div>
@@ -556,7 +556,7 @@ const Templates: React.FC = () => {
                             <button
                               onClick={() => openPermissionManager(file.path)}
                               className="text-purple-600 hover:text-purple-900"
-                              title="Manage permissions"
+                              title={t('common.tooltips.managePermissions')}
                             >
                               <Shield className="h-4 w-4" />
                             </button>
