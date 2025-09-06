@@ -19,7 +19,58 @@
     "actions": "Acciones",
     "status": "Estado",
     "created": "Creado",
-    "lastLogin": "Último acceso"
+    "lastLogin": "Último acceso",
+    "back": "Atrás",
+    "welcome": "Bienvenido",
+    "by": "por",
+    "type": "Tipo",
+    "size": "Tamaño",
+    "source": "Origen",
+    "download": "Descargar",
+    "read": "Leer",
+    "write": "Escribir",
+    "upload": "Subir",
+    "view": "Ver",
+    "send": "Enviar",
+    "checking": "Verificando",
+    "failed": "Fallido",
+    "successful": "Exitoso",
+    "completed": "Completado",
+    "pending": "Pendiente",
+    "manual": "Manual",
+    "scheduled": "Programado",
+    "never": "Nunca",
+    "user": "Usuario",
+    "schedule": "Horario",
+    "lastRun": "Última ejecución",
+    "placeholders": {
+      "enterGroupName": "Ingrese el nombre del grupo",
+      "enterGroupDescription": "Ingrese la descripción del grupo",
+      "enterWebhookName": "Ingrese el nombre del webhook",
+      "enterUsername": "Ingrese el nombre de usuario",
+      "enterEmail": "Ingrese el email",
+      "enterPassword": "Ingrese la contraseña",
+      "fileContent": "Contenido del archivo...",
+      "httpsUrl": "https://..."
+    },
+    "confirmations": {
+      "deleteUser": "¿Está seguro de que desea eliminar este usuario?",
+      "deleteGroup": "¿Está seguro de que desea eliminar este grupo?",
+      "deleteWebhook": "¿Está seguro de que desea eliminar este webhook?",
+      "deleteServer": "¿Está seguro de que desea eliminar este servidor?",
+      "deleteFile": "¿Está seguro de que desea eliminar este archivo?",
+      "deleteFolder": "¿Está seguro de que desea eliminar esta carpeta?"
+    },
+    "tooltips": {
+      "switchToDarkMode": "Cambiar a modo oscuro",
+      "switchToLightMode": "Cambiar a modo claro",
+      "managePermissions": "Gestionar permisos",
+      "executeTask": "Ejecutar tarea",
+      "editTask": "Editar tarea",
+      "deleteTask": "Eliminar tarea",
+      "editGroup": "Editar grupo",
+      "deleteGroup": "Eliminar grupo"
+    }
   },
   "navigation": {
     "dashboard": "Panel de control",
@@ -107,11 +158,13 @@
   },
   "auth": {
     "login": "Iniciar sesión",
+    "signInToAccount": "Inicie sesión en su cuenta",
     "username": "Nombre de usuario",
     "password": "Contraseña",
     "email": "Correo electrónico",
     "loginButton": "Iniciar sesión",
-    "loginError": "Credenciales inválidas",
+    "signingIn": "Iniciando sesión...",
+    "loginError": "Nombre de usuario o contraseña inválidos",
     "loginRequired": "Por favor, inicie sesión para acceder a esta página"
   },
   "users": {
@@ -214,5 +267,10 @@
     "created": "Creado exitosamente",
     "updated": "Actualizado exitosamente",
     "deleted": "Eliminado exitosamente"
+  },
+  "footer": {
+    "madeWith": "Hecho con",
+    "by": "por Perrier",
+    "madeWithLove": "Hecho con ♥ por Perrier"
   }
 }

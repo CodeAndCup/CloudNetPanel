@@ -39,7 +39,38 @@
     "pending": "Pending",
     "manual": "Manual",
     "scheduled": "Scheduled",
-    "never": "Never"
+    "never": "Never",
+    "user": "User",
+    "schedule": "Schedule",
+    "lastRun": "Last Run",
+    "placeholders": {
+      "enterGroupName": "Enter group name",
+      "enterGroupDescription": "Enter group description",
+      "enterWebhookName": "Enter webhook name",
+      "enterUsername": "Enter username",
+      "enterEmail": "Enter email",
+      "enterPassword": "Enter password",
+      "fileContent": "File content...",
+      "httpsUrl": "https://..."
+    },
+    "confirmations": {
+      "deleteUser": "Are you sure you want to delete this user?",
+      "deleteGroup": "Are you sure you want to delete this group?",
+      "deleteWebhook": "Are you sure you want to delete this webhook?",
+      "deleteServer": "Are you sure you want to delete this server?",
+      "deleteFile": "Are you sure you want to delete this file?",
+      "deleteFolder": "Are you sure you want to delete this folder?"
+    },
+    "tooltips": {
+      "switchToDarkMode": "Switch to dark mode",
+      "switchToLightMode": "Switch to light mode",
+      "managePermissions": "Manage permissions",
+      "executeTask": "Execute task",
+      "editTask": "Edit task",
+      "deleteTask": "Delete task",
+      "editGroup": "Edit group",
+      "deleteGroup": "Delete group"
+    }
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -60,6 +91,7 @@
     "nodes": "Nodes",
     "players": "Players Online",
     "slots": "slots",
+    "players_single": "Players",
     "uptime": "Uptime",
     "last30days": "Last 30 days",
     "serverStatus": {
@@ -133,7 +165,7 @@
     "email": "Email",
     "loginButton": "Sign in",
     "signingIn": "Signing in...",
-    "loginError": "Invalid credentials",
+    "loginError": "Invalid username or password",
     "loginRequired": "Please log in to access this page"
   },
   "users": {
@@ -158,6 +190,7 @@
   },
   "groups": {
     "title": "Group Management",
+    "description": "Manage user groups and permissions",
     "addGroup": "Create Group",
     "editGroup": "Edit Group",
     "deleteGroup": "Delete Group",
@@ -322,7 +355,15 @@
   "tasks": {
     "title": "Task Management",
     "createTask": "Create Task",
-    "editTask": "Edit Task"
+    "editTask": "Edit Task",
+    "types": {
+      "command": "Command",
+      "backup": "Backup",
+      "custom": "Custom"
+    },
+    "placeholders": {
+      "cronSchedule": "Cron schedule (optional, e.g., 0 2 * * *)"
+    }
   },
   "updateNotification": {
     "checking": "Checking for updates...",
@@ -359,6 +400,7 @@
   },
   "footer": {
     "madeWith": "Made with",
-    "by": "by Perrier"
+    "by": "by Perrier",
+    "madeWithLove": "Made with ♥ by Perrier"
   }
 }

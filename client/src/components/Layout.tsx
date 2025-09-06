@@ -169,7 +169,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <div className="w-full flex md:ml-0">
                   <div className="relative w-full text-gray-400 focus-within:text-gray-600 flex items-center">
                     <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
-                      {navigation.find(item => isActive(item.href))?.name || 'Dashboard'}
+                      {navigation.find(item => isActive(item.href))?.name || t('navigation.dashboard')}
                     </h1>
                   </div>
                 </div>
@@ -181,7 +181,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     <button
                       onClick={toggleTheme}
                       className="bg-gray-100 dark:bg-gray-700 p-2 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-                      title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+                      title={theme === 'light' ? t('common.tooltips.switchToDarkMode') : t('common.tooltips.switchToLightMode')}
                     >
                       {theme === 'light' ? (
                         <Moon className="h-5 w-5" />
