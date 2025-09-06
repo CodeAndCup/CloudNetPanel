@@ -5,12 +5,13 @@ const { exec } = require('child_process');
 const { promisify } = require('util');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const db = require('../database/sqlite');
+const config = require('../config/cloudnet');
 
 const router = express.Router();
 const execAsync = promisify(exec);
 
 // Base directories
-const TEMPLATES_DIR = path.join(process.env.CLOUDNET_SERVER_PATH, 'local/templates');
+const TEMPLATES_DIR = path.join(config.cloudnet.serverPath, 'local/templates');
 const BACKUPS_DIR = path.join(__dirname, '../../backups');
 
 // Ensure backup directory exists

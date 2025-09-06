@@ -1,4 +1,3 @@
-require('dotenv').config();
 const express = require('express');
 const fs = require('fs').promises;
 const path = require('path');
@@ -6,11 +5,12 @@ const multer = require('multer');
 const { authenticateToken, checkFilePermission, requireAdmin } = require('../middleware/auth');
 const { logActivity } = require('../middleware/activity');
 const db = require('../database/sqlite');
+const config = require('../config/cloudnet');
 
 const router = express.Router();
 
 // Base templates directory
-const TEMPLATES_DIR = path.join(process.env.CLOUDNET_SERVER_PATH, 'local/templates');
+const TEMPLATES_DIR = path.join(config.cloudnet.serverPath, 'local/templates');
 
 // Ensure templates directory exists
 const ensureTemplatesDir = async () => {
