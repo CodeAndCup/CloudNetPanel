@@ -154,7 +154,7 @@ const authenticateWebSocket = (req) => {
   }
 };
 
-// Create CloudNet WebSocket connection with fallback to polling
+// Create CloudNet WebSocket connection
 const createCloudNetWebSocket = async (serviceId, user) => {
   // Only create one connection per service
   if (cloudnetConnections.has(serviceId)) {
@@ -174,194 +174,61 @@ const createCloudNetWebSocket = async (serviceId, user) => {
       throw new Error('No CloudNet authentication token available');
     }
 
-    // First, try to create a WebSocket connection to CloudNet
-    let connection = await tryCloudNetWebSocket(serviceId, cloudnetApi.authToken);
-    
-    // If WebSocket connection fails, fall back to polling
-    if (!connection) {
-      console.log(`WebSocket connection failed for service ${serviceId}, falling back to polling`);
-      connection = createPollingConnection(serviceId);
-    }
-    
+    // Create WebSocket connection to CloudNet liveLog endpoint
+    const wsUrl = cloudnetApi.config.baseUrl.replace('http', 'ws') + `/service/${serviceId}/liveLog`;
+    const cloudnetWs = new WebSocket(wsUrl, {
+      headers: {
+        'Authorization': `Bearer ${cloudnetApi.authToken}`
+      }
+    });
+
+    cloudnetConnections.set(serviceId, {
+      socket: cloudnetWs,
+      clients: new Set(),
+      serviceId: serviceId
+    });
+
+    const connection = cloudnetConnections.get(serviceId);
+
+    cloudnetWs.on('open', () => {
+      console.log(`Connected to CloudNet WebSocket for service ${serviceId}`);
+    });
+
+    cloudnetWs.on('message', (data) => {
+      try {
+        // Forward messages to all connected clients for this service
+        const message = {
+          type: 'server_log',
+          serverId: serviceId,
+          timestamp: new Date().toISOString(),
+          message: data.toString()
+        };
+
+        connection.clients.forEach(client => {
+          if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify(message));
+          }
+        });
+      } catch (error) {
+        console.error('Error processing CloudNet WebSocket message:', error);
+      }
+    });
+
+    cloudnetWs.on('close', () => {
+      console.log(`CloudNet WebSocket closed for service ${serviceId}`);
+      cloudnetConnections.delete(serviceId);
+    });
+
+    cloudnetWs.on('error', (error) => {
+      console.error(`CloudNet WebSocket error for service ${serviceId}:`, error);
+      cloudnetConnections.delete(serviceId);
+    });
+
     return connection;
   } catch (error) {
-    console.error(`Failed to create CloudNet connection for service ${serviceId}:`, error);
-    
-    // Try polling as last resort
-    console.log(`Attempting polling fallback for service ${serviceId}`);
-    return createPollingConnection(serviceId);
+    console.error(`Failed to create CloudNet WebSocket connection for service ${serviceId}:`, error);
+    return null;
   }
-};
-
-// Try to create a WebSocket connection to CloudNet
-const tryCloudNetWebSocket = async (serviceId, authToken) => {
-  return new Promise((resolve) => {
-    try {
-      // Create WebSocket connection to CloudNet liveLog endpoint
-      // Fix URL construction to properly handle https and different ports
-      let wsUrl;
-      try {
-        const baseUrl = new URL(cloudnetApi.config.baseUrl);
-        const wsProtocol = baseUrl.protocol === 'https:' ? 'wss:' : 'ws:';
-        wsUrl = `${wsProtocol}//${baseUrl.host}/api/v3/service/${serviceId}/liveLog`;
-      } catch (error) {
-        console.error(`Invalid CloudNet base URL: ${cloudnetApi.config.baseUrl}`);
-        resolve(null);
-        return;
-      }
-
-      console.log(`Attempting to connect to CloudNet WebSocket: ${wsUrl}`);
-      
-      const cloudnetWs = new WebSocket(wsUrl, {
-        headers: {
-          'Authorization': `Bearer ${authToken}`
-        }
-      });
-
-      const connection = {
-        socket: cloudnetWs,
-        clients: new Set(),
-        serviceId: serviceId,
-        type: 'websocket'
-      };
-
-      cloudnetConnections.set(serviceId, connection);
-
-      // Set a timeout for connection attempt
-      const connectionTimeout = setTimeout(() => {
-        cloudnetWs.close();
-        cloudnetConnections.delete(serviceId);
-        console.log(`WebSocket connection timeout for service ${serviceId}`);
-        resolve(null);
-      }, 10000); // 10 second timeout
-
-      cloudnetWs.on('open', () => {
-        clearTimeout(connectionTimeout);
-        console.log(`Connected to CloudNet WebSocket for service ${serviceId}`);
-        resolve(connection);
-      });
-
-      cloudnetWs.on('message', (data) => {
-        try {
-          // Forward messages to all connected clients for this service
-          const message = {
-            type: 'server_log',
-            serverId: serviceId,
-            timestamp: new Date().toISOString(),
-            message: data.toString()
-          };
-
-          connection.clients.forEach(client => {
-            if (client.readyState === WebSocket.OPEN) {
-              client.send(JSON.stringify(message));
-            } else {
-              // Remove closed clients
-              connection.clients.delete(client);
-            }
-          });
-        } catch (error) {
-          console.error('Error processing CloudNet WebSocket message:', error);
-        }
-      });
-
-      cloudnetWs.on('close', (code, reason) => {
-        clearTimeout(connectionTimeout);
-        console.log(`CloudNet WebSocket closed for service ${serviceId}, code: ${code}, reason: ${reason}`);
-        
-        // Notify all connected clients about the disconnection
-        const connection = cloudnetConnections.get(serviceId);
-        if (connection) {
-          connection.clients.forEach(client => {
-            if (client.readyState === WebSocket.OPEN) {
-              client.send(JSON.stringify({
-                type: 'error',
-                message: 'Connection to CloudNet lost'
-              }));
-            }
-          });
-        }
-        
-        cloudnetConnections.delete(serviceId);
-      });
-
-      cloudnetWs.on('error', (error) => {
-        clearTimeout(connectionTimeout);
-        console.error(`CloudNet WebSocket error for service ${serviceId}:`, error);
-        
-        // Clean up and resolve with null to trigger fallback
-        cloudnetConnections.delete(serviceId);
-        resolve(null);
-      });
-
-    } catch (error) {
-      console.error(`Error creating WebSocket for service ${serviceId}:`, error);
-      resolve(null);
-    }
-  });
-};
-
-// Create a polling-based connection as fallback
-const createPollingConnection = (serviceId) => {
-  console.log(`Creating polling connection for service ${serviceId}`);
-  
-  const connection = {
-    socket: null,
-    clients: new Set(),
-    serviceId: serviceId,
-    type: 'polling',
-    pollingInterval: null,
-    lastLogTimestamp: Date.now()
-  };
-
-  cloudnetConnections.set(serviceId, connection);
-
-  // Start polling for logs every 2 seconds
-  connection.pollingInterval = setInterval(async () => {
-    try {
-      if (connection.clients.size === 0) {
-        // No clients connected, stop polling
-        console.log(`Stopping polling for service ${serviceId} - no clients`);
-        clearInterval(connection.pollingInterval);
-        cloudnetConnections.delete(serviceId);
-        return;
-      }
-
-      // Fetch recent logs from CloudNet API
-      const logs = await cloudnetApi.getServerLogs(serviceId, 10);
-      if (logs && logs.lines && logs.lines.length > 0) {
-        logs.lines.forEach(line => {
-          const message = {
-            type: 'server_log',
-            serverId: serviceId,
-            timestamp: new Date().toISOString(),
-            message: line
-          };
-
-          connection.clients.forEach(client => {
-            if (client.readyState === WebSocket.OPEN) {
-              client.send(JSON.stringify(message));
-            } else {
-              connection.clients.delete(client);
-            }
-          });
-        });
-      }
-    } catch (error) {
-      console.error(`Error polling logs for service ${serviceId}:`, error);
-      
-      // Notify clients of the error
-      connection.clients.forEach(client => {
-        if (client.readyState === WebSocket.OPEN) {
-          client.send(JSON.stringify({
-            type: 'error',
-            message: `Failed to fetch logs: ${error.message}`
-          }));
-        }
-      });
-    }
-  }, 2000);
-
-  return connection;
 };
 
 // WebSocket connection handling for real-time features
@@ -535,16 +402,10 @@ wss.on('connection', async (ws, req) => {
     if (ws.cloudnetConnection) {
       ws.cloudnetConnection.clients.delete(ws);
 
-      // If no more clients are connected to this service, close the connection
+      // If no more clients are connected to this service, close the CloudNet connection
       if (ws.cloudnetConnection.clients.size === 0) {
-        console.log(`Closing CloudNet connection for service ${ws.cloudnetConnection.serviceId} - no more clients`);
-        
-        if (ws.cloudnetConnection.type === 'websocket' && ws.cloudnetConnection.socket) {
-          ws.cloudnetConnection.socket.close();
-        } else if (ws.cloudnetConnection.type === 'polling' && ws.cloudnetConnection.pollingInterval) {
-          clearInterval(ws.cloudnetConnection.pollingInterval);
-        }
-        
+        console.log(`Closing CloudNet WebSocket for service ${ws.cloudnetConnection.serviceId} - no more clients`);
+        ws.cloudnetConnection.socket.close();
         cloudnetConnections.delete(ws.cloudnetConnection.serviceId);
       }
     }
