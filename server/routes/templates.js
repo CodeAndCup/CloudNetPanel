@@ -5,11 +5,12 @@ const multer = require('multer');
 const { authenticateToken, checkFilePermission, requireAdmin } = require('../middleware/auth');
 const { logActivity } = require('../middleware/activity');
 const db = require('../database/sqlite');
+const config = require('../config/cloudnet');
 
 const router = express.Router();
 
 // Base templates directory
-const TEMPLATES_DIR = path.join(__dirname, '../../../CloudNet-Server/local/templates');
+const TEMPLATES_DIR = path.join(config.cloudnet.serverPath, 'local/templates');
 
 // Ensure templates directory exists
 const ensureTemplatesDir = async () => {
@@ -67,14 +68,14 @@ router.get('/files', authenticateToken, checkFilePermission('read'), async (req,
   try {
     const requestedPath = req.query.path || '';
     const fullPath = getSafeFilePath(requestedPath);
-    
+
     // Ensure path is within templates directory
     if (!fullPath.startsWith(TEMPLATES_DIR)) {
       return res.status(403).json({ error: 'Access denied: Path outside templates directory' });
     }
 
     const stats = await fs.stat(fullPath);
-    
+
     if (stats.isDirectory()) {
       const items = await fs.readdir(fullPath);
       const fileList = await Promise.all(
@@ -95,7 +96,7 @@ router.get('/files', authenticateToken, checkFilePermission('read'), async (req,
           };
         })
       );
-      
+
       res.json({
         currentPath: requestedPath,
         items: fileList.sort((a, b) => {
@@ -132,7 +133,7 @@ router.get('/files/content', authenticateToken, checkFilePermission('read'), asy
     }
 
     const fullPath = getSafeFilePath(requestedPath);
-    
+
     // Ensure path is within templates directory
     if (!fullPath.startsWith(TEMPLATES_DIR)) {
       return res.status(403).json({ error: 'Access denied: Path outside templates directory' });
@@ -145,7 +146,7 @@ router.get('/files/content', authenticateToken, checkFilePermission('read'), asy
 
     const content = await fs.readFile(fullPath, 'utf8');
     const ext = path.extname(fullPath).toLowerCase();
-    
+
     // Determine file type for syntax highlighting
     let language = 'text';
     if (['.yml', '.yaml'].includes(ext)) language = 'yaml';
@@ -175,13 +176,13 @@ router.get('/files/content', authenticateToken, checkFilePermission('read'), asy
 router.put('/files/content', authenticateToken, checkFilePermission('write'), logActivity('file_update', 'file', { resourceIdField: 'path' }), async (req, res) => {
   try {
     const { path: requestedPath, content } = req.body;
-    
+
     if (!requestedPath || content === undefined) {
       return res.status(400).json({ error: 'File path and content required' });
     }
 
     const fullPath = getSafeFilePath(requestedPath);
-    
+
     // Ensure path is within templates directory
     if (!fullPath.startsWith(TEMPLATES_DIR)) {
       return res.status(403).json({ error: 'Access denied: Path outside templates directory' });
@@ -189,7 +190,7 @@ router.put('/files/content', authenticateToken, checkFilePermission('write'), lo
 
     // Ensure parent directory exists
     await fs.mkdir(path.dirname(fullPath), { recursive: true });
-    
+
     await fs.writeFile(fullPath, content, 'utf8');
     const stats = await fs.stat(fullPath);
 
@@ -209,13 +210,13 @@ router.put('/files/content', authenticateToken, checkFilePermission('write'), lo
 router.post('/files/directory', authenticateToken, checkFilePermission('write'), logActivity('directory_create', 'file', { resourceIdField: 'path' }), async (req, res) => {
   try {
     const { path: requestedPath } = req.body;
-    
+
     if (!requestedPath) {
       return res.status(400).json({ error: 'Directory path required' });
     }
 
     const fullPath = getSafeFilePath(requestedPath);
-    
+
     // Ensure path is within templates directory
     if (!fullPath.startsWith(TEMPLATES_DIR)) {
       return res.status(403).json({ error: 'Access denied: Path outside templates directory' });
@@ -237,20 +238,20 @@ router.post('/files/directory', authenticateToken, checkFilePermission('write'),
 router.delete('/files', authenticateToken, checkFilePermission('delete'), logActivity('file_delete', 'file', { resourceIdField: 'path' }), async (req, res) => {
   try {
     const { path: requestedPath } = req.body;
-    
+
     if (!requestedPath) {
       return res.status(400).json({ error: 'File path required' });
     }
 
     const fullPath = getSafeFilePath(requestedPath);
-    
+
     // Ensure path is within templates directory
     if (!fullPath.startsWith(TEMPLATES_DIR)) {
       return res.status(403).json({ error: 'Access denied: Path outside templates directory' });
     }
 
     const stats = await fs.stat(fullPath);
-    
+
     if (stats.isDirectory()) {
       await fs.rmdir(fullPath, { recursive: true });
     } else {
@@ -274,7 +275,7 @@ router.delete('/files', authenticateToken, checkFilePermission('delete'), logAct
 router.post('/files/upload', authenticateToken, checkFilePermission('write'), upload.array('files'), logActivity('file_upload', 'file', { resourceIdField: 'path' }), async (req, res) => {
   try {
     const uploadPath = req.body.path || '';
-    
+
     // Validate upload path is within templates directory
     const fullPath = getSafeFilePath(uploadPath);
     if (!fullPath.startsWith(TEMPLATES_DIR)) {
@@ -288,18 +289,18 @@ router.post('/files/upload', authenticateToken, checkFilePermission('write'), up
       // Move file to correct directory if needed
       const destinationDir = getSafeFilePath(uploadPath);
       const finalPath = path.join(destinationDir, file.originalname);
-      
+
       // Ensure destination directory exists
       await fs.mkdir(destinationDir, { recursive: true });
-      
+
       // Move file if not in the right place
       if (file.path !== finalPath) {
         await fs.rename(file.path, finalPath);
       }
-      
+
       const relativePath = getRelativePath(finalPath);
       const stats = await fs.stat(finalPath);
-      
+
       results.push({
         name: file.originalname,
         path: relativePath,
@@ -323,7 +324,7 @@ router.post('/files/upload', authenticateToken, checkFilePermission('write'), up
 // Get permissions for a specific file/folder path
 router.get('/permissions', authenticateToken, requireAdmin, async (req, res) => {
   const { path: requestedPath } = req.query;
-  
+
   if (!requestedPath) {
     return res.status(400).json({ error: 'Path parameter required' });
   }
@@ -374,7 +375,7 @@ router.post('/permissions', authenticateToken, requireAdmin, async (req, res) =>
     // Add new permissions
     for (const perm of permissions) {
       const { type, permission_type, group_id, user_id } = perm;
-      
+
       if (!permission_type || (!group_id && !user_id)) {
         continue; // Skip invalid permissions
       }
@@ -390,9 +391,9 @@ router.post('/permissions', authenticateToken, requireAdmin, async (req, res) =>
       });
     }
 
-    res.json({ 
+    res.json({
       message: 'Permissions updated successfully',
-      path: requestedPath 
+      path: requestedPath
     });
   } catch (error) {
     console.error('Error updating permissions:', error);
@@ -403,14 +404,14 @@ router.post('/permissions', authenticateToken, requireAdmin, async (req, res) =>
 // Delete a specific permission by ID
 router.delete('/permissions/:permissionId', authenticateToken, requireAdmin, async (req, res) => {
   const permissionId = parseInt(req.params.permissionId);
-  
+
   if (!permissionId) {
     return res.status(400).json({ error: 'Permission ID required' });
   }
 
   try {
     await new Promise((resolve, reject) => {
-      db.run('DELETE FROM file_permissions WHERE id = ?', [permissionId], function(err) {
+      db.run('DELETE FROM file_permissions WHERE id = ?', [permissionId], function (err) {
         if (err) reject(err);
         else resolve();
       });
