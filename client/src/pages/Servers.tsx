@@ -126,8 +126,7 @@ const Servers: React.FC = () => {
           break;
         case 'log_subscribed':
           setLogs(prev => [...prev, `[${new Date().toISOString()}] Subscribed to server logs for ${data.serverId}`]);
-          const { data: cachedLogs } = await axios.get(`/api/servers/${data.serverId}/cachedLogs`);
-          setLogs(prev => [...prev, ...cachedLogs.lines.map((log: string) => `${log}`)]);
+          // Initial logs are now sent by the server, no need to fetch separately
           break;
       }
     };
