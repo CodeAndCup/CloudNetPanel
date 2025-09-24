@@ -4,7 +4,7 @@ const path = require('path');
 
 class GitHubUpdateService {
   constructor() {
-    this.repositoryOwner = 'PerrierBottle';
+    this.repositoryOwner = 'CodeAndCup';
     this.repositoryName = 'CloudNetPanel';
     this.currentVersion = '1.0.0'; // This should be read from package.json
     this.apiBaseUrl = 'https://api.github.com';

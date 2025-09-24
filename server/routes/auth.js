@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { authenticateToken, JWT_SECRET } = require('../middleware/auth');
 const db = require('../database/sqlite');
-const cloudnetApi = require('../services/cloudnetApi');
 
 const router = express.Router();
 
@@ -26,20 +25,6 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Username and password required' });
     }
 
-    // First check CloudNet API connectivity (skip in development if CloudNet is disabled)
-    const config = require('../config/cloudnet');
-    if (config.cloudnet.enabled) {
-      try {
-        await cloudnetApi.healthCheck();
-      } catch (error) {
-        return res.status(503).json({ 
-          error: 'CloudNet API not available',
-          message: error.message,
-          type: 'cloudnet_unavailable'
-        });
-      }
-    }
-
     let user = null;
 
     user = await new Promise((resolve, reject) => {
@@ -55,12 +40,6 @@ router.post('/login', async (req, res) => {
       });
     });
 
-    // For demo purposes, use default admin
-    // In production, this would query the database
-    /*if (username === DEFAULT_ADMIN.username) {
-      user = DEFAULT_ADMIN;
-    }*/
-
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
@@ -75,8 +54,7 @@ router.post('/login', async (req, res) => {
         id: user.id || 1,
         username: user.username,
         email: user.email,
-        role: user.role,
-        language: user.language || 'en'
+        role: user.role
       },
       JWT_SECRET,
       { expiresIn: '24h' }
@@ -88,8 +66,7 @@ router.post('/login', async (req, res) => {
         id: user.id || 1,
         username: user.username,
         email: user.email,
-        role: user.role,
-        language: user.language || 'en'
+        role: user.role
       }
     });
   } catch (error) {
@@ -105,8 +82,7 @@ router.get('/me', authenticateToken, (req, res) => {
       id: req.user.id,
       username: req.user.username,
       email: req.user.email,
-      role: req.user.role,
-      language: req.user.language || 'en'
+      role: req.user.role
     }
   });
 });
