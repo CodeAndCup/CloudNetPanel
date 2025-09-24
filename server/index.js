@@ -226,7 +226,7 @@ const createCloudNetWebSocket = async (serviceId, user) => {
 
     return connection;
   } catch (error) {
-    console.error(`Failed to create CloudNet WebSocket connection for service ${serviceId}:`, error);
+    console.error('Failed to create CloudNet WebSocket connection for service %s:', serviceId, error);
     return null;
   }
 };
