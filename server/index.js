@@ -162,7 +162,7 @@ const createCloudNetWebSocket = async (serviceId, user) => {
   }
 
   if (!cloudnetApi.config.enabled) {
-    console.log(`CloudNet API disabled - cannot create real WebSocket connection for service ${serviceId}`);
+    console.log('CloudNet API disabled - cannot create real WebSocket connection for service %s',serviceId);
     return null;
   }
 
@@ -191,7 +191,7 @@ const createCloudNetWebSocket = async (serviceId, user) => {
     const connection = cloudnetConnections.get(serviceId);
 
     cloudnetWs.on('open', () => {
-      console.log(`Connected to CloudNet WebSocket for service ${serviceId}`);
+      console.log('Connected to CloudNet WebSocket for service %s',serviceId);
     });
 
     cloudnetWs.on('message', (data) => {
@@ -220,13 +220,13 @@ const createCloudNetWebSocket = async (serviceId, user) => {
     });
 
     cloudnetWs.on('error', (error) => {
-      console.error(`CloudNet WebSocket error for service ${serviceId}:`, error);
+      console.error('CloudNet WebSocket error for service %s:', serviceId, error);
       cloudnetConnections.delete(serviceId);
     });
 
     return connection;
   } catch (error) {
-    console.error(`Failed to create CloudNet WebSocket connection for service ${serviceId}:`, error);
+    console.error('Failed to create CloudNet WebSocket connection for service %s:',serviceId, error);
     return null;
   }
 };
