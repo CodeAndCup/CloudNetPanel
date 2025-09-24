@@ -449,4 +449,3 @@ router.get('/permission-entities', authenticateToken, requireAdmin, async (req, 
 });
 
 module.exports = router;
-module.exports = router;
