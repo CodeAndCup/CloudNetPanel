@@ -226,11 +226,7 @@ const createCloudNetWebSocket = async (serviceId, user) => {
 
     return connection;
   } catch (error) {
-<<<<<<< HEAD
     console.error('Failed to create CloudNet WebSocket connection for service %s:',serviceId, error);
-=======
-    console.error('Failed to create CloudNet WebSocket connection for service %s:', serviceId, error);
->>>>>>> refs/remotes/origin/main
     return null;
   }
 };
