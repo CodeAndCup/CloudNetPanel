@@ -3,7 +3,7 @@ const router = express.Router();
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const githubUpdateService = require('../services/githubUpdateService');
 const { logActivity } = require('../middleware/activity');
-
+const { URL } = require('url');
 // Check for updates (accessible to all authenticated users)
 router.get('/check', authenticateToken, async (req, res) => {
   try {
@@ -85,8 +85,19 @@ router.post('/download', authenticateToken, requireAdmin, async (req, res) => {
     }
 
     // For security, only allow downloads from GitHub
-    if (!downloadUrl.includes('github.com')) {
-      return res.status(400).json({ error: 'Invalid download URL' });
+    let parsedUrl;
+    try {
+      parsedUrl = new URL(downloadUrl);
+    } catch (err) {
+      return res.status(400).json({ error: 'Invalid download URL format' });
+    }
+    const allowedHosts = [
+      'github.com',
+      'www.github.com',
+      'objects.githubusercontent.com'
+    ];
+    if (!allowedHosts.includes(parsedUrl.host)) {
+      return res.status(400).json({ error: 'Download URL must be from github.com' });
     }
 
     // Log the download attempt
