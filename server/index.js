@@ -449,6 +449,12 @@ const broadcastServerLog = (serverId, logLine) => {
 
 server.listen(PORT, () => {
   console.log(`CloudNet Panel server running on port ${PORT}`);
+
+  if(!fs.existsSync(path.join(__dirname,'.env'))) {
+  	console.error('Error: server/.env file is missing. Server startup aborted.');
+  	process.exit(1);
+  }
+
   console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 
   // Log CloudNet API configuration
