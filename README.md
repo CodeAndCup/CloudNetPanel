@@ -39,7 +39,10 @@ cd CloudNetPanel
 npm run install-deps
 ```
 
-3. **Start the development servers**
+3. **Make your configuration**
+- Make steps inside [QuickConfiguration](https://github.com/CodeAndCup/CloudNetPanel?tab=readme-ov-file#quick-configuration)
+
+4. **Start servers**
 ```bash
 npm run dev
 ```
@@ -53,18 +56,6 @@ This will start:
 - **Password**: `password`
 
 ⚠️ **Please change the default credentials after first login!**
-
-## Production Deployment
-
-### Build the frontend
-```bash
-npm run build
-```
-
-### Start the production server
-```bash
-npm run start
-```
 
 The application will serve the built frontend and API from port 5000.
 
@@ -81,8 +72,6 @@ The panel supports integration with CloudNet REST API for real-time server manag
 5. Enter you Rest API identifient in `CLOUDNET_API_USERNAME` & `CLOUDNET_API_PASSWORD`. 
 (You can create them by using the command inside cloudnet console `rest user create [username] [password]` and add it admin scope `rest user [username] add scope global:admin`)
 6. Start the application
-
-**Default Mode**: The panel runs in mock mode by default, making it perfect for testing and development without requiring a CloudNet instance.
 
 ## Technology Stack
 
