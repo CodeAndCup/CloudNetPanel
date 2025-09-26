@@ -57,7 +57,7 @@ const executeTask = async (task) => {
       console.log(`Command task completed: ${task.name}`);
     }
   } catch (error) {
-    console.error(`Task execution failed: ${task.name}`, error);
+    console.error('Task execution failed: %s', task.name, error);
   }
 };
 
