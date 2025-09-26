@@ -126,8 +126,19 @@ class CloudNetApiService {
 
       console.log('CloudNet API authentication successful');
     } catch (error) {
-      console.error('CloudNet API authentication failed:', error.message);
-      throw new Error('Failed to authenticate with CloudNet API');
+      let details = '';
+      if (error.response) {
+      	details += `CloudNet API returned status ${error.response.status}.`;
+      	if (error.response.data) {
+      		details += `Response data: ${JSON.stringify(error.response.data)}`;
+      	}
+      } else if (error.request) {
+      	details += `No response received from CloudNet API.`;
+      } else {
+      	details += `Request setup error: ${error.message}`;
+      }
+      console.error('CloudNet API authentication failed:', details);
+      throw new Error(`Failed to authenticate with CloudNet API. Details: ${details}`);
     }
   }
 
