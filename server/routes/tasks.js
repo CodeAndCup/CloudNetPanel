@@ -1,5 +1,7 @@
 const express = require('express');
 const { authenticateToken, requireAdmin, checkTaskPermission } = require('../middleware/auth');
+const { validate, taskCreateSchema, taskUpdateSchema, idParamSchema } = require('../utils/validation');
+const { asyncHandler, NotFoundError, AuthorizationError, ConflictError } = require('../utils/errors');
 const db = require('../database/sqlite');
 const cron = require('node-cron');
 
@@ -62,7 +64,7 @@ const executeTask = async (task) => {
 };
 
 // Get all tasks
-router.get('/', authenticateToken, (req, res) => {
+router.get('/', authenticateToken, asyncHandler(async (req, res) => {
   // Admin can see all tasks, others see only tasks they have permission for
   let query;
   let params;
@@ -90,83 +92,96 @@ router.get('/', authenticateToken, (req, res) => {
     params = [req.user.id, req.user.id, req.user.id];
   }
 
-  db.all(query, params, (err, rows) => {
-    if (err) {
-      console.error('Error fetching tasks:', err);
-      return res.status(500).json({ error: 'Failed to fetch tasks' });
-    }
-    res.json(rows);
+  const tasks = await new Promise((resolve, reject) => {
+    db.all(query, params, (err, rows) => {
+      if (err) reject(err);
+      else resolve(rows);
+    });
   });
-});
+
+  res.json({
+    success: true,
+    tasks
+  });
+}));
 
 // Get task by ID
-router.get('/:id', authenticateToken, checkTaskPermission('read'), (req, res) => {
+router.get('/:id', authenticateToken, validate(idParamSchema, 'params'), checkTaskPermission('read'), asyncHandler(async (req, res) => {
   const taskId = parseInt(req.params.id);
 
-  db.get(`
-    SELECT t.*, u.username as created_by_username
-    FROM tasks t
-    LEFT JOIN users u ON t.created_by = u.id
-    WHERE t.id = ?
-  `, [taskId], (err, row) => {
-    if (err) {
-      console.error('Error fetching task:', err);
-      return res.status(500).json({ error: 'Failed to fetch task' });
-    }
-
-    if (!row) {
-      return res.status(404).json({ error: 'Task not found' });
-    }
-
-    res.json(row);
+  const task = await new Promise((resolve, reject) => {
+    db.get(`
+      SELECT t.*, u.username as created_by_username
+      FROM tasks t
+      LEFT JOIN users u ON t.created_by = u.id
+      WHERE t.id = ?
+    `, [taskId], (err, row) => {
+      if (err) reject(err);
+      else resolve(row);
+    });
   });
-});
+
+  if (!task) {
+    throw new NotFoundError('Task');
+  }
+
+  res.json({
+    success: true,
+    task
+  });
+}));
 
 // Create new task
-router.post('/', authenticateToken, (req, res) => {
+router.post('/', authenticateToken, validate(taskCreateSchema), asyncHandler(async (req, res) => {
   const { name, description, type, schedule, command } = req.body;
-
-  if (!name || !type || !command) {
-    return res.status(400).json({ error: 'Name, type, and command are required' });
-  }
 
   // Validate schedule if provided
   if (schedule && !cron.validate(schedule)) {
-    return res.status(400).json({ error: 'Invalid cron schedule format' });
+    throw new Error('Invalid cron schedule format');
   }
 
-  db.run(`
-    INSERT INTO tasks (name, description, type, schedule, command, created_by)
-    VALUES (?, ?, ?, ?, ?, ?)
-  `, [name, description, type, schedule, command, req.user.id], function (err) {
-    if (err) {
-      console.error('Error creating task:', err);
-      return res.status(500).json({ error: 'Failed to create task' });
-    }
+  const taskId = await new Promise((resolve, reject) => {
+    db.run(`
+      INSERT INTO tasks (name, description, type, schedule, command, status, created_by, created_at)
+      VALUES (?, ?, ?, ?, ?, 'inactive', ?, ?)
+    `, [name, description || '', type, schedule || null, command, req.user.id, new Date().toISOString()], function (err) {
+      if (err) reject(err);
+      else resolve(this.lastID);
+    });
+  });
 
-    const taskId = this.lastID;
-
-    res.status(201).json({
+  res.status(201).json({
+    success: true,
+    message: 'Task created successfully',
+    task: {
       id: taskId,
       name,
-      description,
+      description: description || '',
       type,
-      schedule,
+      schedule: schedule || null,
       command,
       status: 'inactive',
       created_by: req.user.id,
       created_at: new Date().toISOString()
-    });
+    }
   });
-});
+}));
 
 // Update task
-router.put('/:id', authenticateToken, checkTaskPermission('write'), (req, res) => {
+router.put('/:id', authenticateToken, validate(idParamSchema, 'params'), validate(taskUpdateSchema), checkTaskPermission('write'), asyncHandler(async (req, res) => {
   const taskId = parseInt(req.params.id);
-  const { name, description, type, schedule, command, status } = req.body;
+  const { name, description, type, schedule, command, enabled } = req.body;
 
-  if (!name || !type || !command) {
-    return res.status(400).json({ error: 'Name, type, and command are required' });
+  // Check if task exists
+  const existing = await new Promise((resolve, reject) => {
+    db.get('SELECT id FROM tasks WHERE id = ?', [taskId], (err, row) => {
+      if (err) reject(err);
+      else resolve(row);
+    });
+  });
+
+  if (!existing) {
+    throw new NotFoundError('Task');
   }
 
   // Validate schedule if provided

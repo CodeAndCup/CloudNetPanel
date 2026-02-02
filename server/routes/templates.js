@@ -4,6 +4,8 @@ const path = require('path');
 const multer = require('multer');
 const { authenticateToken, checkFilePermission, requireAdmin } = require('../middleware/auth');
 const { logActivity } = require('../middleware/activity');
+const { validate, templateFileContentSchema, templateDirectorySchema, templateFileDeleteSchema } = require('../utils/validation');
+const { asyncHandler, NotFoundError, AuthorizationError } = require('../utils/errors');
 const db = require('../database/sqlite');
 const config = require('../config/cloudnet');
 
@@ -64,20 +66,19 @@ const getRelativePath = (fullPath) => {
 };
 
 // List files and directories
-router.get('/files', authenticateToken, checkFilePermission('read'), async (req, res) => {
-  try {
-    const requestedPath = req.query.path || '';
-    const fullPath = getSafeFilePath(requestedPath);
+router.get('/files', authenticateToken, checkFilePermission('read'), asyncHandler(async (req, res) => {
+  const requestedPath = req.query.path || '';
+  const fullPath = getSafeFilePath(requestedPath);
 
-    // Ensure path is within templates directory
-    if (!fullPath.startsWith(TEMPLATES_DIR)) {
-      return res.status(403).json({ error: 'Access denied: Path outside templates directory' });
-    }
+  // Ensure path is within templates directory
+  if (!fullPath.startsWith(TEMPLATES_DIR)) {
+    throw new AuthorizationError('Access denied: Path outside templates directory');
+  }
 
-    const stats = await fs.stat(fullPath);
+  const stats = await fs.stat(fullPath);
 
-    if (stats.isDirectory()) {
-      const items = await fs.readdir(fullPath);
+  if (stats.isDirectory()) {
+    const items = await fs.readdir(fullPath);
       const fileList = await Promise.all(
         items.map(async (item) => {
           const itemPath = path.join(fullPath, item);

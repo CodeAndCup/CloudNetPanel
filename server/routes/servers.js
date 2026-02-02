@@ -1,30 +1,56 @@
 const express = require('express');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const { logActivity } = require('../middleware/activity');
+const { asyncHandler } = require('../utils/errors');
+const { setCache, getCached } = require('../middleware/cloudnetStatus');
 const cloudnetApi = require('../services/cloudnetApi');
 const config = require('../config/cloudnet');
 
 const router = express.Router();
 
 // Get all servers
-router.get('/', authenticateToken, async (req, res) => {
-  try {
-    if (!config.cloudnet.enabled) {
-      return res.status(503).json({ error: 'CloudNet API is not enabled' });
-    }
+router.get('/', authenticateToken, asyncHandler(async (req, res) => {
+  if (!config.cloudnet.enabled) {
+    return res.status(503).json({ 
+      success: false,
+      error: {
+        code: 'CLOUDNET_DISABLED',
+        message: 'CloudNet API is not enabled'
+      }
+    });
+  }
 
-    // Use CloudNet REST API only
+  try {
+    // Try to fetch from CloudNet
     const cloudnetServers = await cloudnetApi.getServers();
     const transformedServers = cloudnetServers.map(server =>
       cloudnetApi.transformServerData(server)
     );
-    res.json(transformedServers);
-
+    
+    // Update cache
+    setCache('servers', transformedServers);
+    
+    res.json({
+      success: true,
+      servers: transformedServers,
+      cached: false
+    });
   } catch (error) {
-    console.error('Error fetching servers:', error);
-    res.status(500).json({ error: 'Failed to fetch servers from CloudNet API' });
+    // CloudNet unavailable, try cache
+    const cachedServers = getCached('servers');
+    
+    if (cachedServers) {
+      return res.json({
+        success: true,
+        servers: cachedServers,
+        cached: true,
+        warning: 'CloudNet is currently offline. Showing cached data.'
+      });
+    }
+    
+    throw error;
   }
-});
+}));
 
 // Get server by ID
 router.get('/:id', authenticateToken, async (req, res) => {
