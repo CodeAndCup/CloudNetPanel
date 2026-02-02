@@ -168,21 +168,40 @@ app.use(errorHandler);
 // Store CloudNet WebSocket connections for each service
 const cloudnetConnections = new Map();
 
-// Authenticate WebSocket connections
+// Authenticate WebSocket connections - using Sec-WebSocket-Protocol header
 const authenticateWebSocket = (req) => {
-  const query = url.parse(req.url, true).query;
-  const token = query.token;
-
-  if (!token) {
-    throw new Error('Access token required');
+  // Try to get token from Sec-WebSocket-Protocol header
+  // Format: "Authorization.Bearer.{token}"
+  const protocols = req.headers['sec-websocket-protocol'];
+  
+  if (protocols) {
+    const protocolList = protocols.split(',').map(p => p.trim());
+    for (const protocol of protocolList) {
+      if (protocol.startsWith('authorization.bearer.')) {
+        const token = protocol.replace('authorization.bearer.', '');
+        try {
+          const user = jwt.verify(token, JWT_SECRET);
+          return { user, protocol };
+        } catch (error) {
+          throw new Error('Invalid or expired token');
+        }
+      }
+    }
+  }
+  
+  // Fallback: try Authorization header (for debugging only)
+  const authHeader = req.headers['authorization'];
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7);
+    try {
+      const user = jwt.verify(token, JWT_SECRET);
+      return { user, protocol: null };
+    } catch (error) {
+      throw new Error('Invalid or expired token');
+    }
   }
 
-  try {
-    const user = jwt.verify(token, JWT_SECRET);
-    return user;
-  } catch (error) {
-    throw new Error('Invalid or expired token');
-  }
+  throw new Error('Access token required. Use Sec-WebSocket-Protocol: authorization.bearer.{token}');
 };
 
 // Create CloudNet WebSocket connection
@@ -268,17 +287,23 @@ wss.on('connection', async (ws, req) => {
 
   try {
     // Authenticate the WebSocket connection
-    const user = authenticateWebSocket(req);
-    console.log(`WebSocket authenticated for user: ${user.username}`);
+    const authResult = authenticateWebSocket(req);
+    console.log(`WebSocket authenticated for user: ${authResult.user.username}`);
 
-    ws.user = user;
+    ws.user = authResult.user;
+    
+    // Set the subprotocol if provided
+    if (authResult.protocol) {
+      ws.protocol = authResult.protocol;
+    }
   } catch (error) {
     console.error('WebSocket authentication failed:', error.message);
     ws.send(JSON.stringify({
       type: 'error',
+      code: 'AUTH_FAILED',
       message: 'Authentication failed: ' + error.message
     }));
-    ws.close();
+    ws.close(1008, 'Authentication failed'); // 1008 = Policy Violation
     return;
   }
 

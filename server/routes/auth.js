@@ -2,82 +2,145 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { authenticateToken, JWT_SECRET } = require('../middleware/auth');
+const { validate, loginSchema } = require('../utils/validation');
+const { asyncHandler, AuthenticationError } = require('../utils/errors');
 const db = require('../database/sqlite');
 
 const router = express.Router();
 
-// Default admin user (should be changed on first login)
-const DEFAULT_ADMIN = {
-  username: 'admin',
-  email: 'admin@cloudnet.local',
-  password: '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-  role: 'admin'
-};
-// If user table empty do:
-// sqlite3 server/database/cloudnet.db  "INSERT INTO users VALUES (1,'admin','admin@cloudnet.local','$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi','admin',1,1,null)"
+// Login endpoint with validation
+router.post('/login', validate(loginSchema), asyncHandler(async (req, res) => {
+  const { username, password } = req.body;
 
-// Login endpoint
-router.post('/login', async (req, res) => {
+  // Query user from database
+  const user = await new Promise((resolve, reject) => {
+    db.get(`SELECT * FROM users WHERE username = ?`, [username], (err, row) => {
+      if (err) {
+        console.error('Database error during login:', err);
+        reject(err);
+      } else {
+        resolve(row);
+      }
+    });
+  });
+
+  if (!user) {
+    throw new AuthenticationError('Invalid credentials');
+  }
+
+  // Check if user is active
+  if (!user.is_active) {
+    throw new AuthenticationError('Account is disabled');
+  }
+
+  // Verify password
+  const isValidPassword = await bcrypt.compare(password, user.password);
+  if (!isValidPassword) {
+    throw new AuthenticationError('Invalid credentials');
+  }
+
+  // Generate access token (1 hour expiry)
+  const accessTokenExpiry = process.env.JWT_ACCESS_EXPIRY || '1h';
+  const accessToken = jwt.sign(
+    {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role
+    },
+    JWT_SECRET,
+    { expiresIn: accessTokenExpiry }
+  );
+
+  // Generate refresh token (7 days expiry)
+  const refreshTokenExpiry = process.env.JWT_REFRESH_EXPIRY || '7d';
+  const refreshToken = jwt.sign(
+    {
+      id: user.id,
+      type: 'refresh'
+    },
+    JWT_SECRET,
+    { expiresIn: refreshTokenExpiry }
+  );
+
+  // Update user last login time
+  db.run(
+    `UPDATE users SET last_login = ? WHERE id = ?`,
+    [new Date().toISOString(), user.id],
+    (err) => {
+      if (err) console.error('Error updating last login:', err);
+    }
+  );
+
+  res.json({
+    success: true,
+    token: accessToken,
+    refreshToken,
+    user: {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      role: user.role
+    }
+  });
+}));
+
+// Refresh token endpoint
+router.post('/refresh', asyncHandler(async (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    throw new AuthenticationError('Refresh token required');
+  }
+
   try {
-    const { username, password } = req.body;
+    const decoded = jwt.verify(refreshToken, JWT_SECRET);
 
-    if (!username || !password) {
-      return res.status(400).json({ error: 'Username and password required' });
+    if (decoded.type !== 'refresh') {
+      throw new AuthenticationError('Invalid token type');
     }
 
-    let user = null;
-
-    user = await new Promise((resolve, reject) => {
-      db.get(`SELECT * FROM users WHERE username = ?`, [username], (err, row) => {
-        if (err) {
-          console.error('Error fetching user: ', err);
-          reject(err)
-        }
-
-        if (!row) reject(new Error('User not found'));
-
-        resolve(row)
+    // Get user from database
+    const user = await new Promise((resolve, reject) => {
+      db.get(`SELECT * FROM users WHERE id = ?`, [decoded.id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
       });
     });
 
-    if (!user) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+    if (!user || !user.is_active) {
+      throw new AuthenticationError('User not found or inactive');
     }
 
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
-
-    const token = jwt.sign(
+    // Generate new access token
+    const accessTokenExpiry = process.env.JWT_ACCESS_EXPIRY || '1h';
+    const newAccessToken = jwt.sign(
       {
-        id: user.id || 1,
+        id: user.id,
         username: user.username,
         email: user.email,
         role: user.role
       },
       JWT_SECRET,
-      { expiresIn: '24h' }
+      { expiresIn: accessTokenExpiry }
     );
 
     res.json({
-      token,
-      user: {
-        id: user.id || 1,
-        username: user.username,
-        email: user.email,
-        role: user.role
-      }
+      success: true,
+      token: newAccessToken
     });
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+      throw new AuthenticationError('Invalid or expired refresh token');
+    }
+    throw error;
   }
-});
+}));
 
 // Get current user info
 router.get('/me', authenticateToken, (req, res) => {
   res.json({
+    success: true,
     user: {
       id: req.user.id,
       username: req.user.username,
@@ -89,8 +152,11 @@ router.get('/me', authenticateToken, (req, res) => {
 
 // Logout endpoint
 router.post('/logout', authenticateToken, (req, res) => {
-  // In a production app, you might want to blacklist the token
-  res.json({ message: 'Logged out successfully' });
+  // In a production app with refresh tokens in DB, you would invalidate them here
+  res.json({ 
+    success: true,
+    message: 'Logged out successfully' 
+  });
 });
 
 module.exports = router;

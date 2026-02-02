@@ -1,140 +1,231 @@
 const express = require('express');
 const { authenticateToken, requireAdmin } = require('../middleware/auth');
 const { logActivity } = require('../middleware/activity');
+const { validate, groupCreateSchema, groupUpdateSchema, idParamSchema } = require('../utils/validation');
+const { asyncHandler, NotFoundError, ConflictError } = require('../utils/errors');
 const db = require('../database/sqlite');
 
 const router = express.Router();
 
 // Get all groups
-router.get('/', authenticateToken, (req, res) => {
-  db.all(`
-    SELECT g.*, 
-           COUNT(u.id) as user_count
-    FROM groups g
-    LEFT JOIN users u ON g.name = u.role
-    GROUP BY g.id
-    ORDER BY g.name
-  `, (err, rows) => {
-    if (err) {
-      console.error('Error fetching groups:', err);
-      return res.status(500).json({ error: 'Failed to fetch groups' });
-    }
-    res.json(rows);
+router.get('/', authenticateToken, asyncHandler(async (req, res) => {
+  const groups = await new Promise((resolve, reject) => {
+    db.all(`
+      SELECT g.*, 
+             COUNT(ug.user_id) as user_count
+      FROM groups g
+      LEFT JOIN user_groups ug ON g.id = ug.group_id
+      GROUP BY g.id
+      ORDER BY g.name
+    `, (err, rows) => {
+      if (err) reject(err);
+      else resolve(rows);
+    });
   });
-});
+
+  res.json({
+    success: true,
+    groups
+  });
+}));
 
 // Get group by ID with users
-router.get('/:id', authenticateToken, (req, res) => {
+router.get('/:id', authenticateToken, validate(idParamSchema, 'params'), asyncHandler(async (req, res) => {
   const groupId = parseInt(req.params.id);
   
-  db.get(`SELECT * FROM groups WHERE id = ?`, [groupId], (err, group) => {
-    if (err) {
-      console.error('Error fetching group:', err);
-      return res.status(500).json({ error: 'Failed to fetch group' });
-    }
-    
-    if (!group) {
-      return res.status(404).json({ error: 'Group not found' });
-    }
+  const group = await new Promise((resolve, reject) => {
+    db.get(`SELECT * FROM groups WHERE id = ?`, [groupId], (err, row) => {
+      if (err) reject(err);
+      else resolve(row);
+    });
+  });
 
-    // Get users in this group
+  if (!group) {
+    throw new NotFoundError('Group');
+  }
+
+  // Get users in this group
+  const users = await new Promise((resolve, reject) => {
     db.all(`
-      SELECT u.id, u.username, u.email, u.role, u.status
+      SELECT u.id, u.username, u.email, u.role, u.is_active
       FROM users u
       JOIN user_groups ug ON u.id = ug.user_id
       WHERE ug.group_id = ?
-    `, [groupId], (err, users) => {
-      if (err) {
-        console.error('Error fetching group users:', err);
-        return res.status(500).json({ error: 'Failed to fetch group users' });
-      }
-      
-      res.json({ ...group, users });
+    `, [groupId], (err, rows) => {
+      if (err) reject(err);
+      else resolve(rows);
     });
   });
-});
+
+  res.json({
+    success: true,
+    group: { ...group, users }
+  });
+}));
 
 // Create new group (admin only)
-router.post('/', authenticateToken, requireAdmin, logActivity('group_create', 'group', { resourceIdField: 'name' }), (req, res) => {
-  const { name, description } = req.body;
-  
-  if (!name) {
-    return res.status(400).json({ error: 'Group name is required' });
-  }
+router.post('/', 
+  authenticateToken, 
+  requireAdmin,
+  validate(groupCreateSchema),
+  logActivity('group_create', 'group', { resourceIdField: 'name' }),
+  asyncHandler(async (req, res) => {
+    const { name, description } = req.body;
 
-  db.run(`
-    INSERT INTO groups (name, description)
-    VALUES (?, ?)
-  `, [name, description], function(err) {
-    if (err) {
-      if (err.message.includes('UNIQUE constraint failed')) {
-        return res.status(400).json({ error: 'Group name already exists' });
-      }
-      console.error('Error creating group:', err);
-      return res.status(500).json({ error: 'Failed to create group' });
-    }
-    
-    res.status(201).json({
-      id: this.lastID,
-      name,
-      description,
-      created_at: new Date().toISOString()
+    // Check if group name already exists
+    const existing = await new Promise((resolve, reject) => {
+      db.get(`SELECT id FROM groups WHERE name = ?`, [name], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
     });
-  });
-});
+
+    if (existing) {
+      throw new ConflictError('Group name already exists');
+    }
+
+    const groupId = await new Promise((resolve, reject) => {
+      db.run(`
+        INSERT INTO groups (name, description, created_at)
+        VALUES (?, ?, ?)
+      `, [name, description || '', new Date().toISOString()], function(err) {
+        if (err) reject(err);
+        else resolve(this.lastID);
+      });
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Group created successfully',
+      group: {
+        id: groupId,
+        name,
+        description: description || '',
+        created_at: new Date().toISOString()
+      }
+    });
+  })
+);
 
 // Update group (admin only)
-router.put('/:id', authenticateToken, requireAdmin, logActivity('group_update', 'group'), (req, res) => {
-  const groupId = parseInt(req.params.id);
-  const { name, description } = req.body;
-  
-  if (!name) {
-    return res.status(400).json({ error: 'Group name is required' });
-  }
+router.put('/:id',
+  authenticateToken,
+  requireAdmin,
+  validate(idParamSchema, 'params'),
+  validate(groupUpdateSchema),
+  logActivity('group_update', 'group'),
+  asyncHandler(async (req, res) => {
+    const groupId = parseInt(req.params.id);
+    const { name, description } = req.body;
 
-  db.run(`
-    UPDATE groups 
-    SET name = ?, description = ?
-    WHERE id = ?
-  `, [name, description, groupId], function(err) {
-    if (err) {
-      if (err.message.includes('UNIQUE constraint failed')) {
-        return res.status(400).json({ error: 'Group name already exists' });
+    // Check if group exists
+    const existing = await new Promise((resolve, reject) => {
+      db.get(`SELECT id FROM groups WHERE id = ?`, [groupId], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
+    });
+
+    if (!existing) {
+      throw new NotFoundError('Group');
+    }
+
+    // Check if new name conflicts with another group
+    if (name) {
+      const nameConflict = await new Promise((resolve, reject) => {
+        db.get(`SELECT id FROM groups WHERE name = ? AND id != ?`, [name, groupId], (err, row) => {
+          if (err) reject(err);
+          else resolve(row);
+        });
+      });
+
+      if (nameConflict) {
+        throw new ConflictError('Group name already exists');
       }
-      console.error('Error updating group:', err);
-      return res.status(500).json({ error: 'Failed to update group' });
     }
-    
-    if (this.changes === 0) {
-      return res.status(404).json({ error: 'Group not found' });
+
+    // Build update query
+    const updates = [];
+    const values = [];
+
+    if (name) {
+      updates.push('name = ?');
+      values.push(name);
     }
-    
-    res.json({ message: 'Group updated successfully' });
-  });
-});
+    if (description !== undefined) {
+      updates.push('description = ?');
+      values.push(description);
+    }
+
+    if (updates.length === 0) {
+      throw new Error('No valid fields to update');
+    }
+
+    values.push(groupId);
+
+    await new Promise((resolve, reject) => {
+      db.run(
+        `UPDATE groups SET ${updates.join(', ')} WHERE id = ?`,
+        values,
+        (err) => {
+          if (err) reject(err);
+          else resolve();
+        }
+      );
+    });
+
+    res.json({
+      success: true,
+      message: 'Group updated successfully'
+    });
+  })
+);
 
 // Delete group (admin only)
-router.delete('/:id', authenticateToken, requireAdmin, logActivity('group_delete', 'group'), (req, res) => {
-  const groupId = parseInt(req.params.id);
-  
-  db.run(`DELETE FROM groups WHERE id = ?`, [groupId], function(err) {
-    if (err) {
-      console.error('Error deleting group:', err);
-      return res.status(500).json({ error: 'Failed to delete group' });
-    }
-    
-    if (this.changes === 0) {
-      return res.status(404).json({ error: 'Group not found' });
-    }
-    
-    res.json({ message: 'Group deleted successfully' });
-  });
-});
+router.delete('/:id',
+  authenticateToken,
+  requireAdmin,
+  validate(idParamSchema, 'params'),
+  logActivity('group_delete', 'group'),
+  asyncHandler(async (req, res) => {
+    const groupId = parseInt(req.params.id);
 
-// Add user to group (admin only)
-router.post('/:id/users', authenticateToken, requireAdmin, logActivity('group_add_user', 'group'), (req, res) => {
-  const groupId = parseInt(req.params.id);
-  const { userId } = req.body;
+    // Check if group exists
+    const existing = await new Promise((resolve, reject) => {
+      db.get(`SELECT name FROM groups WHERE id = ?`, [groupId], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
+    });
+
+    if (!existing) {
+      throw new NotFoundError('Group');
+    }
+
+    // Delete group
+    await new Promise((resolve, reject) => {
+      db.run(`DELETE FROM groups WHERE id = ?`, [groupId], (err) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+
+    // Clean up user_groups relationships
+    await new Promise((resolve, reject) => {
+      db.run(`DELETE FROM user_groups WHERE group_id = ?`, [groupId], (err) => {
+        if (err) console.error('Error deleting user_groups:', err);
+        resolve();
+      });
+    });
+
+    res.json({
+      success: true,
+      message: `Group ${existing.name} deleted successfully`
+    });
+  })
+);
+
+module.exports = router;
   
   if (!userId) {
     return res.status(400).json({ error: 'User ID is required' });
