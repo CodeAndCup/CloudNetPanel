@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # CloudNet Panel Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cloudnet-panel
+    restart: unless-stopped
+    ports:
+      - "${PORT:-5000}:5000"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - PORT=5000
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_ACCESS_EXPIRY=${JWT_ACCESS_EXPIRY:-1h}
+      - JWT_REFRESH_EXPIRY=${JWT_REFRESH_EXPIRY:-7d}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:3000}
+      - CLOUDNET_API_ENABLED=${CLOUDNET_API_ENABLED:-true}
+      - CLOUDNET_API_URL=${CLOUDNET_API_URL:-http://host.docker.internal:2812/api/v3}
+      - CLOUDNET_API_USERNAME=${CLOUDNET_API_USERNAME:-administrator}
+      - CLOUDNET_API_PASSWORD=${CLOUDNET_API_PASSWORD:-administrator}
+      - DB_PATH=/app/server/database/cloudnet_panel.db
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      - cloudnet-database:/app/server/database
+      - cloudnet-backups:/app/server/backups
+      - cloudnet-logs:/app/server/logs
+    networks:
+      - cloudnet-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:5000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # Redis for caching (optional, Phase 4)
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: cloudnet-redis
+  #   restart: unless-stopped
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - cloudnet-redis:/data
+  #   networks:
+  #     - cloudnet-network
+  #   command: redis-server --appendonly yes
+
+  # Nginx reverse proxy with SSL (optional)
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: cloudnet-nginx
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  #     - ./nginx/ssl:/etc/nginx/ssl:ro
+  #   networks:
+  #     - cloudnet-network
+  #   depends_on:
+  #     - app
+
+volumes:
+  cloudnet-database:
+    driver: local
+  cloudnet-backups:
+    driver: local
+  cloudnet-logs:
+    driver: local
+  # cloudnet-redis:
+  #   driver: local
+
+networks:
+  cloudnet-network:
+    driver: bridge

@@ -1,0 +1,67 @@
+# Docker ignore file for CloudNet Panel
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Testing
+coverage/
+*.test.js
+*.spec.js
+__tests__/
+e2e/
+
+# Development
+.env
+.env.local
+.env.*.local
+*.log
+
+# Build outputs (will be built in Docker)
+client/dist/
+client/build/
+server/dist/
+
+# Database (will be in volume)
+server/database/*.db
+server/database/*.db-journal
+
+# Backups (will be in volume)
+server/backups/
+
+# Logs (will be in volume)
+server/logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation (not needed in image)
+*.md
+docs/
+.claude/
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
