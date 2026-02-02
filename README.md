@@ -23,10 +23,10 @@ A modern web-based management panel for CloudNet servers, designed with a user-f
 ## Quick Start
 
 ### Prerequisites
-- Node.js 18+ 
+- Node.js 18+ (Node.js 20 recommended)
 - npm or yarn
 
-### Installation
+### Classic Installation
 
 1. **Clone the repository**
 ```bash
@@ -39,29 +39,48 @@ cd CloudNetPanel
 npm run install-deps
 ```
 
-3. **Make your configuration**
-- Make steps inside [QuickConfiguration](https://github.com/CodeAndCup/CloudNetPanel?tab=readme-ov-file#quick-configuration)
+3. **Configuration**
+- Follow the steps in the [SETUP.md](SETUP.md) guide or the [Quick Configuration](#quick-configuration) section below.
 
-4. **Start servers**
+4. **Start the servers**
 ```bash
 npm run dev
 ```
 
 This will start:
-- Backend API server on `http://localhost:5000`
-- Frontend development server on `http://localhost:3000`
+- The backend API server at `http://localhost:5000`
+- The frontend development server at `http://localhost:3000`
+
+### Deployment with Docker
+
+You can run the application using Docker for simplified deployment.
+
+1. **Copy the environment example file**
+```bash
+cp server/.env.example server/.env
+```
+2. **(Optional) Edit variables in `server/.env` as needed.**
+
+3. **Start Docker Compose**
+```bash
+docker-compose up --build -d
+```
+
+- The application will be accessible on port 5000 (modifiable via the `PORT` environment variable).
+- Data (database, backups, logs) is persisted in Docker volumes.
+- See [docker-compose.yml](docker-compose.yml) for the full list of configurable environment variables.
 
 ### Default Login
 - **Username**: `admin`
 - **Password**: `password`
 
-⚠️ **Please change the default credentials after first login!**
+⚠️ **Change the default credentials after your first login!**
 
-The application will serve the built frontend and API from port 5000.
+The application serves the built frontend and API on port 5000 in production.
 
 ## CloudNet REST API Integration
 
-The panel supports integration with CloudNet REST API for real-time server management. See [CLOUDNET_API.md](CLOUDNET_API.md) for detailed configuration instructions.
+The panel supports integration with the CloudNet REST API for real-time management. See [CLOUDNET_API.md](CLOUDNET_API.md) for detailed configuration instructions.
 
 ### Quick Configuration
 
@@ -90,6 +109,10 @@ The panel supports integration with CloudNet REST API for real-time server manag
 - **Vite** for build tooling
 - **Axios** for API communication
 - **Lucide React** for icons
+
+## Documentation
+- [CLOUDNET_API.md](CLOUDNET_API.md) — CloudNet API configuration
+- [SETUP.md](SETUP.md) — Quick setup guide
 
 ## API Endpoints
 
@@ -173,10 +196,10 @@ For support and questions, please open an issue on GitHub.
 
 ## Special thanks
 
-Developement:
+Development:
 - [PopoGH](https://github.com/PoPoGH)
 
-Traduction:
+Translation:
 - [XDaten](https://discord.com/users/905172645576847421)
 
 

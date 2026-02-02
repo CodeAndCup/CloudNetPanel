@@ -1,6 +1,6 @@
 {
   "name": "cloudnet-panel",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A modern web panel for CloudNet server management",
   "main": "server/index.js",
   "scripts": {
