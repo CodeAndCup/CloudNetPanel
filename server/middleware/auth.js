@@ -1,7 +1,29 @@
 const jwt = require('jsonwebtoken');
 const db = require('../database/sqlite');
+const { AuthenticationError, AuthorizationError } = require('../utils/errors');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'cloudnet-panel-secret-key-change-in-production';
+// Validate JWT_SECRET exists and is secure
+if (!process.env.JWT_SECRET) {
+  console.error('\n❌ FATAL ERROR: JWT_SECRET environment variable is not set!');
+  console.error('   The application cannot start without a secure JWT secret.\n');
+  console.error('   Generate one using: npm run generate-secret\n');
+  process.exit(1);
+}
+
+if (process.env.JWT_SECRET.length < 32) {
+  console.error('\n❌ FATAL ERROR: JWT_SECRET must be at least 32 characters long!');
+  console.error('   Current length:', process.env.JWT_SECRET.length);
+  console.error('   Generate a secure secret using: npm run generate-secret\n');
+  process.exit(1);
+}
+
+if (process.env.JWT_SECRET === 'cloudnet-panel-secret-key-change-in-production') {
+  console.error('\n❌ FATAL ERROR: JWT_SECRET is using the default insecure value!');
+  console.error('   Generate a secure secret using: npm run generate-secret\n');
+  process.exit(1);
+}
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];

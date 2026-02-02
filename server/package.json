@@ -5,13 +5,16 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "create-admin": "node ../scripts/create-admin.js",
+    "generate-secret": "node ../scripts/generate-jwt-secret.js"
   },
   "dependencies": {
     "archiver": "^7.0.1",
     "axios": "^1.12.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "dotenv": "^17.2.1",
     "express": "^4.22.1",
     "express-rate-limit": "^7.1.5",
@@ -20,7 +23,8 @@
     "multer": "^2.0.2",
     "node-cron": "^4.2.1",
     "sqlite3": "^5.1.6",
-    "ws": "^8.14.2"
+    "ws": "^8.14.2",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

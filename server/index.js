@@ -8,6 +8,10 @@ const fs = require('fs');
 const WebSocket = require('ws');
 const http = require('http');
 
+// Import utilities
+const { errorHandler, notFoundHandler } = require('./utils/errors');
+const { validateStartup } = require('./utils/startup');
+
 const authRoutes = require('./routes/auth');
 const serverRoutes = require('./routes/servers');
 const nodeRoutes = require('./routes/nodes');
@@ -37,46 +41,69 @@ const PORT = process.env.PORT || 5000;
 
 // Security middleware
 app.use(helmet());
+
+// CORS Configuration - Whitelist allowed origins
+const getAllowedOrigins = () => {
+  const origins = process.env.ALLOWED_ORIGINS 
+    ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
+    : ['http://localhost:3000', 'http://localhost:5173'];
+  
+  // Add production origins if specified
+  if (process.env.NODE_ENV === 'production' && !process.env.ALLOWED_ORIGINS) {
+    console.warn('⚠️  WARNING: ALLOWED_ORIGINS not set in production! Using default localhost only.');
+  }
+  
+  return origins;
+};
+
 app.use(cors({
-  origin: '*',
+  origin: (origin, callback) => {
+    const allowedOrigins = getAllowedOrigins();
+    
+    // Allow requests with no origin (like mobile apps, Postman, curl)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`🚫 Blocked CORS request from unauthorized origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: 'GET,POST,PUT,PATCH,DELETE,OPTIONS',
   allowedHeaders: 'Authorization,Content-Type'
 }));
 
-// Rate limiting - More permissive for navigation and authenticated users
+// Rate limiting configuration
 const generalLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minute (shorter window)
-  max: 300, // Higher limit for general requests
-  message: { error: 'Too many requests, please try again later' }
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 100, // Reasonable limit for general requests
+  message: { 
+    success: false,
+    error: { 
+      code: 'RATE_LIMIT_EXCEEDED',
+      message: 'Too many requests, please try again later' 
+    }
+  },
+  standardHeaders: true,
+  legacyHeaders: false
 });
 
 // Stricter rate limiting for auth endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 10, // Lower limit for auth attempts
-  message: { error: 'Too many authentication attempts, please try again later' }
-});
-
-// Very permissive for navigation/info endpoints
-const navigationLimiter = rateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 100, // High limit for navigation
-  skip: (req) => {
-    // Skip rate limiting for authenticated admin users
-    const authHeader = req.headers['authorization'];
-    if (authHeader) {
-      try {
-        const token = authHeader.split(' ')[1];
-        const jwt = require('jsonwebtoken');
-        const decoded = jwt.verify(token, require('./middleware/auth').JWT_SECRET);
-        return decoded.role === 'Administrators';
-      } catch (e) {
-        // Token invalid, apply rate limiting
-      }
+  max: 5, // Very strict: only 5 attempts per 15 minutes
+  message: { 
+    success: false,
+    error: { 
+      code: 'AUTH_RATE_LIMIT_EXCEEDED',
+      message: 'Too many authentication attempts. Please try again in 15 minutes.' 
     }
-    return false;
-  }
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: false // Count all attempts, not just failed ones
 });
 
 app.use(generalLimiter);
@@ -133,6 +160,10 @@ if (fs.existsSync(clientBuildPath)) {
     res.status(404).json({ error: 'Client not built. Run "npm run build" first.' });
   });
 }
+
+// Global error handlers (must be after all routes)
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 // Store CloudNet WebSocket connections for each service
 const cloudnetConnections = new Map();
@@ -447,47 +478,98 @@ const broadcastServerLog = (serverId, logLine) => {
   });
 };
 
-server.listen(PORT, () => {
-  console.log(`CloudNet Panel server running on port ${PORT}`);
-
-  if(!fs.existsSync(path.join(__dirname,'.env'))) {
-  	console.error('Error: server/.env file is missing. Server startup aborted.');
-  	process.exit(1);
-  }
-
-  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-
-  // Log CloudNet API configuration
-  const config = require('./config/cloudnet');
-  console.log(`CloudNet API Enabled: ${config.cloudnet.enabled}`);
-  console.log(`CloudNet API URL: ${config.cloudnet.baseUrl}`);
-  if (config.cloudnet.enabled) {
-    console.log('CloudNet API is ENABLED - panel will require CloudNet connectivity');
-  } else {
-    console.log('CloudNet API is DISABLED - panel will not function properly');
-  }
-
-  // Initialize default data after server starts
-  setTimeout(() => {
-    initializeDefaultData();
-  }, 1000);
-
-  // Check for updates on startup (non-blocking)
-  setTimeout(async () => {
-    try {
-      console.log('Checking for updates...');
-      const updateInfo = await githubUpdateService.getUpdateInfo();
-
-      if (updateInfo.error) {
-        console.log(`Update check failed: ${updateInfo.message}`);
-      } else if (!updateInfo.upToDate) {
-        console.log(`🚀 Update available! Current: ${updateInfo.currentVersion}, Latest: ${updateInfo.latestVersion}`);
-        console.log(`📦 Download: ${updateInfo.downloadUrl}`);
-      } else {
-        console.log(`✅ CloudNet Panel is up to date (${updateInfo.currentVersion})`);
+// Graceful shutdown handler
+const gracefulShutdown = (signal) => {
+  console.log(`\n${signal} received. Starting graceful shutdown...`);
+  
+  server.close(() => {
+    console.log('HTTP server closed');
+    
+    // Close WebSocket server
+    wss.clients.forEach((client) => {
+      client.close();
+    });
+    console.log('WebSocket connections closed');
+    
+    // Close CloudNet connections
+    cloudnetConnections.forEach((conn) => {
+      if (conn.socket) {
+        conn.socket.close();
       }
-    } catch (error) {
-      console.log(`Update check failed: ${error.message}`);
-    }
-  }, 5000); // Check for updates 5 seconds after startup
-});
+    });
+    console.log('CloudNet connections closed');
+    
+    console.log('Graceful shutdown complete');
+    process.exit(0);
+  });
+  
+  // Force shutdown after 30 seconds
+  setTimeout(() => {
+    console.error('Forced shutdown after timeout');
+    process.exit(1);
+  }, 30000);
+};
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+// Start server with validation
+async function startServer() {
+  try {
+    // Run startup validation
+    await validateStartup({ strict: true, generateSecret: false });
+    
+    server.listen(PORT, () => {
+      console.log(`\n🚀 CloudNet Panel server running on port ${PORT}`);
+      console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
+      
+      if(!fs.existsSync(path.join(__dirname,'.env'))) {
+        console.error('\n❌ Error: server/.env file is missing. Server startup aborted.');
+        process.exit(1);
+      }
+
+      // Log CloudNet API configuration
+      const config = require('./config/cloudnet');
+      console.log(`   CloudNet API: ${config.cloudnet.enabled ? 'ENABLED' : 'DISABLED'}`);
+      console.log(`   CloudNet URL: ${config.cloudnet.baseUrl}`);
+      
+      if (config.cloudnet.enabled) {
+        console.log('   CloudNet API is ENABLED - panel will require CloudNet connectivity');
+      } else {
+        console.log('   ⚠️  CloudNet API is DISABLED - some features will not work');
+      }
+      
+      console.log(`\n✅ Server ready at http://localhost:${PORT}\n`);
+
+      // Initialize default data after server starts
+      setTimeout(() => {
+        initializeDefaultData();
+      }, 1000);
+
+      // Check for updates on startup (non-blocking)
+      setTimeout(async () => {
+        try {
+          console.log('Checking for updates...');
+          const updateInfo = await githubUpdateService.getUpdateInfo();
+
+          if (updateInfo.error) {
+            console.log(`   Update check failed: ${updateInfo.message}`);
+          } else if (!updateInfo.upToDate) {
+            console.log(`   🚀 Update available! Current: ${updateInfo.currentVersion}, Latest: ${updateInfo.latestVersion}`);
+            console.log(`   📦 Download: ${updateInfo.downloadUrl}`);
+          } else {
+            console.log(`   ✅ CloudNet Panel is up to date (${updateInfo.currentVersion})`);
+          }
+        } catch (error) {
+          console.log(`   Update check failed: ${error.message}`);
+        }
+      }, 5000); // Check for updates 5 seconds after startup
+    });
+  } catch (error) {
+    console.error('\n❌ Startup validation failed:', error.message);
+    process.exit(1);
+  }
+}
+
+// Start the server
+startServer();

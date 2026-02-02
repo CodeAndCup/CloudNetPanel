@@ -11,7 +11,9 @@
     "client-start": "cd client && npm start",
     "server-start": "cd server && npm start",
     "build": "cd client && npm run build",
-    "install-deps": "npm install && cd server && npm install && cd ../client && npm install"
+    "install-deps": "npm install && cd server && npm install && cd ../client && npm install",
+    "create-admin": "cd server && npm run create-admin",
+    "generate-secret": "node scripts/generate-jwt-secret.js"
   },
   "keywords": [
     "cloudnet",

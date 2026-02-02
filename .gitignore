@@ -115,3 +115,5 @@ dist/
 .DS_Store
 Thumbs.db
 server/middleware/activity.js.backup
+
+.claude/
