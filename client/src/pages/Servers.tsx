@@ -98,8 +98,11 @@ const Servers: React.FC = () => {
       return;
     }
 
-    const wsUrl = `${getWebSocketUrl()}?token=${encodeURIComponent(token)}`;
-    const socket = new WebSocket(wsUrl);
+    // WebSocket connection with token in Sec-WebSocket-Protocol header
+    // The browser will automatically set the protocol header
+    const wsUrl = getWebSocketUrl();
+    const protocols = [`authorization.bearer.${token}`];
+    const socket = new WebSocket(wsUrl, protocols);
 
     socket.onopen = () => {
       console.log('WebSocket connected');
