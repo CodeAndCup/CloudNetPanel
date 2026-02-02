@@ -106,6 +106,21 @@ const authLimiter = rateLimit({
   skipSuccessfulRequests: false // Count all attempts, not just failed ones
 });
 
+// Navigation/API rate limiting for regular endpoints
+const navigationLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 60, // 60 requests per minute for navigation
+  message: { 
+    success: false,
+    error: { 
+      code: 'RATE_LIMIT_EXCEEDED',
+      message: 'Too many requests, please try again later' 
+    }
+  },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
 app.use(generalLimiter);
 
 // Body parsing middleware
