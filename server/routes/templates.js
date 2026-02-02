@@ -79,51 +79,45 @@ router.get('/files', authenticateToken, checkFilePermission('read'), asyncHandle
 
   if (stats.isDirectory()) {
     const items = await fs.readdir(fullPath);
-      const fileList = await Promise.all(
-        items.map(async (item) => {
-          const itemPath = path.join(fullPath, item);
-          const itemStats = await fs.stat(itemPath);
-          return {
-            name: item,
-            path: getRelativePath(itemPath),
-            type: itemStats.isDirectory() ? 'directory' : 'file',
-            size: itemStats.size,
-            modified: itemStats.mtime,
-            permissions: {
-              read: true, // Will be determined by middleware
-              write: true, // TODO: Check actual permissions
-              delete: true // TODO: Check actual permissions
-            }
-          };
-        })
-      );
-
-      res.json({
-        currentPath: requestedPath,
-        items: fileList.sort((a, b) => {
-          // Directories first, then files
-          if (a.type !== b.type) {
-            return a.type === 'directory' ? -1 : 1;
+    const fileList = await Promise.all(
+      items.map(async (item) => {
+        const itemPath = path.join(fullPath, item);
+        const itemStats = await fs.stat(itemPath);
+        return {
+          name: item,
+          path: getRelativePath(itemPath),
+          type: itemStats.isDirectory() ? 'directory' : 'file',
+          size: itemStats.size,
+          modified: itemStats.mtime,
+          permissions: {
+            read: true,
+            write: true,
+            delete: true
           }
-          return a.name.localeCompare(b.name);
-        })
-      });
-    } else {
-      res.json({
-        currentPath: requestedPath,
-        type: 'file',
-        size: stats.size,
-        modified: stats.mtime
-      });
-    }
-  } catch (error) {
-    if (error.code === 'ENOENT') {
-      return res.status(404).json({ error: 'File or directory not found' });
-    }
-    console.error('Error listing files:', error);
-    res.status(500).json({ error: 'Failed to list files' });
+        };
+      })
+    );
+
+    res.json({
+      success: true,
+      currentPath: requestedPath,
+      items: fileList.sort((a, b) => {
+        if (a.type !== b.type) {
+          return a.type === 'directory' ? -1 : 1;
+        }
+        return a.name.localeCompare(b.name);
+      })
+    });
+  } else {
+    res.json({
+      success: true,
+      currentPath: requestedPath,
+      type: 'file',
+      size: stats.size,
+      modified: stats.mtime
+    });
   }
-});
+}));
 
 // Get file content
 router.get('/files/content', authenticateToken, checkFilePermission('read'), async (req, res) => {

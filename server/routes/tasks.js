@@ -186,72 +186,89 @@ router.put('/:id', authenticateToken, validate(idParamSchema, 'params'), validat
 
   // Validate schedule if provided
   if (schedule && !cron.validate(schedule)) {
-    return res.status(400).json({ error: 'Invalid cron schedule format' });
+    throw new Error('Invalid cron schedule format');
   }
 
-  db.run(`
-    UPDATE tasks 
-    SET name = ?, description = ?, type = ?, schedule = ?, command = ?, status = ?
-    WHERE id = ?
-  `, [name, description, type, schedule, command, status || 'inactive', taskId], function (err) {
-    if (err) {
-      console.error('Error updating task:', err);
-      return res.status(500).json({ error: 'Failed to update task' });
-    }
+  // Determine status
+  const taskStatus = enabled !== undefined ? (enabled ? 'active' : 'inactive') : undefined;
 
-    if (this.changes === 0) {
-      return res.status(404).json({ error: 'Task not found' });
-    }
+  // Build update query dynamically based on provided fields
+  const updates = [];
+  const values = [];
 
-    // Update cron job if task is scheduled
-    if (schedule && status === 'active') {
-      if (activeCronJobs.has(taskId)) {
-        activeCronJobs.get(taskId).stop();
+  if (name !== undefined) { updates.push('name = ?'); values.push(name); }
+  if (description !== undefined) { updates.push('description = ?'); values.push(description); }
+  if (type !== undefined) { updates.push('type = ?'); values.push(type); }
+  if (schedule !== undefined) { updates.push('schedule = ?'); values.push(schedule); }
+  if (command !== undefined) { updates.push('command = ?'); values.push(command); }
+  if (taskStatus !== undefined) { updates.push('status = ?'); values.push(taskStatus); }
+  
+  values.push(taskId);
+
+  const changes = await new Promise((resolve, reject) => {
+    db.run(
+      `UPDATE tasks SET ${updates.join(', ')} WHERE id = ?`,
+      values,
+      function (err) {
+        if (err) reject(err);
+        else resolve(this.changes);
       }
+    );
+  });
 
-      const job = cron.schedule(schedule, () => {
-        const task = { id: taskId, name, type, command };
-        executeTask(task);
-      }, { scheduled: true });
+  if (changes === 0) {
+    throw new NotFoundError('Task');
+  }
 
-      activeCronJobs.set(taskId, job);
-    } else if (activeCronJobs.has(taskId)) {
+  // Update cron job if task is scheduled
+  if (schedule && taskStatus === 'active') {
+    if (activeCronJobs.has(taskId)) {
       activeCronJobs.get(taskId).stop();
-      activeCronJobs.delete(taskId);
     }
 
-    res.json({ message: 'Task updated successfully' });
+    const job = cron.schedule(schedule, () => {
+      const task = { id: taskId, name, type, command };
+      executeTask(task);
+    }, { scheduled: true });
+
+    activeCronJobs.set(taskId, job);
+  } else if (activeCronJobs.has(taskId)) {
+    activeCronJobs.get(taskId).stop();
+    activeCronJobs.delete(taskId);
+  }
+
+  res.json({ 
+    success: true,
+    message: 'Task updated successfully' 
   });
-});
+}));
 
 // Execute task manually
-router.post('/:id/execute', authenticateToken, checkTaskPermission('execute'), async (req, res) => {
+router.post('/:id/execute', authenticateToken, validate(idParamSchema, 'params'), checkTaskPermission('execute'), asyncHandler(async (req, res) => {
   const taskId = parseInt(req.params.id);
 
-  try {
-    const task = await new Promise((resolve, reject) => {
-      db.get(`SELECT * FROM tasks WHERE id = ?`, [taskId], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
+  const task = await new Promise((resolve, reject) => {
+    db.get(`SELECT * FROM tasks WHERE id = ?`, [taskId], (err, row) => {
+      if (err) reject(err);
+      else resolve(row);
     });
+  });
 
-    if (!task) {
-      return res.status(404).json({ error: 'Task not found' });
-    }
-
-    // Execute task asynchronously
-    executeTask(task);
-
-    res.json({ message: 'Task execution started' });
-  } catch (error) {
-    console.error('Error executing task:', error);
-    res.status(500).json({ error: 'Failed to execute task' });
+  if (!task) {
+    throw new NotFoundError('Task');
   }
-});
+
+  // Execute task asynchronously
+  executeTask(task);
+
+  res.json({ 
+    success: true,
+    message: 'Task execution started' 
+  });
+}));
 
 // Delete task
-router.delete('/:id', authenticateToken, checkTaskPermission('write'), (req, res) => {
+router.delete('/:id', authenticateToken, validate(idParamSchema, 'params'), checkTaskPermission('write'), asyncHandler(async (req, res) => {
   const taskId = parseInt(req.params.id);
 
   // Stop cron job if active
@@ -260,19 +277,22 @@ router.delete('/:id', authenticateToken, checkTaskPermission('write'), (req, res
     activeCronJobs.delete(taskId);
   }
 
-  db.run(`DELETE FROM tasks WHERE id = ?`, [taskId], function (err) {
-    if (err) {
-      console.error('Error deleting task:', err);
-      return res.status(500).json({ error: 'Failed to delete task' });
-    }
-
-    if (this.changes === 0) {
-      return res.status(404).json({ error: 'Task not found' });
-    }
-
-    res.json({ message: 'Task deleted successfully' });
+  const changes = await new Promise((resolve, reject) => {
+    db.run(`DELETE FROM tasks WHERE id = ?`, [taskId], function (err) {
+      if (err) reject(err);
+      else resolve(this.changes);
+    });
   });
-});
+
+  if (changes === 0) {
+    throw new NotFoundError('Task');
+  }
+
+  res.json({ 
+    success: true,
+    message: 'Task deleted successfully' 
+  });
+}));
 
 // Grant task permission to user or group
 router.post('/:id/permissions', authenticateToken, requireAdmin, (req, res) => {

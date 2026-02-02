@@ -269,34 +269,3 @@ router.delete('/:id',
 );
 
 module.exports = router;
-  }
-
-  try {
-    // Check if user exists
-    const existingUser = await new Promise((resolve, reject) => {
-      db.get(`SELECT id FROM users WHERE id = ?`, [userId], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
-
-    if (!existingUser) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    // Delete user (foreign key constraints will handle related data)
-    await new Promise((resolve, reject) => {
-      db.run(`DELETE FROM users WHERE id = ?`, [userId], (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
-
-    res.json({ message: 'User deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting user:', error);
-    res.status(500).json({ error: 'Failed to delete user' });
-  }
-});
-
-module.exports = router;

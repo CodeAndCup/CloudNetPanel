@@ -225,48 +225,61 @@ router.delete('/:id',
   })
 );
 
-module.exports = router;
-  
+// Add user to group (admin only)
+router.post('/:id/users', authenticateToken, requireAdmin, logActivity('group_add_user', 'group'), asyncHandler(async (req, res) => {
+  const groupId = parseInt(req.params.id);
+  const { userId } = req.body;
+
   if (!userId) {
-    return res.status(400).json({ error: 'User ID is required' });
+    throw new Error('User ID is required');
   }
 
-  db.run(`
-    INSERT INTO user_groups (user_id, group_id)
-    VALUES (?, ?)
-  `, [userId, groupId], function(err) {
-    if (err) {
-      if (err.message.includes('UNIQUE constraint failed')) {
-        return res.status(400).json({ error: 'User is already in this group' });
-      }
-      console.error('Error adding user to group:', err);
-      return res.status(500).json({ error: 'Failed to add user to group' });
+  try {
+    await new Promise((resolve, reject) => {
+      db.run(`
+        INSERT INTO user_groups (user_id, group_id)
+        VALUES (?, ?)
+      `, [userId, groupId], function(err) {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
+
+    res.status(201).json({ 
+      success: true,
+      message: 'User added to group successfully' 
+    });
+  } catch (err) {
+    if (err.message.includes('UNIQUE constraint failed')) {
+      throw new ConflictError('User is already in this group');
     }
-    
-    res.status(201).json({ message: 'User added to group successfully' });
-  });
-});
+    throw err;
+  }
+}));
 
 // Remove user from group (admin only)
-router.delete('/:id/users/:userId', authenticateToken, requireAdmin, logActivity('group_remove_user', 'group'), (req, res) => {
+router.delete('/:id/users/:userId', authenticateToken, requireAdmin, validate(idParamSchema, 'params'), logActivity('group_remove_user', 'group'), asyncHandler(async (req, res) => {
   const groupId = parseInt(req.params.id);
   const userId = parseInt(req.params.userId);
   
-  db.run(`
-    DELETE FROM user_groups 
-    WHERE user_id = ? AND group_id = ?
-  `, [userId, groupId], function(err) {
-    if (err) {
-      console.error('Error removing user from group:', err);
-      return res.status(500).json({ error: 'Failed to remove user from group' });
-    }
-    
-    if (this.changes === 0) {
-      return res.status(404).json({ error: 'User not found in group' });
-    }
-    
-    res.json({ message: 'User removed from group successfully' });
+  const changes = await new Promise((resolve, reject) => {
+    db.run(`
+      DELETE FROM user_groups 
+      WHERE user_id = ? AND group_id = ?
+    `, [userId, groupId], function(err) {
+      if (err) reject(err);
+      else resolve(this.changes);
+    });
   });
-});
+
+  if (changes === 0) {
+    throw new NotFoundError('User not found in group');
+  }
+
+  res.json({ 
+    success: true,
+    message: 'User removed from group successfully' 
+  });
+}));
 
 module.exports = router;
