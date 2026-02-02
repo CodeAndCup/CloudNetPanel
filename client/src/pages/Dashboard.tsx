@@ -54,10 +54,12 @@ const Dashboard: React.FC = () => {
         axios.get('/api/system-info/proxyPlayers') // New API call for total connected players
       ]);
 
-      const serverData = serversRes.data;
-      const nodeData = nodesRes.data;
-      const userData = usersRes.data;
+      // Extract arrays from API response format: { success: true, dataKey: [...] }
+      const serverData = Array.isArray(serversRes.data) ? serversRes.data : (serversRes.data.servers || []);
+      const nodeData = Array.isArray(nodesRes.data) ? nodesRes.data : (nodesRes.data.nodes || []);
+      const userData = Array.isArray(usersRes.data) ? usersRes.data : (usersRes.data.users || []);
       const systemData = systemRes.data;
+      const networkData = networkRes.data;
 
       setServers(serverData);
       setNodes(nodeData);
@@ -67,18 +69,36 @@ const Dashboard: React.FC = () => {
         onlineServers: serverData.filter((s: any) => s.status === 'online').length,
         totalNodes: nodeData.length,
         onlineNodes: nodeData.filter((n: any) => n.status === 'online').length,
-        totalUsers: userData.length, //serverData.find((s: any) => s.type === 'Global-Proxy').maxPlayers, //
-        activeUsers: userData.filter((u: any) => u.status === 'active').length, //serverData.find((s: any) => s.type === 'Global-Proxy').players //
-        cpuUsage: (serverData.reduce((sum: any, item: any) => sum + item.cpu, 0) * 100),
+        totalUsers: userData.length,
+        activeUsers: userData.filter((u: any) => u.status === 'active').length,
+        cpuUsage: (serverData.reduce((sum: any, item: any) => sum + (item.cpu || 0), 0) * 100),
         cpuMaxUsage: systemData.cpuCores * 100,
-        memoryUsage: (serverData.reduce((sum: any, item: any) => sum + item.ram, 0)),
+        memoryUsage: (serverData.reduce((sum: any, item: any) => sum + (item.ram || 0), 0)),
         memoryMaxUsage: systemData.totalMemMB,
         diskUsage: 0,
-        onlinePlayers: networkRes.data.totalPlayers,
-        maxOnlinePlayers: networkRes.data.maxTotalPlayers
+        onlinePlayers: networkData.totalPlayers || 0,
+        maxOnlinePlayers: networkData.maxTotalPlayers || 0
       });
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
+      // Set safe defaults on error
+      setServers([]);
+      setNodes([]);
+      setStats({
+        totalServers: 0,
+        onlineServers: 0,
+        totalNodes: 0,
+        onlineNodes: 0,
+        totalUsers: 0,
+        activeUsers: 0,
+        cpuUsage: 0,
+        cpuMaxUsage: 0,
+        memoryUsage: 0,
+        memoryMaxUsage: 0,
+        diskUsage: 0,
+        onlinePlayers: 0,
+        maxOnlinePlayers: 0
+      });
     }
   };
 
