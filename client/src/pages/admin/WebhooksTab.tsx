@@ -57,9 +57,12 @@ const WebhooksTab: React.FC = () => {
   const fetchWebhooks = async () => {
     try {
       const response = await axios.get('/api/webhooks');
-      setWebhooks(response.data);
+      // API returns { success: true, webhooks: [...] }
+      const webhooksData = response.data.webhooks || response.data;
+      setWebhooks(Array.isArray(webhooksData) ? webhooksData : []);
     } catch (error) {
       console.error('Error fetching webhooks:', error);
+      setWebhooks([]);
     } finally {
       setLoading(false);
     }

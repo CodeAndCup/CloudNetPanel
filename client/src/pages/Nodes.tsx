@@ -30,9 +30,12 @@ const Nodes: React.FC = () => {
   const fetchNodes = async () => {
     try {
       const response = await axios.get('/api/nodes');
-      setNodes(response.data);
+      // API returns { success: true, nodes: [...] }
+      const nodesData = response.data.nodes || response.data;
+      setNodes(Array.isArray(nodesData) ? nodesData : []);
     } catch (error) {
       console.error('Error fetching nodes:', error);
+      setNodes([]);
     } finally {
       setLoading(false);
     }

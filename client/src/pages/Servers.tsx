@@ -181,9 +181,12 @@ const Servers: React.FC = () => {
   const fetchServers = async () => {
     try {
       const response = await axios.get('/api/servers');
-      setServers(response.data);
+      // API returns { success: true, servers: [...] }
+      const serversData = response.data.servers || response.data;
+      setServers(Array.isArray(serversData) ? serversData : []);
     } catch (error) {
       console.error('Error fetching servers:', error);
+      setServers([]);
     } finally {
       setLoading(false);
     }

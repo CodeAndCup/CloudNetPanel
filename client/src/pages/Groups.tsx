@@ -51,18 +51,24 @@ const Groups: React.FC = () => {
   const fetchGroups = async () => {
     try {
       const response = await axios.get('/api/groups');
-      setGroups(response.data);
+      // API returns { success: true, groups: [...] }
+      const groupsData = response.data.groups || response.data;
+      setGroups(Array.isArray(groupsData) ? groupsData : []);
     } catch (error) {
       console.error('Error fetching groups:', error);
+      setGroups([]);
     }
   };
 
   const fetchUsers = async () => {
     try {
       const response = await axios.get('/api/users');
-      setUsers(response.data);
+      // API returns { success: true, users: [...] }
+      const usersData = response.data.users || response.data;
+      setUsers(Array.isArray(usersData) ? usersData : []);
     } catch (error) {
       console.error('Error fetching users:', error);
+      setUsers([]);
     } finally {
       setLoading(false);
     }

@@ -51,9 +51,12 @@ const Tasks: React.FC = () => {
     setLoading(true);
     try {
       const response = await axios.get('/api/tasks');
-      setTasks(response.data);
+      // API returns { success: true, tasks: [...] }
+      const tasksData = response.data.tasks || response.data;
+      setTasks(Array.isArray(tasksData) ? tasksData : []);
     } catch (error) {
       console.error('Error fetching tasks:', error);
+      setTasks([]);
     } finally {
       setLoading(false);
     }

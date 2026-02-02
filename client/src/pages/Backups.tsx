@@ -50,9 +50,12 @@ const Backups: React.FC = () => {
     setLoading(true);
     try {
       const response = await axios.get('/api/backups');
-      setBackups(response.data);
+      // API returns { success: true, backups: [...] }
+      const backupsData = response.data.backups || response.data;
+      setBackups(Array.isArray(backupsData) ? backupsData : []);
     } catch (error) {
       console.error('Error fetching backups:', error);
+      setBackups([]);
     } finally {
       setLoading(false);
     }

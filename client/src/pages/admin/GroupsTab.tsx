@@ -37,9 +37,12 @@ const GroupsTab: React.FC = () => {
   const fetchGroups = async () => {
     try {
       const response = await axios.get('/api/groups');
-      setGroups(response.data);
+      // API returns { success: true, groups: [...] }
+      const groupsData = response.data.groups || response.data;
+      setGroups(Array.isArray(groupsData) ? groupsData : []);
     } catch (error) {
       console.error('Error fetching groups:', error);
+      setGroups([]);
     } finally {
       setLoading(false);
     }
