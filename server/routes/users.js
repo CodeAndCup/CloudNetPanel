@@ -12,7 +12,7 @@ const router = express.Router();
 router.get('/', authenticateToken, requireAdmin, asyncHandler(async (req, res) => {
   const users = await new Promise((resolve, reject) => {
     db.all(`
-      SELECT id, username, email, role, created_at, last_login, status, language, is_active, is_online 
+      SELECT id, username, email, role, created_at, last_login, status, language
       FROM users
     `, (err, rows) => {
       if (err) reject(err);
@@ -37,7 +37,7 @@ router.get('/:id', authenticateToken, validate(idParamSchema, 'params'), asyncHa
 
   const user = await new Promise((resolve, reject) => {
     db.get(`
-      SELECT id, username, email, role, created_at, last_login, status, language, is_active, is_online
+      SELECT id, username, email, role, created_at, last_login, status, language
       FROM users WHERE id = ?
     `, [userId], (err, row) => {
       if (err) reject(err);
@@ -84,8 +84,8 @@ router.post('/',
     // Create user in database
     const userId = await new Promise((resolve, reject) => {
       db.run(`
-        INSERT INTO users (username, email, password, role, is_active, is_online, created_at)
-        VALUES (?, ?, ?, ?, 1, 0, ?)
+        INSERT INTO users (username, email, password, role, status, created_at)
+        VALUES (?, ?, ?, ?, 'active', ?)
       `, [username, email, hashedPassword, role, new Date().toISOString()], function(err) {
         if (err) reject(err);
         else resolve(this.lastID);
@@ -95,7 +95,7 @@ router.post('/',
     // Return the created user (without password)
     const newUser = await new Promise((resolve, reject) => {
       db.get(`
-        SELECT id, username, email, role, created_at, last_login, status, language, is_active, is_online
+        SELECT id, username, email, role, created_at, last_login, status, language
         FROM users WHERE id = ?
       `, [userId], (err, row) => {
         if (err) reject(err);
@@ -203,7 +203,7 @@ router.put('/:id',
     // Return updated user (without password)
     const updatedUser = await new Promise((resolve, reject) => {
       db.get(`
-        SELECT id, username, email, role, created_at, last_login, status, language, is_active, is_online
+        SELECT id, username, email, role, created_at, last_login, status, language
         FROM users WHERE id = ?
       `, [userId], (err, row) => {
         if (err) reject(err);

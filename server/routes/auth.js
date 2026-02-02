@@ -29,7 +29,7 @@ router.post('/login', validate(loginSchema), asyncHandler(async (req, res) => {
   }
 
   // Check if user is active
-  if (!user.is_active) {
+  if (user.status !== 'active') {
     throw new AuthenticationError('Account is disabled');
   }
 
@@ -108,7 +108,7 @@ router.post('/refresh', asyncHandler(async (req, res) => {
       });
     });
 
-    if (!user || !user.is_active) {
+    if (!user || user.status !== 'active') {
       throw new AuthenticationError('User not found or inactive');
     }
 

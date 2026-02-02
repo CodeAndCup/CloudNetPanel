@@ -47,7 +47,7 @@ router.get('/:id', authenticateToken, validate(idParamSchema, 'params'), asyncHa
   // Get users in this group
   const users = await new Promise((resolve, reject) => {
     db.all(`
-      SELECT u.id, u.username, u.email, u.role, u.is_active
+      SELECT u.id, u.username, u.email, u.role, u.status
       FROM users u
       JOIN user_groups ug ON u.id = ug.user_id
       WHERE ug.group_id = ?
