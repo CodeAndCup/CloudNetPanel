@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
 const { authenticateToken, JWT_SECRET } = require('../middleware/auth');
 const { validate, loginSchema } = require('../utils/validation');
 const { asyncHandler, AuthenticationError } = require('../utils/errors');
@@ -8,8 +9,40 @@ const db = require('../database/sqlite');
 
 const router = express.Router();
 
-// Login endpoint with validation
-router.post('/login', validate(loginSchema), asyncHandler(async (req, res) => {
+// Rate limiter for login attempts (strict)
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // 5 attempts per 15 minutes
+  message: { 
+    success: false,
+    error: { 
+      code: 'AUTH_RATE_LIMIT_EXCEEDED',
+      message: 'Too many login attempts. Please try again in 15 minutes.' 
+    }
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: false
+});
+
+// Rate limiter for session check (/me endpoint) - very lenient
+// GET requests to check current session should not be rate limited aggressively
+const sessionCheckLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 60, // Allow 60 session checks per minute (1 per second)
+  message: { 
+    success: false,
+    error: { 
+      code: 'RATE_LIMIT_EXCEEDED',
+      message: 'Too many requests, please try again later' 
+    }
+  },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+// Login endpoint with validation and rate limiting
+router.post('/login', loginLimiter, validate(loginSchema), asyncHandler(async (req, res) => {
   const { username, password } = req.body;
 
   // Query user from database
@@ -137,8 +170,8 @@ router.post('/refresh', asyncHandler(async (req, res) => {
   }
 }));
 
-// Get current user info
-router.get('/me', authenticateToken, (req, res) => {
+// Get current user info (with lenient rate limiting)
+router.get('/me', sessionCheckLimiter, authenticateToken, (req, res) => {
   res.json({
     success: true,
     user: {

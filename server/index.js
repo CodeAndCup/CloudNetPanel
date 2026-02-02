@@ -90,7 +90,7 @@ const generalLimiter = rateLimit({
   legacyHeaders: false
 });
 
-// Stricter rate limiting for auth endpoints
+// Stricter rate limiting for auth endpoints (login/logout only)
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5, // Very strict: only 5 attempts per 15 minutes
@@ -104,6 +104,23 @@ const authLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   skipSuccessfulRequests: false // Count all attempts, not just failed ones
+});
+
+// Lenient rate limiting for session validation (/me endpoint)
+// Users need to check their session frequently without hitting limits
+const sessionLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 30, // Allow up to 30 /me requests per minute
+  message: { 
+    success: false,
+    error: { 
+      code: 'RATE_LIMIT_EXCEEDED',
+      message: 'Too many requests, please try again later' 
+    }
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => req.method === 'GET' // Don't rate limit GET requests to /me
 });
 
 // Navigation/API rate limiting for regular endpoints
@@ -128,7 +145,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // API routes with appropriate rate limiting (activity logging removed from route level)
-app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/servers', navigationLimiter, requireCloudNetConnection, serverRoutes);
 app.use('/api/nodes', navigationLimiter, requireCloudNetConnection, nodeRoutes);
 app.use('/api/users', navigationLimiter, userRoutes);
